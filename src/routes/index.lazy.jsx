@@ -1,11 +1,4 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 export const Route = createLazyFileRoute("/")({
   component: Homepage,
@@ -13,15 +6,15 @@ export const Route = createLazyFileRoute("/")({
 
 function Homepage() {
   return (
-    <div className="flex flex-col justify-center items-center h-[100vh]">
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>Hover</TooltipTrigger>
-          <TooltipContent>
-            <p>Add to library</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+    <div className="flex flex-row justify-center items-center h-[100vh] w-[100vw]">
+      <div className="sideImage w-[50%] h-full bg-black">
+        <img
+          src="/side-picture.svg"
+          alt="sideImage"
+          className="object-cover w-full h-full"
+        />
+      </div>
+      <div className="formAuth w-[50%] h-full"></div>
     </div>
   );
 }
