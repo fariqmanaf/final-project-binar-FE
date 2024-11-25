@@ -88,8 +88,8 @@ function Login() {
                               <img
                                 src={
                                   form.formState.errors.emailOrPhone
-                                    ? "/src/assets/Vector.svg"
-                                    : "/src/asset/mdi_check-circle.svg"
+                                    ? "/Vector.svg"
+                                    : "/mdi_check-circle.svg"
                                 }
                                 alt=""
                               />
@@ -125,7 +125,7 @@ function Login() {
                                 : "absolute inset-y-0 right-0 pr-12 flex-center text-sm leading-5"
                             }
                           >
-                            <img src="/src/assets/fi_eye.svg" alt="" />
+                            <img src="s/fi_eye.svg" alt="" />
                           </button>
                           {!form.formState.touchedFields.password ||
                           !form.formState.dirtyFields.password ? null : (
@@ -136,8 +136,8 @@ function Login() {
                               <img
                                 src={
                                   form.formState.errors.password
-                                    ? "/src/assets/Vector.svg"
-                                    : "/src/assets/mdi_check-circle.svg"
+                                    ? "/Vector.svg"
+                                    : "s/mdi_check-circle.svg"
                                 }
                                 alt=""
                               />
@@ -165,7 +165,8 @@ function Login() {
               </Link>
             </p>
           </div>
-          {!form.formState.touchedFields && !form.formState.dirtyFields ? null : (
+          {!form.formState.touchedFields &&
+          !form.formState.dirtyFields ? null : (
             <div className="flex justify-center mt-6">
               {form.formState.errors.emailOrPhone ? (
                 <div className="py-4 px-10 border rounded-xl text-[white] bg-[red]">
