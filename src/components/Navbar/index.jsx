@@ -1,10 +1,21 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setToken, setUser } from "../../redux/slices/auth";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import React from "react";
+import { useNavigate } from "@tanstack/react-router";
 
 const Navbar = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  return (
+    <nav className="w-full bg-white shadow-md py-4">
+      <div className="max-w-6xl mx-auto px-4 flex justify-start">
+        <img
+          src="/logo.svg"
+          alt="Logo"
+          className="h-10 cursor-pointer"
+          onClick={() => navigate('/')}
+        />
+      </div>
+    </nav>
+  );
 };
+
+export default Navbar;
