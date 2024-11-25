@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,7 +14,6 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { motion } from "motion/react";
-import { animate } from "motion";
 
 export const Route = createLazyFileRoute("/auth/reset-password")({
   component: ResetPassword,
@@ -47,10 +45,6 @@ function ResetPassword() {
     mode: "onChange",
   });
 
-  async function onSubmit(values) {
-    console.log(values);
-  }
-
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -65,6 +59,10 @@ function ResetPassword() {
     hidden: { opacity: 0, y: 100 },
     show: { opacity: 1, y: 0 },
   };
+
+  async function onSubmit(values) {
+    console.log(values);
+  }
 
   return (
     <div className="flex flex-row justify-center items-center min-h-screen w-full">
