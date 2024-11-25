@@ -1,39 +1,39 @@
-import * as React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
+import * as React from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from '@/components/ui/input-otp'
-import './Otp.css'
-import logo from '../../assets/logo.png'
+} from "@/components/ui/input-otp";
+import "./Otp.css";
+import logo from "/logo.svg";
 
-export const Route = createFileRoute('/auth/otp')({
+export const Route = createFileRoute("/auth/otp")({
   component: Otp,
-})
+});
 
 function Otp() {
-  const [otp, setOtp] = React.useState('')
-  const [timer, setTimer] = React.useState(60)
-  const [isTimerRunning, setIsTimerRunning] = React.useState(true)
+  const [otp, setOtp] = React.useState("");
+  const [timer, setTimer] = React.useState(60);
+  const [isTimerRunning, setIsTimerRunning] = React.useState(true);
 
   React.useEffect(() => {
     if (isTimerRunning && timer > 0) {
       const intervalId = setInterval(() => {
-        setTimer((prevTimer) => prevTimer - 1)
-      }, 1000)
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
 
-      return () => clearInterval(intervalId)
+      return () => clearInterval(intervalId);
     } else if (timer === 0) {
-      setIsTimerRunning(false)
+      setIsTimerRunning(false);
     }
-  }, [timer, isTimerRunning])
+  }, [timer, isTimerRunning]);
 
   const handleResend = () => {
-    setTimer(60)
-    setIsTimerRunning(true)
-  }
+    setTimer(60);
+    setIsTimerRunning(true);
+  };
 
   return (
     <div className="container">
@@ -86,5 +86,5 @@ function Otp() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -88,7 +88,7 @@ export function InputOTPForm() {
             src="/arrow-left.svg"
             alt="back-button"
             className="cursor-pointer"
-            onClick={() => navigate('/auth/register')}
+            onClick={() => navigate("/auth/register")}
           />
           <h1 className="text-2xl font-bold mb-4">Masukkan OTP</h1>
           <FormField
@@ -96,7 +96,9 @@ export function InputOTPForm() {
             name="pin"
             render={({ field }) => (
               <FormItem className="flex flex-col items-center">
-                <FormLabel className="text-center mb-4 text-sm">Ketik 6 digit kode yang dikirimkan</FormLabel>
+                <FormLabel className="text-center mb-4 text-sm">
+                  Ketik 6 digit kode yang dikirimkan
+                </FormLabel>
                 <FormControl className="flex justify-center gap-2">
                   <InputOTP {...field} maxLength={6}>
                     <InputOTPGroup className="flex space-x-2">
@@ -123,10 +125,7 @@ export function InputOTPForm() {
                   {isTimerRunning ? (
                     <>Kirim Ulang OTP dalam {timer} detik</>
                   ) : (
-                    <button
-                      onClick={handleResend}
-                      className="text-red-500"
-                    >
+                    <button onClick={handleResend} className="text-red-500">
                       Kirim Ulang
                     </button>
                   )}

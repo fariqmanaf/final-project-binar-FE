@@ -11,7 +11,7 @@ const Navbar = () => {
           src="/logo.svg"
           alt="Logo"
           className="h-10 cursor-pointer"
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
         />
       </div>
     </nav>
