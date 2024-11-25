@@ -7,7 +7,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import "./Otp.css";
-import logo from "/logo.png";
+import logo from "/logo.svg";
 
 export const Route = createFileRoute("/auth/otp")({
   component: Otp,
