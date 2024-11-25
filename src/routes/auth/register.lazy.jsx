@@ -65,7 +65,7 @@ function Register() {
         <div className="relative hidden md:block">
           <img
             className="object-cover w-screen h-screen"
-            src="./src/assets/side-picture.svg"
+            src="/side-picture.svg"
             alt="background image"
           />
         </div>
@@ -102,8 +102,8 @@ function Register() {
                               <img
                                 src={
                                   form.formState.errors.newName
-                                    ? "src/assets/Vector.svg"
-                                    : "src/assets/mdi_check-circle.svg"
+                                    ? "/src/assets/Vector.svg"
+                                    : "/src/assets/mdi_check-circle.svg"
                                 }
                                 alt=""
                               />
@@ -139,8 +139,8 @@ function Register() {
                               <img
                                 src={
                                   form.formState.errors.newEmail
-                                    ? "src/assets/Vector.svg"
-                                    : "src/assets/mdi_check-circle.svg"
+                                    ? "/src/assets/Vector.svg"
+                                    : "/src/assets/mdi_check-circle.svg"
                                 }
                                 alt=""
                               />
@@ -176,8 +176,8 @@ function Register() {
                               <img
                                 src={
                                   form.formState.errors.newPhoneNumber
-                                    ? "src/assets/Vector.svg"
-                                    : "src/assets/mdi_check-circle.svg"
+                                    ? "/src/assets/Vector.svg"
+                                    : "/src/assets/mdi_check-circle.svg"
                                 }
                                 alt=""
                               />
@@ -215,7 +215,7 @@ function Register() {
                             }
                             onClick={() => setShowPassword(!showPassword)}
                           >
-                            <img src="src\assets\fi_eye.svg" alt="" />
+                            <img src="/src/assets/fi_eye.svg" alt="" />
                           </button>
                           {!form.formState.touchedFields.newPassword ||
                           !form.formState.dirtyFields.newPassword ? null : (
@@ -226,8 +226,8 @@ function Register() {
                               <img
                                 src={
                                   form.formState.errors.newPassword
-                                    ? "src/assets/Vector.svg"
-                                    : "src/assets/mdi_check-circle.svg"
+                                    ? "/src/assets/Vector.svg"
+                                    : "/src/assets/mdi_check-circle.svg"
                                 }
                                 alt=""
                               />
@@ -250,7 +250,7 @@ function Register() {
             </Form>
             <p className="mt-16 justify-center flex">
               Sudah punya akun?&nbsp;{" "}
-              <Link to={"/login"} className="text-[#7126B5] font-bold">
+              <Link to={"/auth/login"} className="text-[#7126B5] font-bold">
                 Masuk di sini
               </Link>
             </p>
