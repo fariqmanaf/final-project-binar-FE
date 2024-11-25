@@ -10,6 +10,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        enter: "fadeIn 0.3s ease-out",
+        leave: "fadeOut 0.3s ease-in",
+      },
       fontFamily: {
         sans: ["Poppins", ...fontFamily.sans],
       },
