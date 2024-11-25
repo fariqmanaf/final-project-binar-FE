@@ -13,11 +13,13 @@ import { createFileRoute } from "@tanstack/react-router";
 // Import Routes
 
 import { Route as rootRoute } from "./routes/__root";
+import { Route as AuthOtpImport } from "./routes/auth/otp";
 
 // Create Virtual Routes
 
 const RegisterLazyImport = createFileRoute("/register")();
 const IndexLazyImport = createFileRoute("/")();
+const AuthResetPasswordLazyImport = createFileRoute("/auth/reset-password")();
 
 // Create/Update Routes
 
@@ -33,6 +35,20 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import("./routes/index.lazy").then((d) => d.Route));
 
+const AuthResetPasswordLazyRoute = AuthResetPasswordLazyImport.update({
+  id: "/auth/reset-password",
+  path: "/auth/reset-password",
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import("./routes/auth/reset-password.lazy").then((d) => d.Route),
+);
+
+const AuthOtpRoute = AuthOtpImport.update({
+  id: "/auth/otp",
+  path: "/auth/otp",
+  getParentRoute: () => rootRoute,
+} as any);
+
 // Populate the FileRoutesByPath interface
 
 declare module "@tanstack/react-router" {
@@ -42,6 +58,20 @@ declare module "@tanstack/react-router" {
       path: "/";
       fullPath: "/";
       preLoaderRoute: typeof IndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/otp": {
+      id: "/auth/otp";
+      path: "/auth/otp";
+      fullPath: "/auth/otp";
+      preLoaderRoute: typeof AuthOtpImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/reset-password": {
+      id: "/auth/reset-password";
+      path: "/auth/reset-password";
+      fullPath: "/auth/reset-password";
+      preLoaderRoute: typeof AuthResetPasswordLazyImport;
       parentRoute: typeof rootRoute;
     };
     "/register": {
@@ -58,37 +88,47 @@ declare module "@tanstack/react-router" {
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexLazyRoute;
+  "/auth/otp": typeof AuthOtpRoute;
+  "/auth/reset-password": typeof AuthResetPasswordLazyRoute;
   "/register": typeof RegisterLazyRoute;
 }
 
 export interface FileRoutesByTo {
   "/": typeof IndexLazyRoute;
+  "/auth/otp": typeof AuthOtpRoute;
+  "/auth/reset-password": typeof AuthResetPasswordLazyRoute;
   "/register": typeof RegisterLazyRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   "/": typeof IndexLazyRoute;
+  "/auth/otp": typeof AuthOtpRoute;
+  "/auth/reset-password": typeof AuthResetPasswordLazyRoute;
   "/register": typeof RegisterLazyRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/register";
+  fullPaths: "/" | "/auth/otp" | "/auth/reset-password" | "/register";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/register";
-  id: "__root__" | "/" | "/register";
+  to: "/" | "/auth/otp" | "/auth/reset-password" | "/register";
+  id: "__root__" | "/" | "/auth/otp" | "/auth/reset-password" | "/register";
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute;
+  AuthOtpRoute: typeof AuthOtpRoute;
+  AuthResetPasswordLazyRoute: typeof AuthResetPasswordLazyRoute;
   RegisterLazyRoute: typeof RegisterLazyRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   RegisterLazyRoute: RegisterLazyRoute,
+  AuthOtpRoute: AuthOtpRoute,
+  AuthResetPasswordLazyRoute: AuthResetPasswordLazyRoute,
 };
 
 export const routeTree = rootRoute
@@ -102,7 +142,9 @@ export const routeTree = rootRoute
       "filePath": "__root.jsx",
       "children": [
         "/",
-        "/register"
+        "/register",
+        "/auth/otp",
+        "/auth/reset-password"
       ]
     },
     "/": {
@@ -110,6 +152,12 @@ export const routeTree = rootRoute
     },
     "/register": {
       "filePath": "register.lazy.jsx"
+    },
+    "/auth/otp": {
+      "filePath": "auth/otp.jsx"
+    },
+    "/auth/reset-password": {
+      "filePath": "auth/reset-password.lazy.jsx"
     }
   }
 }
