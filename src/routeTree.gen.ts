@@ -17,19 +17,11 @@ import { Route as AuthOtpImport } from "./routes/auth/otp";
 
 // Create Virtual Routes
 
-const RegisterLazyImport = createFileRoute("/register")();
 const IndexLazyImport = createFileRoute("/")();
 const AuthResetPasswordLazyImport = createFileRoute("/auth/reset-password")();
+const AuthRegisterLazyImport = createFileRoute("/auth/register")();
 
 // Create/Update Routes
-
-const RegisterLazyRoute = RegisterLazyImport.update({
-  id: "/register",
-  path: "/register",
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import("./Routes/auth/register.lazy").then((d) => d.Route),
-);
 
 const IndexLazyRoute = IndexLazyImport.update({
   id: "/",
@@ -43,6 +35,14 @@ const AuthResetPasswordLazyRoute = AuthResetPasswordLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import("./routes/auth/reset-password.lazy").then((d) => d.Route),
+);
+
+const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
+  id: "/auth/register",
+  path: "/auth/register",
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import("./routes/auth/register.lazy").then((d) => d.Route),
 );
 
 const AuthOtpRoute = AuthOtpImport.update({
@@ -69,18 +69,18 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthOtpImport;
       parentRoute: typeof rootRoute;
     };
+    "/auth/register": {
+      id: "/auth/register";
+      path: "/auth/register";
+      fullPath: "/auth/register";
+      preLoaderRoute: typeof AuthRegisterLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     "/auth/reset-password": {
       id: "/auth/reset-password";
       path: "/auth/reset-password";
       fullPath: "/auth/reset-password";
       preLoaderRoute: typeof AuthResetPasswordLazyImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/register": {
-      id: "/register";
-      path: "/register";
-      fullPath: "/register";
-      preLoaderRoute: typeof RegisterLazyImport;
       parentRoute: typeof rootRoute;
     };
   }
@@ -91,45 +91,50 @@ declare module "@tanstack/react-router" {
 export interface FileRoutesByFullPath {
   "/": typeof IndexLazyRoute;
   "/auth/otp": typeof AuthOtpRoute;
+  "/auth/register": typeof AuthRegisterLazyRoute;
   "/auth/reset-password": typeof AuthResetPasswordLazyRoute;
-  "/register": typeof RegisterLazyRoute;
 }
 
 export interface FileRoutesByTo {
   "/": typeof IndexLazyRoute;
   "/auth/otp": typeof AuthOtpRoute;
+  "/auth/register": typeof AuthRegisterLazyRoute;
   "/auth/reset-password": typeof AuthResetPasswordLazyRoute;
-  "/register": typeof RegisterLazyRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   "/": typeof IndexLazyRoute;
   "/auth/otp": typeof AuthOtpRoute;
+  "/auth/register": typeof AuthRegisterLazyRoute;
   "/auth/reset-password": typeof AuthResetPasswordLazyRoute;
-  "/register": typeof RegisterLazyRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/auth/otp" | "/auth/reset-password" | "/register";
+  fullPaths: "/" | "/auth/otp" | "/auth/register" | "/auth/reset-password";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/auth/otp" | "/auth/reset-password" | "/register";
-  id: "__root__" | "/" | "/auth/otp" | "/auth/reset-password" | "/register";
+  to: "/" | "/auth/otp" | "/auth/register" | "/auth/reset-password";
+  id:
+    | "__root__"
+    | "/"
+    | "/auth/otp"
+    | "/auth/register"
+    | "/auth/reset-password";
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute;
   AuthOtpRoute: typeof AuthOtpRoute;
+  AuthRegisterLazyRoute: typeof AuthRegisterLazyRoute;
   AuthResetPasswordLazyRoute: typeof AuthResetPasswordLazyRoute;
-  RegisterLazyRoute: typeof RegisterLazyRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
-  RegisterLazyRoute: RegisterLazyRoute,
   AuthOtpRoute: AuthOtpRoute,
+  AuthRegisterLazyRoute: AuthRegisterLazyRoute,
   AuthResetPasswordLazyRoute: AuthResetPasswordLazyRoute,
 };
 
@@ -144,19 +149,19 @@ export const routeTree = rootRoute
       "filePath": "__root.jsx",
       "children": [
         "/",
-        "/register",
         "/auth/otp",
+        "/auth/register",
         "/auth/reset-password"
       ]
     },
     "/": {
       "filePath": "index.lazy.jsx"
     },
-    "/register": {
-      "filePath": "register.lazy.jsx"
-    },
     "/auth/otp": {
       "filePath": "auth/otp.jsx"
+    },
+    "/auth/register": {
+      "filePath": "auth/register.lazy.jsx"
     },
     "/auth/reset-password": {
       "filePath": "auth/reset-password.lazy.jsx"
