@@ -124,8 +124,9 @@ function Login() {
                                 ? "absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
                                 : "absolute inset-y-0 right-0 pr-12 flex-center text-sm leading-5"
                             }
+                            onClick={() => setShowPassword(!showPassword)}
                           >
-                            <img src="s/fi_eye.svg" alt="" />
+                            <img src="/fi_eye.svg" alt="" />
                           </button>
                           {!form.formState.touchedFields.password ||
                           !form.formState.dirtyFields.password ? null : (
@@ -137,7 +138,7 @@ function Login() {
                                 src={
                                   form.formState.errors.password
                                     ? "/Vector.svg"
-                                    : "s/mdi_check-circle.svg"
+                                    : "/mdi_check-circle.svg"
                                 }
                                 alt=""
                               />

@@ -50,14 +50,6 @@ const AuthLoginLazyRoute = AuthLoginLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route))
 
-const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
-  id: "/auth/register",
-  path: "/auth/register",
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import("./routes/auth/register.lazy").then((d) => d.Route),
-);
-
 const AuthOtpRoute = AuthOtpImport.update({
   id: '/auth/otp',
   path: '/auth/otp',
