@@ -14,7 +14,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export const Route = createLazyFileRoute("/register")({
+export const Route = createLazyFileRoute("/auth/register")({
   component: Register,
 });
 

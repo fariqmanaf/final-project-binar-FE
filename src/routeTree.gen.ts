@@ -27,7 +27,9 @@ const RegisterLazyRoute = RegisterLazyImport.update({
   id: "/register",
   path: "/register",
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import("./routes/register.lazy").then((d) => d.Route));
+} as any).lazy(() =>
+  import("./Routes/auth/register.lazy").then((d) => d.Route),
+);
 
 const IndexLazyRoute = IndexLazyImport.update({
   id: "/",
