@@ -12,7 +12,6 @@ import { useMutation } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
 import { setToken } from '@/redux/slices/auth';
 import { register } from '@/Services/auth/auth';
-import { json } from 'stream/consumers';
 
 export const Route = createLazyFileRoute('/auth/register')({
   component: Register,
@@ -47,7 +46,7 @@ function Register() {
       newEmail: z.string().email('Email tidak valid').nonempty({ message: 'Email diperlukan' }),
       newPhoneNumber: z
         .string()
-        .regex(/^\d+$/, { message: 'Nomor Telepon harus berupa angka' })
+        .regex(/^\+62\d+$/, { message: 'Nomor Telepon harus berupa angka' })
         .min(10, { message: 'Nomor Telepon minimal 10 karakter' })
         .nonempty({ message: 'Nomor Telepon diperlukan' }),
       newPassword: z
@@ -70,14 +69,14 @@ function Register() {
 
   async function onSubmit(values) {
     localStorage.setItem('email', values.newEmail);
-    const jsonData = {
+    const data = {
       name: values.newName,
       email: values.newEmail,
       phoneNumber: values.newPhoneNumber,
       password: values.newPassword,
     };
-    // console.log(jsonData);
-    registerMutation(jsonData);
+
+    registerMutation(data);
   }
 
   const [showPassword, setShowPassword] = React.useState(false);
@@ -138,6 +137,7 @@ function Register() {
                             <Input
                               {...field}
                               id="newEmail"
+                              type="email"
                               placeholder="Contoh: johndee@gmail.com"
                               className="p-3 ps-5 border rounded-xl"
                             />
@@ -166,6 +166,7 @@ function Register() {
                           <div className="relative">
                             <Input
                               {...field}
+                              type="text"
                               id="newPhoneNumber"
                               placeholder="6281.."
                               className="p-3 ps-5 border rounded-xl"
