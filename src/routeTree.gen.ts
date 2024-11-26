@@ -8,167 +8,202 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as AuthOtpImport } from './routes/auth/otp'
+import { Route as rootRoute } from "./routes/__root";
 
 // Create Virtual Routes
 
-const IndexLazyImport = createFileRoute('/')()
-const AuthResetPasswordLazyImport = createFileRoute('/auth/reset-password')()
-const AuthRegisterLazyImport = createFileRoute('/auth/register')()
-const AuthLoginLazyImport = createFileRoute('/auth/login')()
+const IndexLazyImport = createFileRoute("/")();
+const AuthRegisterLazyImport = createFileRoute("/auth/register")();
+const AuthLoginLazyImport = createFileRoute("/auth/login")();
+const AuthPasswordResetVerifyEmailLazyImport = createFileRoute(
+  "/auth/password-reset/verify-email",
+)();
+const AuthPasswordResetTokenLazyImport = createFileRoute(
+  "/auth/password-reset/$token",
+)();
+const AuthOtpLazyImport = createFileRoute("/auth/otp")();
 
 // Create/Update Routes
 
 const IndexLazyRoute = IndexLazyImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
-
-const AuthResetPasswordLazyRoute = AuthResetPasswordLazyImport.update({
-  id: '/auth/reset-password',
-  path: '/auth/reset-password',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/auth/reset-password.lazy').then((d) => d.Route),
-)
+} as any).lazy(() => import("./routes/index.lazy").then((d) => d.Route));
 
 const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
-  id: '/auth/register',
-  path: '/auth/register',
+  id: "/auth/register",
+  path: "/auth/register",
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/auth/register.lazy').then((d) => d.Route))
+} as any).lazy(() =>
+  import("./routes/auth/register.lazy").then((d) => d.Route),
+);
+
+const AuthOtpLazyRoute = AuthOtpLazyImport.update({
+  id: "/auth/otp",
+  path: "/auth/otp",
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import("./routes/auth/otp.lazy").then((d) => d.Route));
 
 const AuthLoginLazyRoute = AuthLoginLazyImport.update({
-  id: '/auth/login',
-  path: '/auth/login',
+  id: "/auth/login",
+  path: "/auth/login",
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route))
+} as any).lazy(() => import("./routes/auth/login.lazy").then((d) => d.Route));
 
-const AuthOtpRoute = AuthOtpImport.update({
-  id: '/auth/otp',
-  path: '/auth/otp',
-  getParentRoute: () => rootRoute,
-} as any)
+const AuthPasswordResetVerifyEmailLazyRoute =
+  AuthPasswordResetVerifyEmailLazyImport.update({
+    id: "/auth/password-reset/verify-email",
+    path: "/auth/password-reset/verify-email",
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import("./routes/auth/password-reset/verify-email.lazy").then(
+      (d) => d.Route,
+    ),
+  );
+
+const AuthPasswordResetTokenLazyRoute = AuthPasswordResetTokenLazyImport.update(
+  {
+    id: "/auth/password-reset/$token",
+    path: "/auth/password-reset/$token",
+    getParentRoute: () => rootRoute,
+  } as any,
+).lazy(() =>
+  import("./routes/auth/password-reset/$token.lazy").then((d) => d.Route),
+);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/otp': {
-      id: '/auth/otp'
-      path: '/auth/otp'
-      fullPath: '/auth/otp'
-      preLoaderRoute: typeof AuthOtpImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/login': {
-      id: '/auth/login'
-      path: '/auth/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/register': {
-      id: '/auth/register'
-      path: '/auth/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthRegisterLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/reset-password': {
-      id: '/auth/reset-password'
-      path: '/auth/reset-password'
-      fullPath: '/auth/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordLazyImport
-      parentRoute: typeof rootRoute
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/otp": {
+      id: "/auth/otp";
+      path: "/auth/otp";
+      fullPath: "/auth/otp";
+      preLoaderRoute: typeof AuthOtpImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/login": {
+      id: "/auth/login";
+      path: "/auth/login";
+      fullPath: "/auth/login";
+      preLoaderRoute: typeof AuthLoginLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/register": {
+      id: "/auth/register";
+      path: "/auth/register";
+      fullPath: "/auth/register";
+      preLoaderRoute: typeof AuthRegisterLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/password-reset/$token": {
+      id: "/auth/password-reset/$token";
+      path: "/auth/password-reset/$token";
+      fullPath: "/auth/password-reset/$token";
+      preLoaderRoute: typeof AuthPasswordResetTokenLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/password-reset/verify-email": {
+      id: "/auth/password-reset/verify-email";
+      path: "/auth/password-reset/verify-email";
+      fullPath: "/auth/password-reset/verify-email";
+      preLoaderRoute: typeof AuthPasswordResetVerifyEmailLazyImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute
-  '/auth/otp': typeof AuthOtpRoute
-  '/auth/login': typeof AuthLoginLazyRoute
-  '/auth/register': typeof AuthRegisterLazyRoute
-  '/auth/reset-password': typeof AuthResetPasswordLazyRoute
+  "/": typeof IndexLazyRoute;
+  "/auth/otp": typeof AuthOtpRoute;
+  "/auth/login": typeof AuthLoginLazyRoute;
+  "/auth/register": typeof AuthRegisterLazyRoute;
+  "/auth/password-reset/$token": typeof AuthPasswordResetTokenLazyRoute;
+  "/auth/password-reset/verify-email": typeof AuthPasswordResetVerifyEmailLazyRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
-  '/auth/otp': typeof AuthOtpRoute
-  '/auth/login': typeof AuthLoginLazyRoute
-  '/auth/register': typeof AuthRegisterLazyRoute
-  '/auth/reset-password': typeof AuthResetPasswordLazyRoute
+  "/": typeof IndexLazyRoute;
+  "/auth/otp": typeof AuthOtpRoute;
+  "/auth/login": typeof AuthLoginLazyRoute;
+  "/auth/register": typeof AuthRegisterLazyRoute;
+  "/auth/password-reset/$token": typeof AuthPasswordResetTokenLazyRoute;
+  "/auth/password-reset/verify-email": typeof AuthPasswordResetVerifyEmailLazyRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
-  '/auth/otp': typeof AuthOtpRoute
-  '/auth/login': typeof AuthLoginLazyRoute
-  '/auth/register': typeof AuthRegisterLazyRoute
-  '/auth/reset-password': typeof AuthResetPasswordLazyRoute
+  __root__: typeof rootRoute;
+  "/": typeof IndexLazyRoute;
+  "/auth/otp": typeof AuthOtpRoute;
+  "/auth/login": typeof AuthLoginLazyRoute;
+  "/auth/register": typeof AuthRegisterLazyRoute;
+  "/auth/password-reset/$token": typeof AuthPasswordResetTokenLazyRoute;
+  "/auth/password-reset/verify-email": typeof AuthPasswordResetVerifyEmailLazyRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/auth/otp'
-    | '/auth/login'
-    | '/auth/register'
-    | '/auth/reset-password'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/auth/otp"
+    | "/auth/login"
+    | "/auth/register"
+    | "/auth/password-reset/$token"
+    | "/auth/password-reset/verify-email";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/auth/otp'
-    | '/auth/login'
-    | '/auth/register'
-    | '/auth/reset-password'
+    | "/"
+    | "/auth/otp"
+    | "/auth/login"
+    | "/auth/register"
+    | "/auth/password-reset/$token"
+    | "/auth/password-reset/verify-email";
   id:
-    | '__root__'
-    | '/'
-    | '/auth/otp'
-    | '/auth/login'
-    | '/auth/register'
-    | '/auth/reset-password'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/auth/otp"
+    | "/auth/login"
+    | "/auth/register"
+    | "/auth/password-reset/$token"
+    | "/auth/password-reset/verify-email";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
-  AuthOtpRoute: typeof AuthOtpRoute
-  AuthLoginLazyRoute: typeof AuthLoginLazyRoute
-  AuthRegisterLazyRoute: typeof AuthRegisterLazyRoute
-  AuthResetPasswordLazyRoute: typeof AuthResetPasswordLazyRoute
+  IndexLazyRoute: typeof IndexLazyRoute;
+  AuthOtpRoute: typeof AuthOtpRoute;
+  AuthLoginLazyRoute: typeof AuthLoginLazyRoute;
+  AuthRegisterLazyRoute: typeof AuthRegisterLazyRoute;
+  AuthPasswordResetTokenLazyRoute: typeof AuthPasswordResetTokenLazyRoute;
+  AuthPasswordResetVerifyEmailLazyRoute: typeof AuthPasswordResetVerifyEmailLazyRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
-  AuthOtpRoute: AuthOtpRoute,
   AuthLoginLazyRoute: AuthLoginLazyRoute,
+  AuthOtpLazyRoute: AuthOtpLazyRoute,
   AuthRegisterLazyRoute: AuthRegisterLazyRoute,
-  AuthResetPasswordLazyRoute: AuthResetPasswordLazyRoute,
-}
+  AuthPasswordResetTokenLazyRoute: AuthPasswordResetTokenLazyRoute,
+  AuthPasswordResetVerifyEmailLazyRoute: AuthPasswordResetVerifyEmailLazyRoute,
+};
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
@@ -177,26 +212,30 @@ export const routeTree = rootRoute
       "filePath": "__root.jsx",
       "children": [
         "/",
-        "/auth/otp",
         "/auth/login",
+        "/auth/otp",
         "/auth/register",
-        "/auth/reset-password"
+        "/auth/password-reset/$token",
+        "/auth/password-reset/verify-email"
       ]
     },
     "/": {
       "filePath": "index.lazy.jsx"
     },
-    "/auth/otp": {
-      "filePath": "auth/otp.jsx"
-    },
     "/auth/login": {
       "filePath": "auth/login.lazy.jsx"
+    },
+    "/auth/otp": {
+      "filePath": "auth/otp.lazy.jsx"
     },
     "/auth/register": {
       "filePath": "auth/register.lazy.jsx"
     },
-    "/auth/reset-password": {
-      "filePath": "auth/reset-password.lazy.jsx"
+    "/auth/password-reset/$token": {
+      "filePath": "auth/password-reset/$token.lazy.jsx"
+    },
+    "/auth/password-reset/verify-email": {
+      "filePath": "auth/password-reset/verify-email.lazy.jsx"
     }
   }
 }
