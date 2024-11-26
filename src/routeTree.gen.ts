@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router';
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
+import { Route as AuthOtpImport } from './routes/auth/otp';
 
 // Create Virtual Routes
 
@@ -21,7 +22,6 @@ const AuthRegisterLazyImport = createFileRoute('/auth/register')();
 const AuthLoginLazyImport = createFileRoute('/auth/login')();
 const AuthPasswordResetVerifyEmailLazyImport = createFileRoute('/auth/password-reset/verify-email')();
 const AuthPasswordResetTokenLazyImport = createFileRoute('/auth/password-reset/$token')();
-const AuthOtpLazyImport = createFileRoute('/auth/otp')();
 
 // Create/Update Routes
 
@@ -37,17 +37,17 @@ const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/auth/register.lazy').then((d) => d.Route));
 
-const AuthOtpLazyRoute = AuthOtpLazyImport.update({
-  id: '/auth/otp',
-  path: '/auth/otp',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/auth/otp.lazy').then((d) => d.Route));
-
 const AuthLoginLazyRoute = AuthLoginLazyImport.update({
   id: '/auth/login',
   path: '/auth/login',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route));
+
+const AuthOtpRoute = AuthOtpImport.update({
+  id: '/auth/otp',
+  path: '/auth/otp',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/auth/otp.lazy').then((d) => d.Route));
 
 const AuthPasswordResetVerifyEmailLazyRoute = AuthPasswordResetVerifyEmailLazyImport.update({
   id: '/auth/password-reset/verify-email',
@@ -179,8 +179,8 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  AuthOtpRoute: AuthOtpRoute,
   AuthLoginLazyRoute: AuthLoginLazyRoute,
-  AuthOtpLazyRoute: AuthOtpLazyRoute,
   AuthRegisterLazyRoute: AuthRegisterLazyRoute,
   AuthPasswordResetTokenLazyRoute: AuthPasswordResetTokenLazyRoute,
   AuthPasswordResetVerifyEmailLazyRoute: AuthPasswordResetVerifyEmailLazyRoute,
@@ -195,8 +195,8 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
       "filePath": "__root.jsx",
       "children": [
         "/",
-        "/auth/login",
         "/auth/otp",
+        "/auth/login",
         "/auth/register",
         "/auth/password-reset/$token",
         "/auth/password-reset/verify-email"
@@ -205,11 +205,11 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     "/": {
       "filePath": "index.lazy.jsx"
     },
+    "/auth/otp": {
+      "filePath": "auth/otp.jsx"
+    },
     "/auth/login": {
       "filePath": "auth/login.lazy.jsx"
-    },
-    "/auth/otp": {
-      "filePath": "auth/otp.lazy.jsx"
     },
     "/auth/register": {
       "filePath": "auth/register.lazy.jsx"

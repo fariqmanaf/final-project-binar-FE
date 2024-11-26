@@ -33,7 +33,7 @@ function Login() {
     console.log(values);
   }
 
-  const [showPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
   const [masuk, setMasuk] = React.useState(false);
 
   return (

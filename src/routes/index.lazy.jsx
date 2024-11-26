@@ -10,7 +10,9 @@ function Homepage() {
       <div className="sideImage w-[50%] h-full bg-black">
         <img src="/side-picture.svg" alt="sideImage" className="object-cover w-full h-full" />
       </div>
-      <div className="formAuth w-[50%] h-full"></div>
+      <div className="formAuth w-[50%] h-full flex justify-center items-center">
+        <p>Welcome To Tiketku</p>
+      </div>
     </div>
   );
 }
