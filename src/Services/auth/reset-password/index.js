@@ -1,14 +1,11 @@
 export const requestEmailVerification = async (email) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/auth/password-reset`,
-    {
-      body: JSON.stringify({ email }),
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/password-reset`, {
+    body: JSON.stringify({ email }),
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+  });
 
   const result = await response.json();
   if (!response.ok) {
@@ -18,9 +15,7 @@ export const requestEmailVerification = async (email) => {
 };
 
 export const verifyToken = async (token) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/auth/password-reset/${token}`,
-  );
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/password-reset/${token}`);
 
   const result = await response.json();
   if (result.error) {
@@ -30,16 +25,13 @@ export const verifyToken = async (token) => {
 };
 
 export const resetPassword = async (token, password) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/auth/password-reset`,
-    {
-      body: JSON.stringify({ token, password }),
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/password-reset`, {
+    body: JSON.stringify({ token, password }),
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+  });
 
   const result = await response.json();
   if (result.error) {

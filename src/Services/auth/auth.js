@@ -1,9 +1,9 @@
 export const login = async (request) => {
   const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
     body: JSON.stringify(request),
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 
@@ -11,24 +11,21 @@ export const login = async (request) => {
   if (!result?.success) {
     throw new Error(result?.message);
   }
-  
+
   return result?.data;
 };
 
 export const register = async (request) => {
   const formData = new FormData();
-  formData.append("name", request.name);
-  formData.append("email", request.email);
-  formData.append("phone_number", request.phone_number);
-  formData.append("password", request.password);
+  formData.append('name', request.name);
+  formData.append('email', request.email);
+  formData.append('phone_number', request.phone_number);
+  formData.append('password', request.password);
 
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/auth/register`,
-    {
-      method: "POST",
-      body: formData,
-    },
-  );
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
+    method: 'POST',
+    body: formData,
+  });
 
   const result = await response.json();
   if (!result?.success) {

@@ -1,29 +1,18 @@
-import {
-  createLazyFileRoute,
-  useSearch,
-  useNavigate,
-} from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import * as z from "zod";
-import ReactLoading from "react-loading";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { motion } from "motion/react";
-import { verifyToken, resetPassword } from "@/Services/auth/reset-password";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import toast, { Toaster } from "react-hot-toast";
+import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import * as z from 'zod';
+import ReactLoading from 'react-loading';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { motion } from 'motion/react';
+import { verifyToken, resetPassword } from '@/Services/auth/reset-password';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import toast, { Toaster } from 'react-hot-toast';
 
-export const Route = createLazyFileRoute("/auth/password-reset/$token")({
+export const Route = createLazyFileRoute('/auth/password-reset/$token')({
   component: ResetPassword,
 });
 
@@ -31,8 +20,8 @@ function ResetPassword() {
   const navigate = useNavigate();
   const token = Route.useParams().token;
 
-  const { data, isPending, isError, isSuccess } = useQuery({
-    queryKey: ["verify-token", token],
+  const { isPending, isError, isSuccess } = useQuery({
+    queryKey: ['verify-token', token],
     queryFn: () => verifyToken(token),
     enabled: !!token,
   });
@@ -43,25 +32,25 @@ function ResetPassword() {
       toast.error(error.message);
     },
     onSuccess: () => {
-      toast.success("Password berhasil direset", {
+      toast.success('Password berhasil direset', {
         duration: 3000,
       });
 
       setTimeout(() => {
-        navigate({ to: "/auth/login" });
+        navigate({ to: '/auth/login' });
       }, 3000);
     },
   });
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Token berhasil diverifikasi", {
+      toast.success('Token berhasil diverifikasi', {
         duration: 5000,
       });
     }
 
     if (isError) {
-      toast.error("Token Expired Atau Invalid", {
+      toast.error('Token Expired Atau Invalid', {
         duration: 3000,
       });
     }
@@ -70,15 +59,15 @@ function ResetPassword() {
   const formSchema = z
     .object({
       newPassword: z.string().min(8, {
-        message: "Password minimal 8 karakter",
+        message: 'Password minimal 8 karakter',
       }),
       verifyPassword: z.string(),
     })
     .superRefine(({ newPassword, verifyPassword }, ctx) => {
       if (newPassword !== verifyPassword) {
         ctx.addIssue({
-          path: ["verifyPassword"],
-          message: "Password tidak sama",
+          path: ['verifyPassword'],
+          message: 'Password tidak sama',
         });
       }
     });
@@ -86,10 +75,10 @@ function ResetPassword() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      newPassword: "",
-      verifyPassword: "",
+      newPassword: '',
+      verifyPassword: '',
     },
-    mode: "onChange",
+    mode: 'onChange',
   });
 
   const containerVariants = {
@@ -110,12 +99,7 @@ function ResetPassword() {
   if (isPending) {
     return (
       <div className="flex flex-col justify-center items-center h-screen w-screen">
-        <ReactLoading
-          type={"spin"}
-          color={"#0d6efd"}
-          height={"5%"}
-          width={"5%"}
-        />
+        <ReactLoading type={'spin'} color={'#0d6efd'} height={'5%'} width={'5%'} />
       </div>
     );
   }
@@ -126,31 +110,19 @@ function ResetPassword() {
 
   return (
     <>
-      {" "}
+      {' '}
       <Toaster position="top-right" reverseOrder={false} />
       <div className="flex flex-row justify-center items-center min-h-screen w-full">
         <div className="hidden md:block w-1/2 h-screen bg-black">
-          <img
-            src="/side-picture.svg"
-            alt="Side decoration"
-            className="object-cover w-full h-full"
-          />
+          <img src="/side-picture.svg" alt="Side decoration" className="object-cover w-full h-full" />
         </div>
         <div className="w-full md:w-1/2 h-screen flex flex-col justify-center items-center p-4">
-          <motion.div
-            className="w-full max-w-md"
-            initial="hidden"
-            animate="show"
-            variants={containerVariants}
-          >
+          <motion.div className="w-full max-w-md" initial="hidden" animate="show" variants={containerVariants}>
             <motion.div variants={childVariants}>
               <h3 className="text-2xl font-bold mb-[1rem]">Reset Password</h3>
             </motion.div>
             <Form {...form} id="form">
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-5"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                 <motion.div variants={childVariants}>
                   <FormField
                     control={form.control}
@@ -202,10 +174,10 @@ function ResetPassword() {
                   >
                     {isPendingMutate ? (
                       <ReactLoading
-                        type={"spin"}
-                        color={"#FFFFFF"}
-                        height={"15%"}
-                        width={"15%"}
+                        type={'spin'}
+                        color={'#FFFFFF'}
+                        height={'15%'}
+                        width={'15%'}
                         className="flex justify-center items-center"
                       />
                     ) : (
