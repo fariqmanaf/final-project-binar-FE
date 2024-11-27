@@ -141,7 +141,7 @@ export interface FileRoutesById {
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth/otp'
@@ -169,12 +169,12 @@ export interface FileRouteTypes {
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute;
-  AuthOtpRoute: typeof AuthOtpRoute;
-  AuthLoginLazyRoute: typeof AuthLoginLazyRoute;
-  AuthRegisterLazyRoute: typeof AuthRegisterLazyRoute;
-  AuthPasswordResetTokenLazyRoute: typeof AuthPasswordResetTokenLazyRoute;
-  AuthPasswordResetVerifyEmailLazyRoute: typeof AuthPasswordResetVerifyEmailLazyRoute;
+  IndexLazyRoute: typeof IndexLazyRoute
+  AuthOtpRoute: typeof AuthOtpRoute
+  AuthLoginLazyRoute: typeof AuthLoginLazyRoute
+  AuthRegisterLazyRoute: typeof AuthRegisterLazyRoute
+  AuthPasswordResetTokenLazyRoute: typeof AuthPasswordResetTokenLazyRoute
+  AuthPasswordResetVerifyEmailLazyRoute: typeof AuthPasswordResetVerifyEmailLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -184,7 +184,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRegisterLazyRoute: AuthRegisterLazyRoute,
   AuthPasswordResetTokenLazyRoute: AuthPasswordResetTokenLazyRoute,
   AuthPasswordResetVerifyEmailLazyRoute: AuthPasswordResetVerifyEmailLazyRoute,
-};
+}
 
 export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
 

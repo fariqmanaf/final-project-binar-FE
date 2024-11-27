@@ -9,7 +9,7 @@ export const login = async (request) => {
 
   const result = await response.json();
   if (!result?.success) {
-    throw new Error(result?.message);
+    throw new Error(result?.message || "Login failed");
   }
 
   return result?.data;
