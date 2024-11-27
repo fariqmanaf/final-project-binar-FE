@@ -10,8 +10,10 @@ import { Link } from '@tanstack/react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import { login } from '@/Services/auth/auth';
-import toast from 'react-hot-toast';
-import { setToken } from '@/redux/slices/auth';
+import toast, { Toaster } from 'react-hot-toast';
+import { setToken, setUser } from '@/redux/slices/auth';
+import { useEffect, useState } from 'react';
+import ReactLoading from 'react-loading';
 
 export const Route = createLazyFileRoute('/auth/login')({
   component: Login,
@@ -21,41 +23,42 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Cek apakah sudah ada token di Redux
-  const { token } = useSelector((state) => state.auth);
-  console.log('Token from Redux:', token); // Log token untuk debugging
-  if (token) {
-    navigate({ to: '/' }); // Jika sudah ada token, arahkan ke homepage
-  }
+  const token = useSelector((state) => state.auth.token);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const { mutate: loginMutation } = useMutation({
+  const { mutate: loginMutation, isPending: isPendingMutate } = useMutation({
     mutationFn: (body) => {
-      console.log('Logging in with:', body); // Log data login untuk debugging
-      return login(body); // Pastikan fungsi login mengembalikan promise yang benar
+      return login(body);
     },
     onSuccess: (data) => {
-      console.log('Login berhasil, token:', data?.token);
-      localStorage.setItem('token', data?.token); // Simpan token ke localStorage
-      dispatch(setToken(data?.token)); // Set token ke Redux
+      localStorage.setItem('token', data?.token);
+      dispatch(setToken(data?.token));
+      dispatch(setUser(data));
       navigate({ to: '/' });
     },
 
     onError: (err) => {
-      console.error('Login gagal:', err);
-      localStorage.removeItem('email'); // Hapus email dari localStorage jika login gagal
-      toast.error(err?.message); // Tampilkan pesan error
+      localStorage.removeItem('email');
+      toast.error(err?.message);
     },
   });
 
-  // Schema validasi menggunakan Zod
+  useEffect(() => {
+    if (token) {
+      navigate({ to: '/' });
+    }
+  }, [token, navigate]);
+
   const formSchema = z
     .object({
       email: z.string().email('Email tidak valid').nonempty({ message: 'Email diperlukan!' }),
-      password: z.string().nonempty({ message: 'Password diperlukan!' }),
+      password: z
+        .string()
+        .min(8, { message: 'Password minimal 8 karakter' })
+        .nonempty({ message: 'Password diperlukan!' }),
     })
     .nonstrict();
 
-  // Setup form dengan react-hook-form dan resolver Zod
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,116 +68,130 @@ function Login() {
     mode: 'onChange',
   });
 
-  // Fungsi untuk meng-handle submit form
   async function onSubmit(values) {
-    console.log('Form submitted with:', values); // Log data form untuk debugging
-    localStorage.setItem('email', values.email); // Simpan email di localStorage
     const data = {
       email: values.email,
       password: values.password,
     };
 
-    loginMutation(data); // Panggil mutasi login
+    loginMutation(data);
   }
 
-  const [showPassword, setShowPassword] = React.useState(false); // Menyembunyikan/memunculkan password
-
   return (
-    <main className="bg-white h-screen flex items-center justify-center">
-      <div className="grid w-full h-full grid-cols-1 bg-white md:grid-cols-2">
-        <div className="relative hidden md:block">
-          <img src="/side-picture.svg" alt="background image" className="object-cover w-screen h-screen" />
-        </div>
-        <div className="flex items-center justify-center flex-col">
-          <div className="w-2/3">
-            <h1 className="text-3xl font-bold mb-6">Masuk</h1>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="email" className="mb-1">
-                        Email
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            {...field}
-                            id="email"
-                            placeholder="Masukkan email anda"
-                            className="p-3 ps-5 border rounded-xl"
-                          />
-                          {!form.formState.touchedFields.email || !form.formState.dirtyFields.email ? null : (
-                            <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                              <img src={form.formState.errors.email ? '/Vector.svg' : '/mdi_check-circle.svg'} alt="" />
-                            </button>
-                          )}
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex items-center justify-between">
-                        <FormLabel htmlFor="password" className="mb-1">
-                          Password
+    <>
+      <Toaster position="top-right" reverseOrder={false} />
+      <main className="bg-white h-screen flex items-center justify-center">
+        <div className="grid w-full h-full grid-cols-1 bg-white md:grid-cols-2">
+          <div className="relative hidden md:block">
+            <img src="/side-picture.svg" alt="background image" className="object-cover w-screen h-screen" />
+          </div>
+          <div className="flex items-center justify-center flex-col">
+            <div className="w-2/3">
+              <h1 className="text-3xl font-bold mb-6">Masuk</h1>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="email" className="mb-1">
+                          Email
                         </FormLabel>
-                        <Link to="/auth/password-reset/verify-email" className="text-sm text-[#7126B5] hover:underline">
-                          Lupa Kata Sandi
-                        </Link>
-                      </div>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            {...field}
-                            id="password"
-                            placeholder="Masukkan password anda"
-                            className="p-3 ps-5 border rounded-xl"
-                            type={showPassword ? 'text' : 'password'}
-                          />
-                          <button
-                            type="button"
-                            className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                            onClick={() => setShowPassword(!showPassword)}
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              id="email"
+                              placeholder="Masukkan email anda"
+                              className="p-3 ps-5 border rounded-xl"
+                            />
+                            {!form.formState.touchedFields.email || !form.formState.dirtyFields.email ? null : (
+                              <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <img
+                                  src={form.formState.errors.email ? '/Vector.svg' : '/mdi_check-circle.svg'}
+                                  alt=""
+                                />
+                              </button>
+                            )}
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-center justify-between">
+                          <FormLabel htmlFor="password" className="mb-1">
+                            Password
+                          </FormLabel>
+                          <Link
+                            to="/auth/password-reset/verify-email"
+                            className="text-sm text-[#7126B5] hover:underline"
                           >
-                            <img src="/fi_eye.svg" alt="" />
-                          </button>
+                            Lupa Kata Sandi
+                          </Link>
                         </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  className="w-full rounded-xl mt-3 bg-[#7126B5] h-12 hover:bg-[#4c0f85]"
-                  disabled={!form.formState.isValid}
-                >
-                  Masuk
-                </Button>
-              </form>
-            </Form>
-            <p className="mt-16 justify-center flex">
-              Belum punya akun?&nbsp;{' '}
-              <Link to="/auth/register" className="text-[#7126B5] font-bold">
-                Daftar di sini
-              </Link>
-            </p>
-          </div>
-          <div className="flex justify-center mt-6">
-            {form.formState.errors.email || form.formState.errors.password ? (
-              <div className="py-4 px-10 border rounded-xl text-[white] bg-[red]">
-                {form.formState.errors.email?.message || form.formState.errors.password?.message}
-              </div>
-            ) : null}
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              id="password"
+                              placeholder="Masukkan password anda"
+                              className="p-3 ps-5 border rounded-xl"
+                              type={showPassword ? 'text' : 'password'}
+                            />
+                            <button
+                              type="button"
+                              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              <img src="/fi_eye.svg" alt="" />
+                            </button>
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    className="w-full rounded-xl mt-3 bg-[#7126B5] h-12 hover:bg-[#4c0f85]"
+                    disabled={!form.formState.isValid}
+                  >
+                    {isPendingMutate ? (
+                      <ReactLoading
+                        type={'spin'}
+                        color={'#FFFFFF'}
+                        height={'15%'}
+                        width={'15%'}
+                        className="flex justify-center items-center"
+                      />
+                    ) : (
+                      <p>Masuk</p>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+              <p className="mt-[1rem] justify-center flex">
+                Belum punya akun?&nbsp;{' '}
+                <Link to="/auth/register" className="text-[#7126B5] font-bold">
+                  Daftar di sini
+                </Link>
+              </p>
+            </div>
+            <div className="flex justify-center mt-6">
+              {form.formState.errors.email || form.formState.errors.password ? (
+                <div className="py-4 px-10 border rounded-xl text-[white] bg-[red]">
+                  {form.formState.errors.email?.message || form.formState.errors.password?.message}
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
