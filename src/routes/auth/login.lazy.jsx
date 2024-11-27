@@ -21,9 +21,9 @@ export const Route = createLazyFileRoute("/auth/login")({
 function Login() {
   const formSchema = z
     .object({
-      emailOrPhone: z
+      email: z
         .string()
-        .nonempty({ message: "Email atau nomor telepon diperlukan! " }),
+        .nonempty({ message: "Email diperlukan! " }),
       password: z.string().nonempty({ message: "Password diperlukan!" }),
     })
     .nonstrict();
@@ -31,7 +31,7 @@ function Login() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      emailOrPhone: "",
+      email: "",
       password: "",
     },
     mode: "onChange",
@@ -65,29 +65,29 @@ function Login() {
               >
                 <FormField
                   control={form.control}
-                  name="emailOrPhone"
+                  name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel htmlFor="emailOrPhone" className="mb-1">
-                        Email/No Telepon
+                      <FormLabel htmlFor="email" className="mb-1">
+                        Email
                       </FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
                             {...field}
-                            id="emailOrPhone"
-                            placeholder="Masukkan email atau nomor telepon anda"
+                            id="email"
+                            placeholder="Masukkan email anda"
                             className="p-3 ps-5 border rounded-xl"
                           />
-                          {!form.formState.touchedFields.emailOrPhone ||
-                          !form.formState.dirtyFields.emailOrPhone ? null : (
+                          {!form.formState.touchedFields.email ||
+                          !form.formState.dirtyFields.email ? null : (
                             <button
                               disabled
                               className="absolute inset-y-0 right-0 pr-3 flex items-center"
                             >
                               <img
                                 src={
-                                  form.formState.errors.emailOrPhone
+                                  form.formState.errors.email
                                     ? "/Vector.svg"
                                     : "/mdi_check-circle.svg"
                                 }
@@ -105,9 +105,17 @@ function Login() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel htmlFor="password" className="mb-1">
-                        Password
-                      </FormLabel>
+                      <div className="flex items-center justify-between">
+                        <FormLabel htmlFor="password" className="mb-1">
+                          Password
+                        </FormLabel>
+                        <Link
+                          to="/auth/password-reset/verify-email"
+                          className="text-sm text-[#7126B5] hover:underline"
+                        >
+                          Lupa Kata Sandi
+                        </Link>
+                      </div>
                       <FormControl>
                         <div className="relative">
                           <Input
@@ -169,9 +177,9 @@ function Login() {
           {!form.formState.touchedFields &&
           !form.formState.dirtyFields ? null : (
             <div className="flex justify-center mt-6">
-              {form.formState.errors.emailOrPhone ? (
+              {form.formState.errors.email ? (
                 <div className="py-4 px-10 border rounded-xl text-[white] bg-[red]">
-                  {form.formState.errors.emailOrPhone.message}
+                  {form.formState.errors.email.message}
                 </div>
               ) : form.formState.errors.password ? (
                 <div className="py-4 px-10 border rounded-xl text-[white] bg-[red]">
