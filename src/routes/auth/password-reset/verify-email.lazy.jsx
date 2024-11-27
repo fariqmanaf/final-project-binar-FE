@@ -1,26 +1,18 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import * as z from "zod";
-import ReactLoading from "react-loading";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { set, useForm } from "react-hook-form";
-import { motion } from "motion/react";
-import { requestEmailVerification } from "@/Services/auth/reset-password";
-import { useMutation } from "@tanstack/react-query";
-import toast, { Toaster } from "react-hot-toast";
-import { FaCheck } from "react-icons/fa";
+import { createLazyFileRoute } from '@tanstack/react-router';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import * as z from 'zod';
+import ReactLoading from 'react-loading';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { motion } from 'motion/react';
+import { requestEmailVerification } from '@/Services/auth/reset-password';
+import { useMutation } from '@tanstack/react-query';
+import toast, { Toaster } from 'react-hot-toast';
+import { FaCheck } from 'react-icons/fa';
 
-export const Route = createLazyFileRoute("/auth/password-reset/verify-email")({
+export const Route = createLazyFileRoute('/auth/password-reset/verify-email')({
   component: VerifyEmail,
 });
 
@@ -35,39 +27,35 @@ function VerifyEmail() {
         (t) => (
           <div
             className={`${
-              t.visible ? "animate-enter" : "animate-leave"
+              t.visible ? 'animate-enter' : 'animate-leave'
             } bg-white flex justify-center items-center gap-4 shadow-2xl p-4 rounded-lg`}
           >
             <div className="w-[2rem] h-[2rem] bg-[#7126B5] rounded-full flex justify-center items-center">
               <FaCheck className="text-white" />
             </div>
             <div className="text-[#333] max-w-xs">
-              <h1 className="font-semibold">
-                Email Verifikasi Berhasil Dikirim
-              </h1>
-              <p className="text-sm">
-                Silahkan cek email kamu untuk melanjutkan proses reset password.
-              </p>
+              <h1 className="font-semibold">Email Verifikasi Berhasil Dikirim</h1>
+              <p className="text-sm">Silahkan cek email kamu untuk melanjutkan proses reset password.</p>
             </div>
           </div>
         ),
         {
           duration: 5000,
-        },
+        }
       );
     },
   });
 
   const formSchema = z.object({
-    email: z.string().email("Email tidak valid"),
+    email: z.string().email('Email tidak valid'),
   });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      email: '',
     },
-    mode: "onChange",
+    mode: 'onChange',
   });
 
   const containerVariants = {
@@ -94,27 +82,15 @@ function VerifyEmail() {
       <Toaster position="top-right" reverseOrder={false} />
       <div className="flex flex-row justify-center items-center min-h-screen w-full">
         <div className="hidden md:block w-1/2 h-screen bg-black">
-          <img
-            src="/side-picture.svg"
-            alt="Side decoration"
-            className="object-cover w-full h-full"
-          />
+          <img src="/side-picture.svg" alt="Side decoration" className="object-cover w-full h-full" />
         </div>
         <div className="w-full md:w-1/2 h-screen flex flex-col justify-center items-center p-4">
-          <motion.div
-            className="w-full max-w-md"
-            initial="hidden"
-            animate="show"
-            variants={containerVariants}
-          >
+          <motion.div className="w-full max-w-md" initial="hidden" animate="show" variants={containerVariants}>
             <motion.div variants={childVariants}>
               <h3 className="text-2xl font-bold mb-[1rem]">Verify Email</h3>
             </motion.div>
             <Form {...form} id="form">
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-5"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                 <motion.div variants={childVariants}>
                   <FormField
                     control={form.control}
@@ -144,10 +120,10 @@ function VerifyEmail() {
                   >
                     {isPending ? (
                       <ReactLoading
-                        type={"spin"}
-                        color={"#FFFFFF"}
-                        height={"15%"}
-                        width={"15%"}
+                        type={'spin'}
+                        color={'#FFFFFF'}
+                        height={'15%'}
+                        width={'15%'}
                         className="flex justify-center items-center"
                       />
                     ) : (

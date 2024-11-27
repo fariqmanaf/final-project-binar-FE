@@ -1,20 +1,15 @@
-import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import "./Otp.css";
-import logo from "/logo.svg";
+import * as React from 'react';
+import { createFileRoute } from '@tanstack/react-router';
+import { Button } from '@/components/ui/button';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import './Otp.css';
+import logo from '/logo.svg';
 
-export const Route = createFileRoute("/auth/otp")({
+export const Route = createFileRoute('/auth/otp')({
   component: Otp,
 });
 
 function Otp() {
-  const [otp, setOtp] = React.useState("");
   const [timer, setTimer] = React.useState(60);
   const [isTimerRunning, setIsTimerRunning] = React.useState(true);
 

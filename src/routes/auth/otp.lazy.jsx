@@ -1,51 +1,62 @@
-"use client";
-import * as React from "react";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { motion } from "framer-motion";
-import Navbar from "../../components/Navbar";
-import { toast } from "@/components/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { motion } from 'framer-motion';
+import Navbar from '../../components/Navbar';
+import toast, { Toaster } from 'react-hot-toast';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { verifOTP, resendOTP } from '@/Services/auth/otp/';
+import { useMutation } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
 
-export const Route = createLazyFileRoute("/auth/otp")({
+export const Route = createLazyFileRoute('/auth/otp')({
   component: InputOTPForm,
 });
 
-const FormSchema = z.object({
-  pin: z.string().min(6, {
-    message: "Your one-time password must be 6 characters.",
-  }),
-});
-
 export function InputOTPForm() {
+  const email = localStorage.getItem('email');
+
+  const FormSchema = z.object({
+    pin: z.string().min(6, {
+      message: 'Your one-time password must be 6 characters.',
+    }),
+  });
+
   const navigate = useNavigate();
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      pin: "",
+      pin: '',
     },
   });
 
-  const [timer, setTimer] = React.useState(60);
-  const [isTimerRunning, setIsTimerRunning] = React.useState(true);
+  const [timer, setTimer] = useState(10);
+  const [isTimerRunning, setIsTimerRunning] = useState(true);
 
-  React.useEffect(() => {
+  const { mutate: verifOTPMutation } = useMutation({
+    mutationFn: (data) => verifOTP(data),
+    onSuccess: () => {
+      localStorage.removeItem('email');
+      navigate({ to: '/auth/login' });
+    },
+    onError: (err) => {
+      toast.error(err?.message);
+    },
+  });
+
+  const { mutate: resendOTPMutation } = useMutation({
+    mutationFn: (otp) => resendOTP(otp),
+    onSuccess: () => {
+      toast.success('OTP berhasil dikirim ulang');
+    },
+    onError: (err) => {
+      toast.error(err?.message);
+    },
+  });
+
+  useEffect(() => {
     if (isTimerRunning && timer > 0) {
       const intervalId = setInterval(() => {
         setTimer((prevTimer) => prevTimer - 1);
@@ -59,22 +70,21 @@ export function InputOTPForm() {
   const handleResend = () => {
     setTimer(60);
     setIsTimerRunning(true);
-    // Add your resend OTP logic here
+    resendOTPMutation(email);
   };
 
-  const onSubmit = (data) => {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  const onSubmit = (values) => {
+    const data = {
+      otp: values.pin,
+      email: email,
+    };
+
+    verifOTPMutation(data);
   };
 
   return (
     <div>
+      <Toaster position="top-right" reverseOrder={false} />
       <Navbar />
       <Form {...form}>
         <motion.form
@@ -88,7 +98,7 @@ export function InputOTPForm() {
             src="/arrow-left.svg"
             alt="back-button"
             className="cursor-pointer"
-            onClick={() => navigate("/auth/register")}
+            onClick={() => navigate('/auth/register')}
           />
           <h1 className="text-2xl font-bold mb-4">Masukkan OTP</h1>
           <FormField
@@ -96,9 +106,7 @@ export function InputOTPForm() {
             name="pin"
             render={({ field }) => (
               <FormItem className="flex flex-col items-center">
-                <FormLabel className="text-center mb-4 text-sm">
-                  Ketik 6 digit kode yang dikirimkan
-                </FormLabel>
+                <FormLabel className="text-center mb-4 text-sm">Ketik 6 digit kode yang dikirimkan</FormLabel>
                 <FormControl className="flex justify-center gap-2">
                   <InputOTP {...field} maxLength={6}>
                     <InputOTPGroup className="flex space-x-2">
