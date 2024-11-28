@@ -3,7 +3,7 @@ import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
@@ -50,20 +50,19 @@ function Login() {
     }
   }, [token, navigate]);
 
-  const formSchema = z
-    .object({
-      email: z.string().email('Email tidak valid').nonempty({ message: 'Email diperlukan!' }),
-      password: z
-        .string()
-        .min(8, { message: 'Password minimal 8 karakter' })
-        .nonempty({ message: 'Password diperlukan!' }),
-    })
-    .nonstrict();
+  const formSchema = z.object({
+    emailOrPhone: z.string().min(10, {
+      message: 'Email atau nomor telepon minimal 10 karakter',
+    }),
+    password: z.string().min(8, {
+      message: 'Password minimal 8 karakter',
+    }),
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      emailOrPhone: '',
       password: '',
     },
     mode: 'onChange',
@@ -103,7 +102,7 @@ function Login() {
           </div>
           <div className="flex items-center justify-center flex-col">
             <motion.div className="w-2/3" initial="hidden" animate="show" variants={containerVariants}>
-              <h1 className="text-3x1 font-bold mb-6">Masuk</h1>
+              <h1 className="text-2xl font-bold mb-6">Masuk</h1>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
                   <motion.div variants={childVariants}>
@@ -112,7 +111,10 @@ function Login() {
                       name="emailOrPhone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel htmlFor="emailOrPhone" className="mb-1">
+                          <FormLabel
+                            htmlFor="emailOrPhone"
+                            className={form.formState.isSubmitted ? 'mb-1' : 'mb-1 text-black'}
+                          >
                             Email/No Telepon
                           </FormLabel>
                           <FormControl>
@@ -137,6 +139,7 @@ function Login() {
                               )}
                             </div>
                           </FormControl>
+                          <FormMessage className={form.formState.isSubmitted ? 'visible' : 'hidden'} />
                         </FormItem>
                       )}
                     />
@@ -147,7 +150,10 @@ function Login() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel htmlFor="password" className="mb-1">
+                          <FormLabel
+                            htmlFor="password"
+                            className={form.formState.isSubmitted ? 'mb-1' : 'mb-1 text-black'}
+                          >
                             Password
                           </FormLabel>
                           <FormControl>
@@ -184,6 +190,7 @@ function Login() {
                               )}
                             </div>
                           </FormControl>
+                          <FormMessage className={form.formState.isSubmitted ? 'visible' : 'hidden'} />
                         </FormItem>
                       )}
                     />
@@ -192,7 +199,7 @@ function Login() {
                     <Button
                       type="submit"
                       className="w-full rounded-xl mt-3 bg-[#7126B5] h-12 hover:bg-[#4c0f85]"
-                      disabled={!form.formState.isValid}
+                      disabled={!form.formState.isDirty}
                     >
                       {isPendingMutate ? (
                         <ReactLoading
@@ -210,7 +217,7 @@ function Login() {
                 </form>
               </Form>
               <motion.div variants={childVariants}>
-                <p className="mt-16 justify-center flex">
+                <p className="mt-12 justify-center flex">
                   Belum punya akun?&nbsp;{' '}
                   <Link to={'/auth/register'} className="text-[#7126B5] font-bold">
                     Daftar di sini
