@@ -1,5 +1,5 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -20,6 +20,9 @@ function ResetPassword() {
   const navigate = useNavigate();
   const token = Route.useParams().token;
 
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+
   const { isPending, isError, isSuccess } = useQuery({
     queryKey: ['verify-token', token],
     queryFn: () => verifyToken(token),
@@ -33,12 +36,12 @@ function ResetPassword() {
     },
     onSuccess: () => {
       toast.success('Password berhasil direset', {
-        duration: 3000,
+        duration: 1000,
       });
 
       setTimeout(() => {
         navigate({ to: '/auth/login' });
-      }, 3000);
+      }, 1000);
     },
   });
 
@@ -133,13 +136,22 @@ function ResetPassword() {
                           Masukkan Password Baru
                         </FormLabel>
                         <FormControl>
-                          <Input
-                            {...field}
-                            type="password"
-                            className="rounded-xl"
-                            onBlur={field.onBlur}
-                            placeholder="Masukkan Password Barumu"
-                          />
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              type={showPassword1 ? 'text' : 'password'}
+                              className="rounded-xl"
+                              onBlur={field.onBlur}
+                              placeholder="Masukkan Password Barumu"
+                            />
+                            <button
+                              type="button"
+                              className={'absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5'}
+                              onClick={() => setShowPassword1(!showPassword1)}
+                            >
+                              <img src="/fi_eye.svg" alt="" />
+                            </button>
+                          </div>
                         </FormControl>
                         <FormMessage className={form.formState.isSubmitted ? 'visible' : 'hidden'} />
                       </FormItem>
@@ -156,13 +168,22 @@ function ResetPassword() {
                           Ulangi Password Baru
                         </FormLabel>
                         <FormControl>
-                          <Input
-                            {...field}
-                            type="password"
-                            className="rounded-xl"
-                            onBlur={field.onBlur}
-                            placeholder="Ulangi Password Barumu"
-                          />
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              type={showPassword2 ? 'text' : 'password'}
+                              className="rounded-xl"
+                              onBlur={field.onBlur}
+                              placeholder="Ulangi Password Barumu"
+                            />
+                            <button
+                              type="button"
+                              className={'absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5'}
+                              onClick={() => setShowPassword2(!showPassword2)}
+                            >
+                              <img src="/fi_eye.svg" alt="" />
+                            </button>
+                          </div>
                         </FormControl>
                         <FormMessage className={form.formState.isSubmitted ? 'visible' : 'hidden'} />
                       </FormItem>
