@@ -82,10 +82,10 @@ function Register() {
         position: 'bottom-center',
         duration: 4000,
         style: {
-          background: '#ff4d4d', // Warna merah untuk error
-          color: '#ffffff', // Teks putih
+          background: '#ff4d4d',
+          color: '#ffffff',
           borderRadius: '1rem',
-          padding: '1.5rem',
+          padding: '1rem',
         },
       });
     }
