@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,25 +7,63 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
-import { Toaster } from 'react-hot-toast';
 import { motion } from 'motion/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useMutation } from '@tanstack/react-query';
+import { login } from '@/Services/auth/auth';
+import toast, { Toaster } from 'react-hot-toast';
+import { setToken, setUser } from '@/redux/slices/auth';
+import { useEffect, useState } from 'react';
+import ReactLoading from 'react-loading';
 
 export const Route = createLazyFileRoute('/auth/login')({
   component: Login,
 });
 
 function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const token = useSelector((state) => state.auth.token);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const { mutate: loginMutation, isPending: isPendingMutate } = useMutation({
+    mutationFn: (body) => {
+      return login(body);
+    },
+    onSuccess: (data) => {
+      localStorage.setItem('token', data?.token);
+      dispatch(setToken(data?.token));
+      dispatch(setUser(data));
+      navigate({ to: '/' });
+    },
+
+    onError: (err) => {
+      localStorage.removeItem('email');
+      toast.error(err?.message);
+    },
+  });
+
+  useEffect(() => {
+    if (token) {
+      navigate({ to: '/' });
+    }
+  }, [token, navigate]);
+
   const formSchema = z
     .object({
-      emailOrPhone: z.string().nonempty({ message: 'Email atau nomor telepon diperlukan! ' }),
-      password: z.string().nonempty({ message: 'Password diperlukan!' }),
+      email: z.string().email('Email tidak valid').nonempty({ message: 'Email diperlukan!' }),
+      password: z
+        .string()
+        .min(8, { message: 'Password minimal 8 karakter' })
+        .nonempty({ message: 'Password diperlukan!' }),
     })
     .nonstrict();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      emailOrPhone: '',
+      email: '',
       password: '',
     },
     mode: 'onChange',
@@ -47,11 +85,13 @@ function Login() {
   };
 
   async function onSubmit(values) {
-    console.log(values);
-  }
+    const data = {
+      email: values.email,
+      password: values.password,
+    };
 
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [masuk, setMasuk] = React.useState(false);
+    loginMutation(data);
+  }
 
   return (
     <>
@@ -152,10 +192,19 @@ function Login() {
                     <Button
                       type="submit"
                       className="w-full rounded-xl mt-3 bg-[#7126B5] h-12 hover:bg-[#4c0f85]"
-                      disabled={!form.formState.isValid || masuk}
-                      onClick={() => setMasuk(!masuk)}
+                      disabled={!form.formState.isValid}
                     >
-                      Masuk
+                      {isPendingMutate ? (
+                        <ReactLoading
+                          type={'spin'}
+                          color={'#FFFFFF'}
+                          height={'15%'}
+                          width={'15%'}
+                          className="flex justify-center items-center"
+                        />
+                      ) : (
+                        <p>Masuk</p>
+                      )}
                     </Button>
                   </motion.div>
                 </form>
