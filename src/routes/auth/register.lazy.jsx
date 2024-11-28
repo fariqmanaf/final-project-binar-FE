@@ -4,14 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { z } from 'zod';
+import { set, z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
 import { setToken } from '@/redux/slices/auth';
+import ReactLoading from 'react-loading';
 import { register } from '@/Services/auth/auth';
+import { motion } from 'motion/react';
 
 export const Route = createLazyFileRoute('/auth/register')({
   component: Register,
@@ -23,13 +25,19 @@ function Register() {
   const { token } = useSelector((state) => state.auth);
 
   if (token) {
-    navigate({ to: '/auth/register' });
+    navigate({ to: '/' });
   }
 
-  const { mutate: registerMutation } = useMutation({
+  const { mutate: registerMutation, isPending: isPendingMutate } = useMutation({
     mutationFn: (body) => register(body),
     onSuccess: () => {
-      navigate({ to: '/auth/otp' });
+      toast.success('Registrasi berhasil, silahkan cek email untuk verifikasi', {
+        duration: 4000,
+      });
+
+      setTimeout(() => {
+        navigate({ to: '/auth/otp' });
+      }, 4000);
     },
     onError: (err) => {
       localStorage.removeItem('email');
@@ -67,8 +75,47 @@ function Register() {
     mode: 'onChange',
   });
 
+  const customErrorNotification = (errors) => {
+    const firstError = Object.keys(errors).find((key) => errors[key]?.message);
+    if (firstError) {
+      toast.error(errors[firstError].message, {
+        position: 'bottom-center',
+        duration: 4000,
+        style: {
+          background: '#ff4d4d', // Warna merah untuk error
+          color: '#ffffff', // Teks putih
+          borderRadius: '1rem',
+          padding: '1.5rem',
+        },
+      });
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const childVariants = {
+    hidden: { opacity: 0, y: 100 },
+    show: { opacity: 1, y: 0 },
+  };
+
   async function onSubmit(values) {
+    const errors = form.formState.errors;
+
+    if (Object.keys(errors).length > 0) {
+      customErrorNotification(errors);
+      return;
+    }
+
     localStorage.setItem('email', values.newEmail);
+
     const data = {
       name: values.newName,
       email: values.newEmail,
@@ -80,7 +127,6 @@ function Register() {
   }
 
   const [showPassword, setShowPassword] = React.useState(false);
-  const [daftar, setDaftar] = React.useState(false);
 
   return (
     <>
@@ -91,188 +137,203 @@ function Register() {
             <img className="object-cover w-screen h-screen" src="/side-picture.svg" alt="background image" />
           </div>
           <div className="flex items-center justify-center flex-col">
-            <div className="w-2/3">
-              <h1 className="text-3xl font-bold mb-6">Daftar</h1>
+            <motion.div className="w-2/3" initial="hidden" animate="show" variants={containerVariants}>
+              <motion.div variants={childVariants}>
+                <h1 className="text-3xl font-bold mb-6">Daftar</h1>
+              </motion.div>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                  <FormField
-                    control={form.control}
-                    name="newName"
-                    render={({ field }) => (
-                      <FormItem className="">
-                        <FormLabel htmlFor="newName" className="mb-1">
-                          Nama
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              {...field}
-                              id="newName"
-                              placeholder="Nama Lengkap"
-                              className="p-3 ps-5 border rounded-xl"
-                            />
-                            {!form.formState.touchedFields.newName || !form.formState.dirtyFields.newName ? null : (
-                              <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <img
-                                  src={form.formState.errors.newName ? '/Vector.svg' : '/mdi_check-circle.svg'}
-                                  alt=""
-                                />
-                              </button>
-                            )}
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="newEmail"
-                    render={({ field }) => (
-                      <FormItem className="">
-                        <FormLabel htmlFor="newEmail" className="mb-1">
-                          Email
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              {...field}
-                              id="newEmail"
-                              type="email"
-                              placeholder="Contoh: johndee@gmail.com"
-                              className="p-3 ps-5 border rounded-xl"
-                            />
-                            {!form.formState.touchedFields.newEmail || !form.formState.dirtyFields.newEmail ? null : (
-                              <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <img
-                                  src={form.formState.errors.newEmail ? '/Vector.svg' : '/mdi_check-circle.svg'}
-                                  alt=""
-                                />
-                              </button>
-                            )}
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="newPhoneNumber"
-                    render={({ field }) => (
-                      <FormItem className="">
-                        <FormLabel htmlFor="newPhoneNumber" className="mb-1">
-                          Nomor Telepon
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              {...field}
-                              type="text"
-                              id="newPhoneNumber"
-                              placeholder="6281.."
-                              className="p-3 ps-5 border rounded-xl"
-                            />
-                            {!form.formState.touchedFields.newPhoneNumber ||
-                            !form.formState.dirtyFields.newPhoneNumber ? null : (
-                              <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <img
-                                  src={form.formState.errors.newPhoneNumber ? '/Vector.svg' : '/mdi_check-circle.svg'}
-                                  alt=""
-                                />
-                              </button>
-                            )}
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="newPassword"
-                    render={({ field }) => (
-                      <FormItem className="">
-                        <FormLabel htmlFor="newPassword" className="mb-1">
-                          Password
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              {...field}
-                              id="newPassword"
-                              placeholder="Password"
-                              className="p-3 ps-5 border rounded-xl"
-                              type={showPassword ? 'text' : 'password'}
-                            />
+                  <motion.div variants={childVariants}>
+                    <FormField
+                      control={form.control}
+                      name="newName"
+                      render={({ field }) => (
+                        <FormItem className="">
+                          <FormLabel htmlFor="newName" className="mb-1 text-black">
+                            Nama
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                id="newName"
+                                placeholder="Nama Lengkap"
+                                className={`p-3 ps-5 border rounded-xl ${
+                                  form.formState.errors.newName && form.formState.isSubmitted
+                                    ? 'border-red-500 border-2'
+                                    : ''
+                                }`}
+                              />
+                              {form.formState.isSubmitted && (
+                                <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                  <img
+                                    src={form.formState.errors.newName ? '/Vector.svg' : '/mdi_check-circle.svg'}
+                                    alt=""
+                                  />
+                                </button>
+                              )}
+                            </div>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+                  <motion.div variants={childVariants}>
+                    <FormField
+                      control={form.control}
+                      name="newEmail"
+                      render={({ field }) => (
+                        <FormItem className="">
+                          <FormLabel htmlFor="newEmail" className="mb-1 text-black">
+                            Email
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                id="newEmail"
+                                type="email"
+                                placeholder="Contoh: johndee@gmail.com"
+                                className={`p-3 ps-5 border rounded-xl ${
+                                  form.formState.errors.newEmail && form.formState.isSubmitted
+                                    ? 'border-red-500 border-2'
+                                    : ''
+                                }`}
+                              />
+                              {form.formState.isSubmitted && (
+                                <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                  <img
+                                    src={form.formState.errors.newEmail ? '/Vector.svg' : '/mdi_check-circle.svg'}
+                                    alt=""
+                                  />
+                                </button>
+                              )}
+                            </div>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+                  <motion.div variants={childVariants}>
+                    <FormField
+                      control={form.control}
+                      name="newPhoneNumber"
+                      render={({ field }) => (
+                        <FormItem className="">
+                          <FormLabel htmlFor="newPhoneNumber" className="mb-1 text-black">
+                            Nomor Telepon
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                type="text"
+                                id="newPhoneNumber"
+                                placeholder="+6281.."
+                                className={`p-3 ps-5 border rounded-xl ${
+                                  form.formState.errors.newPhoneNumber && form.formState.isSubmitted
+                                    ? 'border-red-500 border-2'
+                                    : ''
+                                }`}
+                              />
+                              {form.formState.isSubmitted && (
+                                <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                  <img
+                                    src={form.formState.errors.newPhoneNumber ? '/Vector.svg' : '/mdi_check-circle.svg'}
+                                    alt=""
+                                  />
+                                </button>
+                              )}
+                            </div>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+                  <motion.div variants={childVariants}>
+                    <FormField
+                      control={form.control}
+                      name="newPassword"
+                      render={({ field }) => (
+                        <FormItem className="">
+                          <FormLabel htmlFor="newPassword" className="mb-1 text-black">
+                            Password
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                id="newPassword"
+                                placeholder="Password"
+                                className={`p-3 ps-5 border rounded-xl ${
+                                  form.formState.errors.newPassword && form.formState.isSubmitted
+                                    ? 'border-red-500 border-2'
+                                    : ''
+                                }`}
+                                type={showPassword ? 'text' : 'password'}
+                              />
 
-                            <button
-                              type="button"
-                              className={
-                                !form.formState.touchedFields.newPassword || !form.formState.dirtyFields.newPassword
-                                  ? 'absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5'
-                                  : 'absolute inset-y-0 right-0 pr-12 flex items-center text-sm leading-5'
-                              }
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              <img src="/fi_eye.svg" alt="" />
-                            </button>
-                            {!form.formState.touchedFields.newPassword ||
-                            !form.formState.dirtyFields.newPassword ? null : (
-                              <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <img
-                                  src={form.formState.errors.newPassword ? '/Vector.svg' : '/mdi_check-circle.svg'}
-                                  alt=""
-                                />
+                              <button
+                                type="button"
+                                className={
+                                  form.formState.isSubmitted
+                                    ? 'absolute inset-y-0 right-0 pr-12 flex items-center text-sm leading-5'
+                                    : 'absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5'
+                                }
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                <img src="/fi_eye.svg" alt="" />
                               </button>
-                            )}
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <Button
-                    type="submit"
-                    className="w-full rounded-xl mt-3 bg-[#7126B5] h-12 hover:bg-[#4c0f85]"
-                    disabled={!form.formState.isValid || daftar}
-                    // onClick={() => setDaftar(!daftar)}
-                  >
-                    Daftar
-                  </Button>
+                              {form.formState.isSubmitted && (
+                                <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                  <img
+                                    src={form.formState.errors.newPassword ? '/Vector.svg' : '/mdi_check-circle.svg'}
+                                    alt=""
+                                  />
+                                </button>
+                              )}
+                            </div>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+                  <motion.div variants={childVariants}>
+                    <Button
+                      type="submit"
+                      className="w-full rounded-xl mt-3 bg-[#7126B5] h-12 hover:bg-[#4c0f85]"
+                      disabled={!form.formState.isDirty}
+                      onClick={() => customErrorNotification(form.formState.errors)}
+                    >
+                      {isPendingMutate ? (
+                        <ReactLoading
+                          type={'spin'}
+                          color={'#FFFFFF'}
+                          height={'15%'}
+                          width={'15%'}
+                          className="flex justify-center items-center"
+                        />
+                      ) : (
+                        <p>Daftar</p>
+                      )}
+                    </Button>
+                  </motion.div>
                 </form>
               </Form>
-              <p className="mt-16 justify-center flex">
-                Sudah punya akun?&nbsp;{' '}
-                <Link to={'/auth/login'} className="text-[#7126B5] font-bold">
-                  Masuk di sini
-                </Link>
-              </p>
-            </div>
-            {!form.formState.touchedFields && !form.formState.dirtyFields ? null : (
-              <div className="flex justify-center mt-6">
-                {form.formState.errors.newName ? (
-                  <div className="py-4 px-10 border rounded-xl text-[white] bg-[red]">
-                    {form.formState.errors.newName.message}
-                  </div>
-                ) : form.formState.errors.newEmail ? (
-                  <div className="py-4 px-10 border rounded-xl text-[white] bg-[red]">
-                    {form.formState.errors.newEmail.message}
-                  </div>
-                ) : form.formState.errors.newPhoneNumber ? (
-                  <div className="py-4 px-10 border rounded-xl text-[white] bg-[red]">
-                    {form.formState.errors.newPhoneNumber.message}
-                  </div>
-                ) : form.formState.errors.newPassword ? (
-                  <div className="py-4 px-10 border rounded-xl text-[white] bg-[red]">
-                    {form.formState.errors.newPassword.message}
-                  </div>
-                ) : daftar ? (
-                  <div className="py-4 px-10 border rounded-xl text-[white] bg-[green]">
-                    Tautan Verifikasi telah dikirim!
-                  </div>
-                ) : null}
-              </div>
-            )}
+              <motion.div variants={childVariants}>
+                <p className="mt-16 justify-center flex">
+                  Sudah punya akun?&nbsp;{' '}
+                  <Link to={'/auth/login'} className="text-[#7126B5] font-bold">
+                    Masuk di sini
+                  </Link>
+                </p>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </main>
     </>
   );
 }
+
+export default Register;
