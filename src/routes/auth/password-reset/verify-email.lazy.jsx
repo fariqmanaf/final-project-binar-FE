@@ -97,7 +97,9 @@ function VerifyEmail() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Masukkan Email</FormLabel>
+                        <FormLabel className={form.formState.isSubmitted ? 'mb-1' : 'mb-1 text-black'}>
+                          Masukkan Email
+                        </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
@@ -107,7 +109,7 @@ function VerifyEmail() {
                             placeholder="Masukkan Emailmu"
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className={form.formState.isSubmitted ? 'visible' : 'hidden'} />
                       </FormItem>
                     )}
                   />
@@ -116,7 +118,7 @@ function VerifyEmail() {
                   <Button
                     type="submit"
                     className="w-full bg-[#7126B5] hover:bg-[#4c0f85] rounded-xl flex justify-center items-center"
-                    disabled={!form.formState.isValid}
+                    disabled={!form.formState.isDirty}
                   >
                     {isPending ? (
                       <ReactLoading

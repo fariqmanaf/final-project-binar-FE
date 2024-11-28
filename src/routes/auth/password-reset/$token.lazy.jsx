@@ -129,7 +129,9 @@ function ResetPassword() {
                     name="newPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Masukkan Password Baru</FormLabel>
+                        <FormLabel className={form.formState.isSubmitted ? 'mb-1' : 'mb-1 text-black'}>
+                          Masukkan Password Baru
+                        </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
@@ -139,7 +141,7 @@ function ResetPassword() {
                             placeholder="Masukkan Password Barumu"
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className={form.formState.isSubmitted ? 'visible' : 'hidden'} />
                       </FormItem>
                     )}
                   />
@@ -150,7 +152,9 @@ function ResetPassword() {
                     name="verifyPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Ulangi Password Baru</FormLabel>
+                        <FormLabel className={form.formState.isSubmitted ? 'mb-1' : 'mb-1 text-black'}>
+                          Ulangi Password Baru
+                        </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
@@ -160,7 +164,7 @@ function ResetPassword() {
                             placeholder="Ulangi Password Barumu"
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className={form.formState.isSubmitted ? 'visible' : 'hidden'} />
                       </FormItem>
                     )}
                   />
@@ -170,7 +174,7 @@ function ResetPassword() {
                   <Button
                     type="submit"
                     className="w-full bg-[#7126B5] hover:bg-[#4c0f85] rounded-xl"
-                    disabled={!form.formState.isValid}
+                    disabled={!form.formState.isDirty}
                   >
                     {isPendingMutate ? (
                       <ReactLoading
