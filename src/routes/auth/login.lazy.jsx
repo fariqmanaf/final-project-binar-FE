@@ -85,7 +85,7 @@ function Login() {
 
   async function onSubmit(values) {
     const data = {
-      email: values.email,
+      email: values.emailOrPhone,
       password: values.password,
     };
 
@@ -150,12 +150,20 @@ function Login() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel
-                            htmlFor="password"
-                            className={form.formState.isSubmitted ? 'mb-1' : 'mb-1 text-black'}
-                          >
-                            Password
-                          </FormLabel>
+                          <div className="flex justify-between">
+                            <FormLabel
+                              htmlFor="password"
+                              className={form.formState.isSubmitted ? 'mb-1' : 'mb-1 text-black'}
+                            >
+                              Password
+                            </FormLabel>
+                            <Link
+                              to="/auth/password-reset/verify-email"
+                              className="text-sm text-[#7126B5] hover:underline"
+                            >
+                              Lupa Kata Sandi?
+                            </Link>
+                          </div>
                           <FormControl>
                             <div className="relative">
                               <Input
