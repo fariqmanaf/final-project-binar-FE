@@ -7,6 +7,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
+import { Toaster } from 'react-hot-toast';
+import { motion } from 'motion/react';
 
 export const Route = createLazyFileRoute('/auth/login')({
   component: Login,
@@ -29,6 +31,21 @@ function Login() {
     mode: 'onChange',
   });
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const childVariants = {
+    hidden: { opacity: 0, y: 100 },
+    show: { opacity: 1, y: 0 },
+  };
+
   async function onSubmit(values) {
     console.log(values);
   }
@@ -37,118 +54,124 @@ function Login() {
   const [masuk, setMasuk] = React.useState(false);
 
   return (
-    <main className=".bg-[white].h-screen flex items-center justify-center">
-      <div className="grid w-full h-full grid-cols-1 bg-white md:grid-cols-2">
-        <div className="relative hidden md:block">
-          <img src="/side-picture.svg" alt="background image" className="object-cover w-screen h-screen" />
-        </div>
-        <div className="flex items-center justify-center flex-col">
-          <div className="w-2/3">
-            <h1 className="text-3x1 font-bold mb-6">Masuk</h1>
-            <Form {...form}>
-              <form action="" onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                <FormField
-                  control={form.control}
-                  name="emailOrPhone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="emailOrPhone" className="mb-1">
-                        Email/No Telepon
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            {...field}
-                            id="emailOrPhone"
-                            placeholder="Masukkan email atau nomor telepon anda"
-                            className="p-3 ps-5 border rounded-xl"
-                          />
-                          {!form.formState.touchedFields.emailOrPhone ||
-                          !form.formState.dirtyFields.emailOrPhone ? null : (
-                            <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                              <img
-                                src={form.formState.errors.emailOrPhone ? '/Vector.svg' : '/mdi_check-circle.svg'}
-                                alt=""
-                              />
-                            </button>
-                          )}
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="password" className="mb-1">
-                        Password
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            {...field}
-                            id="password"
-                            placeholder="Masukkan password anda"
-                            className="p-3 ps-5 border rounded-xl"
-                            type={showPassword ? 'text' : 'password'}
-                          />
-                          <button
-                            type="button"
-                            className={
-                              !form.formState.touchedFields.password
-                                ? 'absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5'
-                                : 'absolute inset-y-0 right-0 pr-12 flex-center text-sm leading-5'
-                            }
-                          >
-                            <img src="s/fi_eye.svg" alt="" />
-                          </button>
-                          {!form.formState.touchedFields.password || !form.formState.dirtyFields.password ? null : (
-                            <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                              <img
-                                src={form.formState.errors.password ? '/Vector.svg' : 's/mdi_check-circle.svg'}
-                                alt=""
-                              />
-                            </button>
-                          )}
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  className="w-full rounded-xl mt-3 bg-[#7126B5] h-12 hover:bg-[#4c0f85]"
-                  disabled={!form.formState.isValid || masuk}
-                  onClick={() => setMasuk(!masuk)}
-                >
-                  Masuk
-                </Button>
-              </form>
-            </Form>
-            <p className="mt-16 justify-center flex">
-              Belum punya akun?&nbsp;{' '}
-              <Link to={'/auth/register'} className="text-[#7126B5] font-bold">
-                Daftar di sini
-              </Link>
-            </p>
+    <>
+      <Toaster position="top-right" reverseOrder={false} />
+      <main className="bg-[white] h-screen flex items-center justify-center">
+        <div className="grid w-full h-full grid-cols-1 bg-white md:grid-cols-2">
+          <div className="relative hidden md:block">
+            <img src="/side-picture.svg" alt="background image" className="object-cover w-screen h-screen" />
           </div>
-          {!form.formState.touchedFields && !form.formState.dirtyFields ? null : (
-            <div className="flex justify-center mt-6">
-              {form.formState.errors.emailOrPhone ? (
-                <div className="py-4 px-10 border rounded-xl text-[white] bg-[red]">
-                  {form.formState.errors.emailOrPhone.message}
-                </div>
-              ) : form.formState.errors.password ? (
-                <div className="py-4 px-10 border rounded-xl text-[white] bg-[red]">
-                  {form.formState.errors.password.message}
-                </div>
-              ) : null}
-            </div>
-          )}
+          <div className="flex items-center justify-center flex-col">
+            <motion.div className="w-2/3" initial="hidden" animate="show" variants={containerVariants}>
+              <h1 className="text-3x1 font-bold mb-6">Masuk</h1>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+                  <motion.div variants={childVariants}>
+                    <FormField
+                      control={form.control}
+                      name="emailOrPhone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel htmlFor="emailOrPhone" className="mb-1">
+                            Email/No Telepon
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                id="emailOrPhone"
+                                placeholder="Masukkan email atau nomor telepon anda"
+                                className={`p-3 ps-5 border rounded-xl ${
+                                  form.formState.errors.emailOrPhone && form.formState.isSubmitted
+                                    ? 'border-red-500 border-2'
+                                    : ''
+                                }`}
+                              />
+                              {form.formState.isSubmitted && (
+                                <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                  <img
+                                    src={form.formState.errors.emailOrPhone ? '/Vector.svg' : '/mdi_check-circle.svg'}
+                                    alt=""
+                                  />
+                                </button>
+                              )}
+                            </div>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+                  <motion.div variants={childVariants}>
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel htmlFor="password" className="mb-1">
+                            Password
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                id="password"
+                                placeholder="Masukkan password anda"
+                                className={`p-3 ps-5 border rounded-xl ${
+                                  form.formState.errors.password && form.formState.isSubmitted
+                                    ? 'border-red-500 border-2'
+                                    : ''
+                                }`}
+                                type={showPassword ? 'text' : 'password'}
+                              />
+                              <button
+                                type="button"
+                                className={
+                                  form.formState.isSubmitted
+                                    ? 'absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5'
+                                    : 'absolute inset-y-0 right-0 pr-12 flex-center text-sm leading-5'
+                                }
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                <img src="s/fi_eye.svg" alt="" />
+                              </button>
+                              {form.formState.isSubmitted && (
+                                <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                  <img
+                                    src={form.formState.errors.password ? '/Vector.svg' : 's/mdi_check-circle.svg'}
+                                    alt=""
+                                  />
+                                </button>
+                              )}
+                            </div>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+                  <motion.div variants={childVariants}>
+                    <Button
+                      type="submit"
+                      className="w-full rounded-xl mt-3 bg-[#7126B5] h-12 hover:bg-[#4c0f85]"
+                      disabled={!form.formState.isValid || masuk}
+                      onClick={() => setMasuk(!masuk)}
+                    >
+                      Masuk
+                    </Button>
+                  </motion.div>
+                </form>
+              </Form>
+              <motion.div variants={childVariants}>
+                <p className="mt-16 justify-center flex">
+                  Belum punya akun?&nbsp;{' '}
+                  <Link to={'/auth/register'} className="text-[#7126B5] font-bold">
+                    Daftar di sini
+                  </Link>
+                </p>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

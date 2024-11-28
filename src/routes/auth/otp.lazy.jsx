@@ -15,7 +15,7 @@ export const Route = createLazyFileRoute('/auth/otp')({
   component: InputOTPForm,
 });
 
-export function InputOTPForm() {
+function InputOTPForm() {
   const email = localStorage.getItem('email');
 
   const FormSchema = z.object({
@@ -153,3 +153,5 @@ export function InputOTPForm() {
     </div>
   );
 }
+
+export default InputOTPForm;
