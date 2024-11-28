@@ -2,7 +2,7 @@ import React from 'react';
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { set, z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -75,22 +75,6 @@ function Register() {
     mode: 'onChange',
   });
 
-  const customErrorNotification = (errors) => {
-    const firstError = Object.keys(errors).find((key) => errors[key]?.message);
-    if (firstError) {
-      toast.error(errors[firstError].message, {
-        position: 'bottom-center',
-        duration: 4000,
-        style: {
-          background: '#ff4d4d',
-          color: '#ffffff',
-          borderRadius: '1rem',
-          padding: '1rem',
-        },
-      });
-    }
-  };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -107,13 +91,6 @@ function Register() {
   };
 
   async function onSubmit(values) {
-    const errors = form.formState.errors;
-
-    if (Object.keys(errors).length > 0) {
-      customErrorNotification(errors);
-      return;
-    }
-
     localStorage.setItem('email', values.newEmail);
 
     const data = {
@@ -139,7 +116,7 @@ function Register() {
           <div className="flex items-center justify-center flex-col">
             <motion.div className="w-2/3" initial="hidden" animate="show" variants={containerVariants}>
               <motion.div variants={childVariants}>
-                <h1 className="text-3xl font-bold mb-6">Daftar</h1>
+                <h1 className="text-2xl font-bold mb-6">Daftar</h1>
               </motion.div>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -149,7 +126,10 @@ function Register() {
                       name="newName"
                       render={({ field }) => (
                         <FormItem className="">
-                          <FormLabel htmlFor="newName" className="mb-1 text-black">
+                          <FormLabel
+                            htmlFor="newName"
+                            className={form.formState.isSubmitted ? 'mb-1' : 'mb-1 text-black'}
+                          >
                             Nama
                           </FormLabel>
                           <FormControl>
@@ -174,6 +154,7 @@ function Register() {
                               )}
                             </div>
                           </FormControl>
+                          <FormMessage className={form.formState.isSubmitted ? 'visible' : 'hidden'} />
                         </FormItem>
                       )}
                     />
@@ -184,7 +165,10 @@ function Register() {
                       name="newEmail"
                       render={({ field }) => (
                         <FormItem className="">
-                          <FormLabel htmlFor="newEmail" className="mb-1 text-black">
+                          <FormLabel
+                            htmlFor="newEmail"
+                            className={form.formState.isSubmitted ? 'mb-1' : 'mb-1 text-black'}
+                          >
                             Email
                           </FormLabel>
                           <FormControl>
@@ -192,7 +176,6 @@ function Register() {
                               <Input
                                 {...field}
                                 id="newEmail"
-                                type="email"
                                 placeholder="Contoh: johndee@gmail.com"
                                 className={`p-3 ps-5 border rounded-xl ${
                                   form.formState.errors.newEmail && form.formState.isSubmitted
@@ -210,6 +193,7 @@ function Register() {
                               )}
                             </div>
                           </FormControl>
+                          <FormMessage className={form.formState.isSubmitted ? 'visible' : 'hidden'} />
                         </FormItem>
                       )}
                     />
@@ -220,7 +204,10 @@ function Register() {
                       name="newPhoneNumber"
                       render={({ field }) => (
                         <FormItem className="">
-                          <FormLabel htmlFor="newPhoneNumber" className="mb-1 text-black">
+                          <FormLabel
+                            htmlFor="newPhoneNumber"
+                            className={form.formState.isSubmitted ? 'mb-1' : 'mb-1 text-black'}
+                          >
                             Nomor Telepon
                           </FormLabel>
                           <FormControl>
@@ -246,6 +233,7 @@ function Register() {
                               )}
                             </div>
                           </FormControl>
+                          <FormMessage className={form.formState.isSubmitted ? 'visible' : 'hidden'} />
                         </FormItem>
                       )}
                     />
@@ -256,7 +244,10 @@ function Register() {
                       name="newPassword"
                       render={({ field }) => (
                         <FormItem className="">
-                          <FormLabel htmlFor="newPassword" className="mb-1 text-black">
+                          <FormLabel
+                            htmlFor="newPassword"
+                            className={form.formState.isSubmitted ? 'mb-1' : 'mb-1 text-black'}
+                          >
                             Password
                           </FormLabel>
                           <FormControl>
@@ -272,7 +263,6 @@ function Register() {
                                 }`}
                                 type={showPassword ? 'text' : 'password'}
                               />
-
                               <button
                                 type="button"
                                 className={
@@ -294,6 +284,7 @@ function Register() {
                               )}
                             </div>
                           </FormControl>
+                          <FormMessage className={form.formState.isSubmitted ? 'visible' : 'hidden'} />
                         </FormItem>
                       )}
                     />
@@ -303,7 +294,6 @@ function Register() {
                       type="submit"
                       className="w-full rounded-xl mt-3 bg-[#7126B5] h-12 hover:bg-[#4c0f85]"
                       disabled={!form.formState.isDirty}
-                      onClick={() => customErrorNotification(form.formState.errors)}
                     >
                       {isPendingMutate ? (
                         <ReactLoading

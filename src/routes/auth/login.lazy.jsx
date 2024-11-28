@@ -181,12 +181,12 @@ function Login() {
                                 type="button"
                                 className={
                                   form.formState.isSubmitted
-                                    ? 'absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5'
-                                    : 'absolute inset-y-0 right-0 pr-12 flex-center text-sm leading-5'
+                                    ? 'absolute inset-y-0 right-0 pr-12 flex items-center text-sm leading-5'
+                                    : 'absolute inset-y-0 right-0 pr-3 flex-center text-sm leading-5'
                                 }
                                 onClick={() => setShowPassword(!showPassword)}
                               >
-                                <img src="s/fi_eye.svg" alt="" />
+                                <img src="/fi_eye.svg" alt="" />
                               </button>
                               {form.formState.isSubmitted && (
                                 <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
