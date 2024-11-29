@@ -34,7 +34,6 @@ function Login() {
     onSuccess: (data) => {
       localStorage.setItem('token', data?.token);
       dispatch(setToken(data?.token));
-      dispatch(setUser(data));
       navigate({ to: '/' });
     },
 
@@ -104,7 +103,7 @@ function Login() {
             <motion.div className="w-2/3" initial="hidden" animate="show" variants={containerVariants}>
               <h1 className="text-2xl font-bold mb-6">Masuk</h1>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 md:gap-5">
                   <motion.div variants={childVariants}>
                     <FormField
                       control={form.control}
@@ -122,7 +121,7 @@ function Login() {
                               <Input
                                 {...field}
                                 id="emailOrPhone"
-                                placeholder="Masukkan email atau nomor telepon anda"
+                                placeholder="Contoh: johndee@gmail.com"
                                 className={`p-3 ps-5 border rounded-xl ${
                                   form.formState.errors.emailOrPhone && form.formState.isSubmitted
                                     ? 'border-red-500 border-2'
@@ -169,7 +168,7 @@ function Login() {
                               <Input
                                 {...field}
                                 id="password"
-                                placeholder="Masukkan password anda"
+                                placeholder="Masukkan password"
                                 className={`p-3 ps-5 border rounded-xl ${
                                   form.formState.errors.password && form.formState.isSubmitted
                                     ? 'border-red-500 border-2'
@@ -181,8 +180,8 @@ function Login() {
                                 type="button"
                                 className={
                                   form.formState.isSubmitted
-                                    ? 'absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5'
-                                    : 'absolute inset-y-0 right-0 pr-12 flex-center text-sm leading-5'
+                                    ? 'absolute inset-y-0 right-0 pr-12 flex items-center text-sm leading-5'
+                                    : 'absolute inset-y-0 right-0 pr-3 flex-center text-sm leading-5'
                                 }
                                 onClick={() => setShowPassword(!showPassword)}
                               >
@@ -191,7 +190,7 @@ function Login() {
                               {form.formState.isSubmitted && (
                                 <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
                                   <img
-                                    src={form.formState.errors.password ? '/Vector.svg' : 's/mdi_check-circle.svg'}
+                                    src={form.formState.errors.password ? '/Vector.svg' : '/mdi_check-circle.svg'}
                                     alt=""
                                   />
                                 </button>

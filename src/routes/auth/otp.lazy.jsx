@@ -85,7 +85,7 @@ function InputOTPForm() {
   return (
     <div>
       <Toaster position="top-right" reverseOrder={false} />
-      <Navbar />
+      <Navbar version={2} isLoggedIn={false} />
       <Form {...form}>
         <motion.form
           initial={{ opacity: 0, y: -20 }}
@@ -106,8 +106,8 @@ function InputOTPForm() {
             name="pin"
             render={({ field }) => (
               <FormItem className="flex flex-col items-center">
-                <FormLabel className="text-center mb-4 text-sm">
-                  Ketik 6 digit kode yang dikirimkan <span className="text-blue-500 font-light">{email}</span>
+                <FormLabel className="text-center mb-4 font-light text-sm">
+                  Ketik 6 digit kode yang dikirimkan ke <span className="font-bold">{email}</span>
                 </FormLabel>
                 <FormControl className="flex justify-center gap-2">
                   <InputOTP {...field} maxLength={6}>
@@ -146,7 +146,7 @@ function InputOTPForm() {
           />
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-[#7126B5] text-white font-bold rounded-lg shadow-md hover:bg-[#A06ECE] focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300"
+            className="w-full py-2 px-4 bg-[#7126B5] text-white font-bold rounded-lg shadow-md hover:bg-[#A06ECE] focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 duration-300"
           >
             Simpan
           </button>
