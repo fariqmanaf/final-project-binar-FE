@@ -55,7 +55,7 @@ function Register() {
       newPhoneNumber: z
         .string()
         .regex(/^\+62\d+$/, { message: 'Nomor Telepon harus berupa angka' })
-        .min(10, { message: 'Nomor Telepon minimal 10 karakter' })
+        .min(11, { message: 'Nomor Telepon minimal 11 karakter' })
         .nonempty({ message: 'Nomor Telepon diperlukan' }),
       newPassword: z
         .string()
