@@ -85,7 +85,7 @@ function InputOTPForm() {
   return (
     <div>
       <Toaster position="top-right" reverseOrder={false} />
-      <Navbar version={2} isLoggedIn={false} />
+      <Navbar searchBar={false} isAuth={false} />
       <Form {...form}>
         <motion.form
           initial={{ opacity: 0, y: -20 }}
