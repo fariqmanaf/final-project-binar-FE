@@ -81,7 +81,7 @@ function VerifyEmail() {
     <>
       <Toaster position="top-right" reverseOrder={false} />
       <div className="flex flex-row justify-center items-center min-h-screen w-full">
-        <div className="hidden md:block w-1/2 h-screen bg-black">
+        <div className="hidden md:block w-1/2 h-screen">
           <img src="/side-picture.svg" alt="Side decoration" className="object-cover w-full h-full" />
         </div>
         <div className="w-full md:w-1/2 h-screen flex flex-col justify-center items-center p-4">

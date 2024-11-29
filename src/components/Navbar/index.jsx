@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from '@tanstack/react-router';
 
-const Navbar = () => {
+const Navbar = ({ version, isLoggedIn }) => {
   const navigate = useNavigate();
 
   return (

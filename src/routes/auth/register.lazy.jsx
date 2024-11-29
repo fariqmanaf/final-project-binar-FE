@@ -119,7 +119,7 @@ function Register() {
                 <h1 className="text-2xl font-bold mb-6">Daftar</h1>
               </motion.div>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 md:gap-5">
                   <motion.div variants={childVariants}>
                     <FormField
                       control={form.control}
@@ -255,7 +255,7 @@ function Register() {
                               <Input
                                 {...field}
                                 id="newPassword"
-                                placeholder="Password"
+                                placeholder="Buat Password"
                                 className={`p-3 ps-5 border rounded-xl ${
                                   form.formState.errors.newPassword && form.formState.isSubmitted
                                     ? 'border-red-500 border-2'
