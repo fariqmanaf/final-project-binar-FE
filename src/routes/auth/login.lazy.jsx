@@ -34,7 +34,6 @@ function Login() {
     onSuccess: (data) => {
       localStorage.setItem('token', data?.token);
       dispatch(setToken(data?.token));
-      dispatch(setUser(data));
       navigate({ to: '/' });
     },
 
@@ -191,7 +190,7 @@ function Login() {
                               {form.formState.isSubmitted && (
                                 <button disabled className="absolute inset-y-0 right-0 pr-3 flex items-center">
                                   <img
-                                    src={form.formState.errors.password ? '/Vector.svg' : 's/mdi_check-circle.svg'}
+                                    src={form.formState.errors.password ? '/Vector.svg' : '/mdi_check-circle.svg'}
                                     alt=""
                                   />
                                 </button>
