@@ -4,25 +4,42 @@ import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { set, z } from 'zod';
+import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
-import { setToken } from '@/redux/slices/auth';
 import ReactLoading from 'react-loading';
 import { register } from '@/Services/auth/auth';
 import { motion } from 'motion/react';
+import { InputOTPForm } from '../../components/OTP';
 
 export const Route = createLazyFileRoute('/auth/register')({
-  component: Register,
+  component: Tab,
 });
 
-function Register() {
+function Tab() {
+  const [tab, setTab] = React.useState('form');
+  const [email, setEmail] = React.useState('');
+
+  const handleChangeTab = (newTab, email) => {
+    if (email) setEmail(email);
+    setTab(newTab);
+  };
+
+  if (tab === 'form') {
+    return <Register onTabChange={handleChangeTab} />;
+  }
+
+  return <InputOTPForm email={email} onTabChange={handleChangeTab} />;
+}
+
+function Register({ onTabChange }) {
   const navigate = useNavigate();
 
   const { token } = useSelector((state) => state.auth);
+  const [email, setEmail] = React.useState('');
 
   if (token) {
     navigate({ to: '/' });
@@ -31,13 +48,7 @@ function Register() {
   const { mutate: registerMutation, isPending: isPendingMutate } = useMutation({
     mutationFn: (body) => register(body),
     onSuccess: () => {
-      toast.success('Registrasi berhasil, silahkan cek email untuk verifikasi', {
-        duration: 4000,
-      });
-
-      setTimeout(() => {
-        navigate({ to: '/auth/otp' });
-      }, 4000);
+      onTabChange('otp', email);
     },
     onError: (err) => {
       localStorage.removeItem('email');
@@ -91,7 +102,7 @@ function Register() {
   };
 
   async function onSubmit(values) {
-    localStorage.setItem('email', values.newEmail);
+    setEmail(values.newEmail);
 
     const data = {
       name: values.newName,
@@ -325,5 +336,3 @@ function Register() {
     </>
   );
 }
-
-export default Register;

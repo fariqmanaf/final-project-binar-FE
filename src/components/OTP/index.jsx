@@ -1,4 +1,4 @@
-import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -11,13 +11,7 @@ import { verifOTP, resendOTP } from '@/Services/auth/otp/';
 import { useMutation } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 
-export const Route = createLazyFileRoute('/auth/otp')({
-  component: InputOTPForm,
-});
-
-function InputOTPForm() {
-  const email = localStorage.getItem('email');
-
+export function InputOTPForm({ email, onTabChange }) {
   const FormSchema = z.object({
     pin: z.string().min(6, {
       message: 'Your one-time password must be 6 characters.',
@@ -32,7 +26,7 @@ function InputOTPForm() {
     },
   });
 
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(60);
   const [isTimerRunning, setIsTimerRunning] = useState(true);
 
   const { mutate: verifOTPMutation } = useMutation({
@@ -85,7 +79,7 @@ function InputOTPForm() {
   return (
     <div>
       <Toaster position="top-right" reverseOrder={false} />
-      <Navbar searchBar={false} isAuth={false} />
+      <Navbar version={2} isLoggedIn={false} />
       <Form {...form}>
         <motion.form
           initial={{ opacity: 0, y: -20 }}
@@ -94,12 +88,7 @@ function InputOTPForm() {
           onSubmit={form.handleSubmit(onSubmit)}
           className="bg-white p-8 space-y-6 w-full max-w-md mx-auto mt-10"
         >
-          <img
-            src="/arrow-left.svg"
-            alt="back-button"
-            className="cursor-pointer"
-            onClick={() => navigate({ to: `/auth/register` })}
-          />
+          <img src="/arrow-left.svg" alt="back-button" className="cursor-pointer" onClick={() => onTabChange('form')} />
           <h1 className="text-2xl font-bold mb-4">Masukkan OTP</h1>
           <FormField
             control={form.control}
