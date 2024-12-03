@@ -6,7 +6,6 @@ import { getCurrentUser } from '@/Services/auth/auth';
 import { useQuery } from '@tanstack/react-query';
 import { setToken, setUser } from '@/redux/slices/auth';
 import { useDispatch } from 'react-redux';
-import Navbar from '@/components/Navbar';
 
 export const Route = createRootRoute({
   component: Root,
@@ -46,22 +45,11 @@ function Root() {
     }
   }, [location, navigate]);
 
-  const authPaths = [
-    '/auth/login',
-    '/auth/register',
-    '/auth/otp',
-    '/auth/password-reset/$token',
-    '/auth/password-reset/verify-email',
-  ];
-
-  const isAuthRoute = authPaths.some((path) => location.pathname.startsWith(path));
-
   return (
     <>
       <div style={{ display: 'flex' }}>
         {/* Main Content */}
         <div style={{ flex: 5 }}>
-          {!isAuthRoute && <Navbar />}
           <Outlet />
         </div>
       </div>

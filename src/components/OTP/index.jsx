@@ -79,7 +79,7 @@ export function InputOTPForm({ email, onTabChange }) {
   return (
     <div>
       <Toaster position="top-right" reverseOrder={false} />
-      <Navbar version={2} isLoggedIn={false} />
+      <Navbar isAuth={false} searchBar={false} />
       <Form {...form}>
         <motion.form
           initial={{ opacity: 0, y: -20 }}

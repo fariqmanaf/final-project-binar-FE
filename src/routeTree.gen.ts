@@ -17,6 +17,12 @@ import { Route as rootRoute } from './routes/__root';
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')();
+const PaymentIndexLazyImport = createFileRoute('/payment/')();
+const NotificationIndexLazyImport = createFileRoute('/notification/')();
+const HistoryIndexLazyImport = createFileRoute('/history/')();
+const FlightIndexLazyImport = createFileRoute('/flight/')();
+const CheckoutIndexLazyImport = createFileRoute('/checkout/')();
+const AccountIndexLazyImport = createFileRoute('/account/')();
 const AuthRegisterLazyImport = createFileRoute('/auth/register')();
 const AuthLogoutLazyImport = createFileRoute('/auth/logout')();
 const AuthLoginLazyImport = createFileRoute('/auth/login')();
@@ -30,6 +36,42 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route));
+
+const PaymentIndexLazyRoute = PaymentIndexLazyImport.update({
+  id: '/payment/',
+  path: '/payment/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/payment/index.lazy').then((d) => d.Route));
+
+const NotificationIndexLazyRoute = NotificationIndexLazyImport.update({
+  id: '/notification/',
+  path: '/notification/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/notification/index.lazy').then((d) => d.Route));
+
+const HistoryIndexLazyRoute = HistoryIndexLazyImport.update({
+  id: '/history/',
+  path: '/history/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/history/index.lazy').then((d) => d.Route));
+
+const FlightIndexLazyRoute = FlightIndexLazyImport.update({
+  id: '/flight/',
+  path: '/flight/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/flight/index.lazy').then((d) => d.Route));
+
+const CheckoutIndexLazyRoute = CheckoutIndexLazyImport.update({
+  id: '/checkout/',
+  path: '/checkout/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/checkout/index.lazy').then((d) => d.Route));
+
+const AccountIndexLazyRoute = AccountIndexLazyImport.update({
+  id: '/account/',
+  path: '/account/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/account/index.lazy').then((d) => d.Route));
 
 const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
   id: '/auth/register',
@@ -93,6 +135,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRegisterLazyImport;
       parentRoute: typeof rootRoute;
     };
+    '/account/': {
+      id: '/account/';
+      path: '/account';
+      fullPath: '/account';
+      preLoaderRoute: typeof AccountIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/checkout/': {
+      id: '/checkout/';
+      path: '/checkout';
+      fullPath: '/checkout';
+      preLoaderRoute: typeof CheckoutIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/flight/': {
+      id: '/flight/';
+      path: '/flight';
+      fullPath: '/flight';
+      preLoaderRoute: typeof FlightIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/history/': {
+      id: '/history/';
+      path: '/history';
+      fullPath: '/history';
+      preLoaderRoute: typeof HistoryIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/notification/': {
+      id: '/notification/';
+      path: '/notification';
+      fullPath: '/notification';
+      preLoaderRoute: typeof NotificationIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/payment/': {
+      id: '/payment/';
+      path: '/payment';
+      fullPath: '/payment';
+      preLoaderRoute: typeof PaymentIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/auth/password-reset/$token': {
       id: '/auth/password-reset/$token';
       path: '/auth/password-reset/$token';
@@ -117,6 +201,12 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginLazyRoute;
   '/auth/logout': typeof AuthLogoutLazyRoute;
   '/auth/register': typeof AuthRegisterLazyRoute;
+  '/account': typeof AccountIndexLazyRoute;
+  '/checkout': typeof CheckoutIndexLazyRoute;
+  '/flight': typeof FlightIndexLazyRoute;
+  '/history': typeof HistoryIndexLazyRoute;
+  '/notification': typeof NotificationIndexLazyRoute;
+  '/payment': typeof PaymentIndexLazyRoute;
   '/auth/password-reset/$token': typeof AuthPasswordResetTokenLazyRoute;
   '/auth/password-reset/verify-email': typeof AuthPasswordResetVerifyEmailLazyRoute;
 }
@@ -126,6 +216,12 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginLazyRoute;
   '/auth/logout': typeof AuthLogoutLazyRoute;
   '/auth/register': typeof AuthRegisterLazyRoute;
+  '/account': typeof AccountIndexLazyRoute;
+  '/checkout': typeof CheckoutIndexLazyRoute;
+  '/flight': typeof FlightIndexLazyRoute;
+  '/history': typeof HistoryIndexLazyRoute;
+  '/notification': typeof NotificationIndexLazyRoute;
+  '/payment': typeof PaymentIndexLazyRoute;
   '/auth/password-reset/$token': typeof AuthPasswordResetTokenLazyRoute;
   '/auth/password-reset/verify-email': typeof AuthPasswordResetVerifyEmailLazyRoute;
 }
@@ -136,6 +232,12 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginLazyRoute;
   '/auth/logout': typeof AuthLogoutLazyRoute;
   '/auth/register': typeof AuthRegisterLazyRoute;
+  '/account/': typeof AccountIndexLazyRoute;
+  '/checkout/': typeof CheckoutIndexLazyRoute;
+  '/flight/': typeof FlightIndexLazyRoute;
+  '/history/': typeof HistoryIndexLazyRoute;
+  '/notification/': typeof NotificationIndexLazyRoute;
+  '/payment/': typeof PaymentIndexLazyRoute;
   '/auth/password-reset/$token': typeof AuthPasswordResetTokenLazyRoute;
   '/auth/password-reset/verify-email': typeof AuthPasswordResetVerifyEmailLazyRoute;
 }
@@ -147,6 +249,12 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/logout'
     | '/auth/register'
+    | '/account'
+    | '/checkout'
+    | '/flight'
+    | '/history'
+    | '/notification'
+    | '/payment'
     | '/auth/password-reset/$token'
     | '/auth/password-reset/verify-email';
   fileRoutesByTo: FileRoutesByTo;
@@ -155,6 +263,12 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/logout'
     | '/auth/register'
+    | '/account'
+    | '/checkout'
+    | '/flight'
+    | '/history'
+    | '/notification'
+    | '/payment'
     | '/auth/password-reset/$token'
     | '/auth/password-reset/verify-email';
   id:
@@ -163,6 +277,12 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/logout'
     | '/auth/register'
+    | '/account/'
+    | '/checkout/'
+    | '/flight/'
+    | '/history/'
+    | '/notification/'
+    | '/payment/'
     | '/auth/password-reset/$token'
     | '/auth/password-reset/verify-email';
   fileRoutesById: FileRoutesById;
@@ -173,6 +293,12 @@ export interface RootRouteChildren {
   AuthLoginLazyRoute: typeof AuthLoginLazyRoute;
   AuthLogoutLazyRoute: typeof AuthLogoutLazyRoute;
   AuthRegisterLazyRoute: typeof AuthRegisterLazyRoute;
+  AccountIndexLazyRoute: typeof AccountIndexLazyRoute;
+  CheckoutIndexLazyRoute: typeof CheckoutIndexLazyRoute;
+  FlightIndexLazyRoute: typeof FlightIndexLazyRoute;
+  HistoryIndexLazyRoute: typeof HistoryIndexLazyRoute;
+  NotificationIndexLazyRoute: typeof NotificationIndexLazyRoute;
+  PaymentIndexLazyRoute: typeof PaymentIndexLazyRoute;
   AuthPasswordResetTokenLazyRoute: typeof AuthPasswordResetTokenLazyRoute;
   AuthPasswordResetVerifyEmailLazyRoute: typeof AuthPasswordResetVerifyEmailLazyRoute;
 }
@@ -182,6 +308,12 @@ const rootRouteChildren: RootRouteChildren = {
   AuthLoginLazyRoute: AuthLoginLazyRoute,
   AuthLogoutLazyRoute: AuthLogoutLazyRoute,
   AuthRegisterLazyRoute: AuthRegisterLazyRoute,
+  AccountIndexLazyRoute: AccountIndexLazyRoute,
+  CheckoutIndexLazyRoute: CheckoutIndexLazyRoute,
+  FlightIndexLazyRoute: FlightIndexLazyRoute,
+  HistoryIndexLazyRoute: HistoryIndexLazyRoute,
+  NotificationIndexLazyRoute: NotificationIndexLazyRoute,
+  PaymentIndexLazyRoute: PaymentIndexLazyRoute,
   AuthPasswordResetTokenLazyRoute: AuthPasswordResetTokenLazyRoute,
   AuthPasswordResetVerifyEmailLazyRoute: AuthPasswordResetVerifyEmailLazyRoute,
 };
@@ -198,6 +330,12 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
         "/auth/login",
         "/auth/logout",
         "/auth/register",
+        "/account/",
+        "/checkout/",
+        "/flight/",
+        "/history/",
+        "/notification/",
+        "/payment/",
         "/auth/password-reset/$token",
         "/auth/password-reset/verify-email"
       ]
@@ -213,6 +351,24 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     },
     "/auth/register": {
       "filePath": "auth/register.lazy.jsx"
+    },
+    "/account/": {
+      "filePath": "account/index.lazy.jsx"
+    },
+    "/checkout/": {
+      "filePath": "checkout/index.lazy.jsx"
+    },
+    "/flight/": {
+      "filePath": "flight/index.lazy.jsx"
+    },
+    "/history/": {
+      "filePath": "history/index.lazy.jsx"
+    },
+    "/notification/": {
+      "filePath": "notification/index.lazy.jsx"
+    },
+    "/payment/": {
+      "filePath": "payment/index.lazy.jsx"
     },
     "/auth/password-reset/$token": {
       "filePath": "auth/password-reset/$token.lazy.jsx"

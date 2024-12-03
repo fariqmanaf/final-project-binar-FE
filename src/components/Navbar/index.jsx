@@ -3,15 +3,15 @@ import { useNavigate } from '@tanstack/react-router';
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { useSelector } from 'react-redux';
+import { NavbarIcon } from '@/components/Navbar/icon-navbar';
 
 const Navbar = ({ searchBar, isAuth }) => {
   const navigate = useNavigate();
 
-  // Ambil token dari Redux
   const token = useSelector((state) => state.auth.token);
 
   return (
-    <nav className="w-full bg-white shadow-md py-4">
+    <nav className="w-full bg-white shadow-md h-[10vh] flex justify-center">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <img src="/logo.svg" alt="Logo" className="h-10 cursor-pointer" onClick={() => navigate('/')} />
@@ -32,22 +32,14 @@ const Navbar = ({ searchBar, isAuth }) => {
 
         {/* Navigation Items */}
         {isAuth && (
-          <div className="flex items-center ml-auto space-x-4">
+          <div className="flex items-center gap-6 mr-[2rem]">
             {token ? (
-              // Jika sudah login, tampilkan navigasi items
               <>
-                <Link to={'/'}>
-                  <img src="/list.svg" alt="list" className="w-6 h-6 cursor-pointer" />
-                </Link>
-                <Link to={'/'}>
-                  <img src="/bell.svg" alt="bell" className="w-6 h-6 cursor-pointer" />
-                </Link>
-                <Link to={'/'}>
-                  <img src="/person.svg" alt="person" className="w-6 h-6 cursor-pointer" />
-                </Link>
+                <NavbarIcon Content="History" ImageLink="/list.svg" Redirect="/history" />
+                <NavbarIcon Content="Notification" ImageLink="/bell.svg" Redirect="/notification" />
+                <NavbarIcon Content="Account" ImageLink="/person.svg" Redirect="/account" />
               </>
             ) : (
-              // Jika belum login, tampilkan tombol "Masuk"
               <Button className="rounded-xl bg-[#7126B5] h-12 hover:bg-[#4c0f85]">
                 <img src="/log-in.svg" alt="login-icon" className="mr-2" />
                 <Link to={'/auth/login'}>Masuk</Link>
