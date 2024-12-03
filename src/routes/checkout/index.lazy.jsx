@@ -6,5 +6,9 @@ export const Route = createLazyFileRoute('/checkout/')({
 });
 
 function RouteComponent() {
-  return 'Hello /checkout/!';
+  return (
+    <div>
+      <p>Halo</p>
+    </div>
+  );
 }
