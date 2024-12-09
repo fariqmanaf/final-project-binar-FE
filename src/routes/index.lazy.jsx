@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { setToken } from '@/redux/slices/auth';
 import Navbar from '@/components/Navbar';
+import FlightSearch from '@/components/Home/search';
+// import FavoriteDestination from '@/components/Home/favorite';
 
 export const Route = createLazyFileRoute('/')({
   component: Homepage,
@@ -24,18 +26,21 @@ function Homepage() {
   return (
     <>
       <Navbar isAuth={true} searchBar={true} />
-      <div className="flex flex-col justify-start h-[90vh] w-screen">
+      <main className="flex flex-col justify-start h-[90vh] w-screen items-center">
         {/* Hero */}
-        <div className="hero flex-1 mt-[6rem]">
+        <div className="hero flex-1 mt-[3rem]">
           <img src="/hero.svg" alt="hero" />
         </div>
+        {/* Search Form */}
+        <FlightSearch />
+        {/* <FavoriteDestination /> */}
         {/* Harusnya di halaman profile */}
         <div className="flex justify-center mb-10">
           <Button onClick={logout} className="rounded-xl bg-red-500 text-white px-6 py-2 hover:bg-red-600">
             Keluar
           </Button>
         </div>
-      </div>
+      </main>
     </>
   );
 }
