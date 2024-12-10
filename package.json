@@ -30,6 +30,7 @@
     "@tanstack/react-router": "^1.82.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
     "input-otp": "^1.4.1",
     "lucide-react": "^0.460.0",
     "midtrans-client": "^1.4.2",
