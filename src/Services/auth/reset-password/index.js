@@ -27,7 +27,7 @@ export const verifyToken = async (token) => {
 export const resetPassword = async (token, password) => {
   const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/password-reset`, {
     body: JSON.stringify({ token, password }),
-    method: 'PUT',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
