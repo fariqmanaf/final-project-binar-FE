@@ -29,11 +29,11 @@ function RouteComponent() {
     },
     {
       type: 'CHILD',
-      quantity: 1,
+      quantity: 0,
     },
     {
       type: 'INFANT',
-      quantity: 1,
+      quantity: 0,
     },
   ];
 
@@ -66,8 +66,8 @@ function RouteComponent() {
 
   const { mutate: createBookingMutate, isPending: isPendingMutate } = useMutation({
     mutationFn: (data) => createBooking(data),
-    onSuccess: () => {
-      toast.success('Pemesanan berhasil');
+    onSuccess: (dataSuccess) => {
+      navigate({ to: `/payment/${dataSuccess.data?.transactionId}` });
     },
     onError: (error) => {
       toast.error(error.message);
