@@ -23,6 +23,7 @@ const HistoryIndexLazyImport = createFileRoute('/history/')();
 const FlightIndexLazyImport = createFileRoute('/flight/')();
 const CheckoutIndexLazyImport = createFileRoute('/checkout/')();
 const AccountIndexLazyImport = createFileRoute('/account/')();
+const FlightSelectFlightLazyImport = createFileRoute('/flight/selectFlight')();
 const AuthRegisterLazyImport = createFileRoute('/auth/register')();
 const AuthLogoutLazyImport = createFileRoute('/auth/logout')();
 const AuthLoginLazyImport = createFileRoute('/auth/login')();
@@ -72,6 +73,12 @@ const AccountIndexLazyRoute = AccountIndexLazyImport.update({
   path: '/account/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/account/index.lazy').then((d) => d.Route));
+
+const FlightSelectFlightLazyRoute = FlightSelectFlightLazyImport.update({
+  id: '/flight/selectFlight',
+  path: '/flight/selectFlight',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/flight/selectFlight.lazy').then((d) => d.Route));
 
 const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
   id: '/auth/register',
@@ -133,6 +140,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/register';
       fullPath: '/auth/register';
       preLoaderRoute: typeof AuthRegisterLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/flight/selectFlight': {
+      id: '/flight/selectFlight';
+      path: '/flight/selectFlight';
+      fullPath: '/flight/selectFlight';
+      preLoaderRoute: typeof FlightSelectFlightLazyImport;
       parentRoute: typeof rootRoute;
     };
     '/account/': {
@@ -201,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginLazyRoute;
   '/auth/logout': typeof AuthLogoutLazyRoute;
   '/auth/register': typeof AuthRegisterLazyRoute;
+  '/flight/selectFlight': typeof FlightSelectFlightLazyRoute;
   '/account': typeof AccountIndexLazyRoute;
   '/checkout': typeof CheckoutIndexLazyRoute;
   '/flight': typeof FlightIndexLazyRoute;
@@ -216,6 +231,7 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginLazyRoute;
   '/auth/logout': typeof AuthLogoutLazyRoute;
   '/auth/register': typeof AuthRegisterLazyRoute;
+  '/flight/selectFlight': typeof FlightSelectFlightLazyRoute;
   '/account': typeof AccountIndexLazyRoute;
   '/checkout': typeof CheckoutIndexLazyRoute;
   '/flight': typeof FlightIndexLazyRoute;
@@ -232,6 +248,7 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginLazyRoute;
   '/auth/logout': typeof AuthLogoutLazyRoute;
   '/auth/register': typeof AuthRegisterLazyRoute;
+  '/flight/selectFlight': typeof FlightSelectFlightLazyRoute;
   '/account/': typeof AccountIndexLazyRoute;
   '/checkout/': typeof CheckoutIndexLazyRoute;
   '/flight/': typeof FlightIndexLazyRoute;
@@ -249,6 +266,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/logout'
     | '/auth/register'
+    | '/flight/selectFlight'
     | '/account'
     | '/checkout'
     | '/flight'
@@ -263,6 +281,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/logout'
     | '/auth/register'
+    | '/flight/selectFlight'
     | '/account'
     | '/checkout'
     | '/flight'
@@ -277,6 +296,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/logout'
     | '/auth/register'
+    | '/flight/selectFlight'
     | '/account/'
     | '/checkout/'
     | '/flight/'
@@ -293,6 +313,7 @@ export interface RootRouteChildren {
   AuthLoginLazyRoute: typeof AuthLoginLazyRoute;
   AuthLogoutLazyRoute: typeof AuthLogoutLazyRoute;
   AuthRegisterLazyRoute: typeof AuthRegisterLazyRoute;
+  FlightSelectFlightLazyRoute: typeof FlightSelectFlightLazyRoute;
   AccountIndexLazyRoute: typeof AccountIndexLazyRoute;
   CheckoutIndexLazyRoute: typeof CheckoutIndexLazyRoute;
   FlightIndexLazyRoute: typeof FlightIndexLazyRoute;
@@ -308,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthLoginLazyRoute: AuthLoginLazyRoute,
   AuthLogoutLazyRoute: AuthLogoutLazyRoute,
   AuthRegisterLazyRoute: AuthRegisterLazyRoute,
+  FlightSelectFlightLazyRoute: FlightSelectFlightLazyRoute,
   AccountIndexLazyRoute: AccountIndexLazyRoute,
   CheckoutIndexLazyRoute: CheckoutIndexLazyRoute,
   FlightIndexLazyRoute: FlightIndexLazyRoute,
@@ -330,6 +352,7 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
         "/auth/login",
         "/auth/logout",
         "/auth/register",
+        "/flight/selectFlight",
         "/account/",
         "/checkout/",
         "/flight/",
@@ -351,6 +374,9 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     },
     "/auth/register": {
       "filePath": "auth/register.lazy.jsx"
+    },
+    "/flight/selectFlight": {
+      "filePath": "flight/selectFlight.lazy.jsx"
     },
     "/account/": {
       "filePath": "account/index.lazy.jsx"
