@@ -1,9 +1,4 @@
-export const getFlightData = async (
-  departureAirportId,
-  destinationAirportId,
-  departureDate,
-  returnDate,
-) => {
+export const getFlightData = async (departureAirportId, destinationAirportId, departureDate, returnDate) => {
   let params = {};
   if (departureAirportId) {
     params.departureAirportId = departureAirportId;
@@ -20,12 +15,12 @@ export const getFlightData = async (
 
   let url = `${import.meta.env.VITE_API_URL}/flights?` + new URLSearchParams(params);
 
-  const response = await fetch (url, {
-    method: "GET",
+  const response = await fetch(url, {
+    method: 'GET',
   });
 
   const result = await response.json();
-  if (!result?.success) {
+  if (!response.ok) {
     throw new Error(result?.message);
   }
 
@@ -36,11 +31,11 @@ export const getFlightDataById = async (id) => {
   let url = `${import.meta.env.VITE_API_URL}/flights/${id}`;
 
   const response = await fetch(url, {
-    method: "GET",
+    method: 'GET',
   });
 
   const result = await response.json();
-  if (!result?.success) {
+  if (!response.ok) {
     throw new Error(result?.message);
   }
 
