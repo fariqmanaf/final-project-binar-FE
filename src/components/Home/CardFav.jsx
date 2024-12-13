@@ -1,23 +1,23 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 const CardFav = ({ fav }) => {
-  const { departureAirport, destinationAirport, type, price, departureTimestamp, arrivalTimestamp } = fav;
+  const { departureAirport, destinationAirport, type, price, departureTimestamp, arrivalTimestamp, discount } = fav;
 
   return (
-    <Card className="rounded-lg shadow-lg overflow-hidden max-w-56">
+    <Card className="rounded-lg shadow-lg overflow-hidden min-w-[27vh] ">
       <div className="relative">
         <img
           src={destinationAirport.image} // Use the departure airport image
           alt="Destination"
           className="w-full h-36 object-cover p-3 rounded-2xl"
         />
-        {/* <div className="absolute top-0 right-0 mt-3 -mr-1">
-          <img
-            src={destinationAirport.image} // Use the destination airport image as labelImage
-            alt="Label"
-            className="w-40 h-8"
-          />
-        </div> */}
+        <div className="absolute top-0 right-0 mt-4 mr-4">
+          <Badge className="bg-[#A06ECE] text-xs px-5 py-1 hover:bg-[#A06ECE]">
+            {discount !== null ? `${discount}% OFF` : 'Limited'}
+          </Badge>
+        </div>
+        <div></div>
       </div>
       <CardHeader className="p-4 py-0">
         <CardTitle className="text-sm py-0">{`${departureAirport.city} -> ${destinationAirport.city}`}</CardTitle>

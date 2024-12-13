@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useDispatch } from 'react-redux';
@@ -6,8 +7,6 @@ import { setToken } from '@/redux/slices/auth';
 import Navbar from '@/components/Navbar';
 import FlightSearch from '@/components/Home/search';
 import Favorite from '@/components/Home/favorite';
-// import SearchDestination from '@/components/Home/SearchDestination';
-// import FavoriteDestination from '@/components/Home/favorite';
 
 export const Route = createLazyFileRoute('/')({
   component: Homepage,
@@ -16,6 +15,15 @@ export const Route = createLazyFileRoute('/')({
 function Homepage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [searchData, setSearchData] = useState({
+    selectedDeptAirport: '',
+    selectedDestAirport: '',
+    departureDate: '',
+    returnDate: '',
+    seatClass: '',
+    passengers: '',
+  });
 
   const logout = (event) => {
     event.preventDefault();
@@ -35,22 +43,23 @@ function Homepage() {
         </div>
         {/* Search Form */}
         <div className="">
-          <FlightSearch />
+          <FlightSearch searchData={searchData} setSearchData={setSearchData} />
         </div>
 
         {/* <FavoriteDestination /> */}
-        <div>
-          {/* <SearchDestination /> */}
-          <Favorite />
+        <div className="mt-10 w-[70%]">
+          <Favorite setSearchData={setSearchData} />
         </div>
 
         {/* Harusnya di halaman profile */}
-        <div className="flex justify-center mb-10">
+        {/* <div className="flex justify-center mb-10">
           <Button onClick={logout} className="rounded-xl bg-red-500 text-white px-6 py-2 hover:bg-red-600">
             Keluar
           </Button>
-        </div>
+        </div> */}
       </main>
     </>
   );
 }
+
+export default Homepage;
