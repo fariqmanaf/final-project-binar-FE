@@ -17,8 +17,9 @@ import 'react-date-range/dist/theme/default.css';
 import { parse } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { Link } from '@tanstack/react-router';
-import { getTransactionHistory } from '@/Services/history/transaction';
 import { useSelector } from 'react-redux';
+import { getTransactionHistory } from '@/Services/history/transaction';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 export const Route = createLazyFileRoute('/history/')({
   component: History,
@@ -27,8 +28,7 @@ export const Route = createLazyFileRoute('/history/')({
 function History() {
   const navigate = useNavigate();
   const token = useSelector((state) => state.auth.token);
-  const [data, setData] = useState([]);
-  // const [loading, setLoading] = useState(true);
+  const [history, setHistory] = useState([]);
   const [error, setError] = useState(null);
   const [dateRange, setDateRange] = useState([
     {
@@ -39,10 +39,26 @@ function History() {
   ]);
   const [isFilterActive, setIsFilterActive] = useState(false);
   const [isFilterApplied, setIsFilterApplied] = useState(false); // Track if the filter has been applied
-  const [selectedOrder, setSelectedOrder] = useState(data[0] || null);
-  const [filteredData, setFilteredData] = useState(data);
+  const [selectedOrder, setSelectedOrder] = useState(history[0] || null);
+  const [filteredData, setFilteredData] = useState(history);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchHistory, setSearchHistory] = useState([]);
+
+  useEffect(() => {
+    const fetchTransaction = async () => {
+      try {
+        const data = await getTransactionHistory();
+        setHistory(data);
+        setFilteredData(data);
+      } catch (error) {
+        setError(err.message);
+      }
+    };
+
+    if (token) {
+      fetchTransaction();
+    }
+  }, [token]);
 
   useEffect(() => {
     if (!token) {
@@ -51,29 +67,27 @@ function History() {
   }, [token, navigate]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // setLoading(true);
-        const data = await getTransactionHistory();
-        setData(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        // setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     loadSearchHistory(); // Load search history when the component mounts
   }, []);
 
-  const parseDate = (dateString) => {
-    console.log('Parsing date:', dateString);
-    const parsedDate = parse(dateString, 'd MMMM yyyy', new Date(), { locale: id });
-    console.log('Parsed date:', parsedDate);
-    return parsedDate;
+  useEffect(() => {
+    if (filteredData.length > 0 && !filteredData.find((item) => item.id === selectedOrder?.id)) {
+      setSelectedOrder(filteredData[0]);
+    }
+  }, [filteredData]);
+
+  const handleFilter = () => {
+    const start = new Date(dateRange[0].startDate);
+    const end = new Date(dateRange[0].endDate);
+
+    const filtered = history.filter((item) => {
+      const itemDate = new Date(item.departureFlight?.departureTimestamp);
+
+      return itemDate >= start && itemDate <= end;
+    });
+
+    setFilteredData(filtered);
+    setIsFilterApplied(true);
   };
 
   const handleSelect = (ranges) => {
@@ -81,32 +95,17 @@ function History() {
   };
 
   const handleSelectOrder = (order) => {
-    const selected = filteredData.find((item) => item.id === order.id);
+    const selected = filteredData.find((item) => item.id === order?.id);
     setSelectedOrder(selected);
-  };
-
-  const handleFilter = () => {
-    const start = dateRange[0].startDate;
-    const end = dateRange[0].endDate;
-
-    console.log('Filtering from', start, 'to', end);
-
-    const filtered = data.filter((item) => {
-      const itemDate = parseDate(item.departure.date);
-      console.log('Item date:', itemDate, 'Start:', start, 'End:', end);
-      return itemDate >= start && itemDate <= end;
-    });
-
-    console.log('Filtered data:', filtered);
-    setFilteredData(filtered);
-    setIsFilterApplied(true);
   };
 
   const handleSearch = (event) => {
     const query = event.target.value.toUpperCase();
     setSearchQuery(query);
-    const filtered = data.filter(
-      (item) => item.bookingCode.toUpperCase().includes(query) // Search by bookingCode
+    const filtered = history.filter(
+      (item) =>
+        item.code.toUpperCase().includes(query) || // Search by booking code
+        item.bookings[0].passenger.name.toUpperCase().includes(query) // Search by passenger name
     );
     setFilteredData(filtered);
   };
@@ -119,10 +118,10 @@ function History() {
   };
 
   const handleCloseFilter = () => {
-    setIsFilterActive(false); // Menutup filter
-    setSearchQuery(''); // Reset search query
-    setFilteredData(data); // Reset data ke kondisi awal
-    setIsFilterApplied(false); // Reset status filter diterapkan
+    setIsFilterActive(false);
+    setSearchQuery('');
+    setFilteredData(history);
+    setIsFilterApplied(false);
   };
 
   const saveSearchHistory = (query) => {
@@ -142,16 +141,15 @@ function History() {
 
   const handleSearchFromHistory = (query) => {
     setSearchQuery(query);
-    const filtered = data.filter((item) => item.bookingCode.toUpperCase().includes(query));
+    const filtered = history.filter((item) => item.code.toUpperCase().includes(query));
     setFilteredData(filtered);
   };
 
   const handleClearHistory = () => {
-    setSearchHistory([]); // Mengosongkan state searchHistory
-    localStorage.removeItem('searchHistory'); // Menghapus data dari localStorage
+    setSearchHistory([]);
+    localStorage.removeItem('searchHistory');
   };
 
-  // if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -159,7 +157,10 @@ function History() {
       <Navbar isAuth={true} searchBar={true} />
       <main className="flex flex-col justify-center w-screen items-center">
         {/* Header */}
-        <section className="flex justify-center w-full items-center shadow-sm fixed top-[60px] bg-white">
+        <section
+          className="flex justify-center w-full items-center shadow-sm fixed top-[60px] bg-white"
+          style={{ zIndex: '2' }}
+        >
           <div className="container w-screen px-[4rem]">
             {/* Filter and Title */}
             <h1 className="text-xl font-bold mt-[3rem] mb-[3rem]">Riwayat Pemesanan</h1>
@@ -176,9 +177,9 @@ function History() {
                     width: '85%',
                     textAlign: 'left',
                     justifyContent: 'flex-start',
-                    marginRight: '20px', // Menghilangkan garis bawah pada teks Link
-                    color: 'white', // Pastikan teks terlihat seperti tombol
-                    padding: '10px', // Tambahkan padding agar terlihat seperti tombol
+                    marginRight: '20px',
+                    color: 'white',
+                    padding: '10px',
                   }}
                 >
                   <FaArrowLeft style={{ marginRight: '8px' }} />
@@ -186,12 +187,13 @@ function History() {
                 </Link>
 
                 <Dialog.Root>
-                  <Dialog.Trigger>
+                  <Dialog.Trigger asChild>
+                    {/* Wrapping button inside the trigger but without nesting buttons */}
                     <Button
                       className={`flex items-center mr-4 transition-colors ${
                         isFilterApplied
-                          ? 'bg-[#A06ECE] text-white hover:bg-white hover:text-[#A06ECE]' // Jika filter diterapkan
-                          : 'bg-transparent text-gray-500 hover:bg-[#A06ECE] hover:text-white' // Jika filter belum diterapkan
+                          ? 'bg-[#A06ECE] text-white hover:bg-white hover:text-[#A06ECE]'
+                          : 'bg-transparent text-gray-500 hover:bg-[#A06ECE] hover:text-white'
                       }`}
                       variant="outline-secondary"
                       style={{
@@ -201,7 +203,7 @@ function History() {
                         padding: '4px 10px',
                         height: '32px',
                       }}
-                      onClick={isFilterApplied ? handleCloseFilter : () => setIsFilterActive(true)} // Toggle filter
+                      onClick={isFilterApplied ? handleCloseFilter : () => setIsFilterActive(true)}
                     >
                       {isFilterApplied ? (
                         <IoCloseSharp className="text-white bg-[#A06ECE] hover:bg-[#fff] hover:text-[#A06ECE]" />
@@ -215,13 +217,18 @@ function History() {
                   {/* Overlay */}
                   {isFilterActive && <Dialog.Overlay className="fixed inset-0 bg-black opacity-50" />}
 
+                  <Dialog.Title>
+                    <VisuallyHidden>Riwayat Pencarian</VisuallyHidden>
+                  </Dialog.Title>
                   <Dialog.Content
-                    className="mx-5 fixed top-[65%] left-[70%] lg:left-[80%] transform -translate-x-[80%] -translate-y-[50%] w-[90%] max-w-[370px]  max-h-[400px] bg-white border border-gray-300 rounded-lg shadow-lg p-4 overflow-y-auto"
-                     style={{
-    transition: 'all 0.3s ease-in-out',
-    scrollbarWidth: 'thin', // Untuk Firefox
-    scrollbarColor: '#A06ECE #EDE7F6', // Warna scrollbar dan track
-  }}
+                    className="mx-5 fixed top-[65%] left-[70%] lg:left-[80%] transform -translate-x-[80%] -translate-y-[50%] w-[90%] max-w-[370px] min-h-[390px] bg-white border border-gray-300 rounded-lg shadow-lg p-4 scrollbar-thin scrollbar-thumb-[#A06ECE] scrollbar-track-[#EDE7F6]"
+                    aria-labelledby="dialog-title"
+                    aria-describedby="dialog-description"
+                    style={{
+                      transition: 'all 0.3s ease-in-out',
+                      maxHeight: '360px',
+                      overflowY: 'auto', // Pastikan overflowY diatur
+                    }}
                   >
                     <Dialog.Close>
                       <IoCloseSharp
@@ -234,13 +241,13 @@ function History() {
                           width: '24px',
                           height: '24px',
                         }}
-                        onClick=""
                       />
                     </Dialog.Close>
 
                     {/* Garis Horizontal */}
                     <hr className="mt-2 mb-2 border-gray-300" />
-                    <div className="flex flex-col w-full max-w-md mx-auto sm:max-w-sm md:max-w-md lg:max-w-lg">
+
+                    <div className="flex flex-col w-full mx-auto sm:max-w-sm md:max-w-md lg:max-w-lg">
                       <DateRangePicker
                         ranges={dateRange}
                         onChange={handleSelect}
@@ -251,18 +258,26 @@ function History() {
                         inputRanges={[]}
                       />
                     </div>
+
+                    {/* Description for accessibility */}
+                    <div id="dialog-description" className="sr-only">
+                      Filter untuk riwayat pencarian.
+                    </div>
+
                     <hr className="mt-2 mb-2 border-gray-300" />
+
                     <div className="flex justify-end items-center">
                       <Button className="bg-[#4B1979]" onClick={handleFilter} style={{ zIndex: 10 }}>
-                        Simpan
+                        Terapkan Filter
                       </Button>
                     </div>
                   </Dialog.Content>
                 </Dialog.Root>
 
                 <Dialog.Root>
-                  <Dialog.Trigger>
-                    <Button
+                  <Dialog.Trigger asChild>
+                    {/* Replace Button with a div or span */}
+                    <div
                       className="flex items-center p-1 hover:text-black"
                       style={{ border: 'none', backgroundColor: 'transparent' }}
                       onClick={handleCloseFilter}
@@ -272,7 +287,7 @@ function History() {
                       ) : (
                         <IoSearchSharp className="font-bold text-[#7126B5]" style={{ width: '28px', height: '28px' }} />
                       )}
-                    </Button>
+                    </div>
                   </Dialog.Trigger>
                   <Dialog.Overlay style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)' }} />
                   <Dialog.Content className="mx-5 fixed top-[50%] sm:left-[60%] md:left-[75%] lg:left-[83%] transform -translate-x-[80%] -translate-y-[50%] w-[90%] max-w-[400px] bg-white border border-gray-300 rounded-lg shadow-lg p-4">
@@ -365,23 +380,28 @@ function History() {
           </div>
         </section>
         {/* Main Content */}
-        <div className="flex flex-col justify-center w-full items-center shadow-sm mt-[15rem]">
+        <section
+          className="flex flex-col justify-center w-full items-center shadow-sm mt-[15rem]"
+          style={{ position: 'relative', zIndex: '1' }}
+        >
           <div className="container w-screen px-[4rem]">
             {/* Adjusted margin-top */}
             {filteredData.length === 0 ? (
-              <div className="flex flex-col justify-center items-center mt-5">
+              <div className="flex flex-col items-center justify-center mt-5 text-center">
                 <img src={notFoundPict} alt="History Not Found" className="img-fluid mb-3" />
                 <h5 className="font-bold text-[#673AB7]">Oops! Riwayat pemesanan kosong!</h5>
-                <p className="mb-5">Anda belum memiliki riwayat pemesanan</p>
+                <p className="mb-4">Anda belum memiliki riwayat pemesanan</p>
                 <Link
                   to={'/'}
                   style={{
+                    display: 'inline-block',
                     backgroundColor: '#673AB7',
                     borderRadius: '10px',
                     padding: '10px 20px',
                     border: 'none',
-                    color: '#fff',
-                    fontWeight: '700',
+                    textDecoration: 'none',
+                    color: 'white',
+                    textAlign: 'center',
                   }}
                 >
                   Cari Penerbangan
@@ -392,23 +412,20 @@ function History() {
                 <div className="flex flex-col md:flex-row w-full justify-between items-start mt-5">
                   <div className="w-full md:w-1/2">
                     <HistoryItem
+                      key={selectedOrder ? selectedOrder.id : 'default-key'}
                       data={filteredData}
                       onSelectedOrder={handleSelectOrder}
-                      selectedOrder={selectedOrder.id}
+                      selectedOrderId={selectedOrder ? selectedOrder.id : null} // Pastikan diteruskan dengan benar
                     />
                   </div>
                   <div className="w-full md:w-1/2 mt-5 md:mt-0">
-                    {data ? (
-                      <HistoryDetail data={[data]} />
-                    ) : (
-                      <p className="text-center">Klik pesanan untuk melihat detail.</p>
-                    )}
+                    {selectedOrder ? <HistoryDetail data={[selectedOrder]} /> : null}
                   </div>
                 </div>
               </>
             )}
           </div>
-        </div>
+        </section>
       </main>
     </>
   );

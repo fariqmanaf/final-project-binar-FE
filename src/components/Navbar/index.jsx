@@ -1,13 +1,14 @@
 import React from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { useSelector } from 'react-redux';
 import { NavbarIcon } from '@/components/Navbar/icon-navbar';
+import { IoIosList } from 'react-icons/io';
+import { FiBell } from 'react-icons/fi';
+import { RxPerson } from 'react-icons/rx';
 
 const Navbar = ({ searchBar, isAuth }) => {
   const navigate = useNavigate();
-
   const token = useSelector((state) => state.auth.token);
 
   return (
@@ -35,9 +36,9 @@ const Navbar = ({ searchBar, isAuth }) => {
           <div className="flex items-center gap-6 mr-[2rem]">
             {token ? (
               <>
-                <NavbarIcon Content="History" ImageLink="/list.svg" Redirect="/history" />
-                <NavbarIcon Content="Notification" ImageLink="/bell.svg" Redirect="/notification" />
-                <NavbarIcon Content="Account" ImageLink="/person.svg" Redirect="/account" />
+                <NavbarIcon Content="History" Icon={IoIosList} Redirect="/history" />
+                <NavbarIcon Content="Notification" Icon={FiBell} Redirect="/notification" />
+                <NavbarIcon Content="Account" Icon={RxPerson} Redirect="/account" />
               </>
             ) : (
               <Button className="rounded-xl bg-[#7126B5] h-12 hover:bg-[#4c0f85]">
