@@ -11,8 +11,8 @@ const Navbar = ({ searchBar, isAuth }) => {
   const token = useSelector((state) => state.auth.token);
 
   return (
-    <nav className="w-full bg-white shadow-md h-[10vh] flex justify-center">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="w-full bg-white shadow-md h-[10vh] flex justify-center fixed top-0 left-0 right-0 z-50">
+      <div className="container mx-auto flex justify-between items-center px-[2rem]">
         {/* Logo */}
         <img src="/logo.svg" alt="Logo" className="h-10 cursor-pointer" onClick={() => navigate('/')} />
 
