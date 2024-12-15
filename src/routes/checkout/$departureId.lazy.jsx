@@ -16,29 +16,36 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
 import ReactLoading from 'react-loading';
 import { motion } from 'motion/react';
+import { mapping, mappingPassenger } from '@/utils/mappingClass';
 
 export const Route = createLazyFileRoute('/checkout/$departureId')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const searchParams = Route.useSearch();
+
   const passenger = [
     {
       type: 'ADULT',
-      quantity: 1,
+      quantity: searchParams?.A ? parseInt(searchParams?.A) : 0,
     },
     {
       type: 'CHILD',
-      quantity: 0,
+      quantity: searchParams?.C ? parseInt(searchParams?.C) : 0,
     },
     {
       type: 'INFANT',
-      quantity: 0,
+      quantity: searchParams?.I ? parseInt(searchParams?.I) : 0,
     },
   ];
 
   const flightId = Route.useParams().departureId;
-  const returnFlightId = Route.useSearch().returnId;
+  const returnFlightId = searchParams?.returnId;
   const token = useSelector((state) => state.auth.token);
   const userState = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
@@ -51,8 +58,6 @@ function RouteComponent() {
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [flightData, setFlightData] = useState([]);
   const [user, setUser] = useState(userState);
-  console.log(selectedSeats);
-  console.log(selectedReturnSeats);
 
   const {
     data: flight,
@@ -243,7 +248,7 @@ function RouteComponent() {
                         return (
                           <div key={globalIndex}>
                             <p className="bg-gray-700 text-white text-sm py-2 px-4 my-[3vh] rounded-t-xl">
-                              Data Diri Penumpang {globalIndex + 1} - {passengerType.type}
+                              Data Diri Penumpang {globalIndex + 1} - {mappingPassenger[passengerType.type]}
                             </p>
                             <div className="space-y-5">
                               <PassengerForm form={form} index={globalIndex} type={passengerType.type} />
@@ -256,7 +261,7 @@ function RouteComponent() {
                   <div className="p-[1.5rem] border border-slate-300 rounded-lg">
                     <p className="font-semibold text-xl">Pilih Kursi</p>
                     <p className="bg-green-500 text-center text-white text-sm py-2 px-4 my-[3vh] rounded-md">
-                      {flightData.departureFlight?.type} -{' '}
+                      {mapping[flightData.departureFlight?.type]} -{' '}
                       {flightData.departureFlight?.flightSeats.filter((seat) => seat.status === 'AVAILABLE').length}{' '}
                       Kursi Tersedia
                     </p>
@@ -273,7 +278,7 @@ function RouteComponent() {
                     {flightData?.returnFlight && (
                       <div className="mt-[10vh]">
                         <p className="bg-green-500 text-center text-white text-sm py-2 px-4 my-[3vh] rounded-md">
-                          {flightData.returnFlight?.type} -{' '}
+                          {mapping[flightData.returnFlight?.type]} -{' '}
                           {flightData.returnFlight?.flightSeats.filter((seat) => seat.status === 'AVAILABLE').length}{' '}
                           Kursi Tersedia (Return)
                         </p>
