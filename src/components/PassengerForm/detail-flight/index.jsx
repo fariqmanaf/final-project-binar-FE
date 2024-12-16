@@ -1,10 +1,11 @@
 import { TimeStampConverter } from '@/utils/timestampConvert';
+import { mappingPassenger } from '@/utils/mappingClass';
 
-export function DetailFlight({ data, returnData }) {
+export function DetailFlight({ data, returnData, className }) {
   const timestamp = TimeStampConverter(data?.departureTimestamp, data?.arrivalTimestamp);
 
   return (
-    <div className="flex flex-col p-[1.5rem] border border-slate-200 rounded-lg shadow-md">
+    <div className={`${className} flex flex-col p-[1.5rem] border border-slate-200 rounded-lg shadow-md`}>
       <div className="flex flex-col mb-[1rem]">
         <p className="text-xl font-semibold mb-[1rem]">Detail Penerbangan {returnData && '- Return'}</p>
         <div className="flex flex-row justify-between">
@@ -25,9 +26,6 @@ export function DetailFlight({ data, returnData }) {
           <p className="font-semibold">{data?.airline.name}</p>
           <p className="font-semibold mb-[1rem]">{data?.flightNumber}</p>
           <p className="font-semibold">Informasi: </p>
-          {/* {data?.airlineInfo.map((info) => (
-            <p>{info}</p>
-          ))} */}
           <p className="text-sm">Bagasi 7Kg</p>
           <p className="text-sm">Fasilitas Nyaman</p>
           <p className="text-sm">Hidangan Gratis</p>
@@ -63,7 +61,7 @@ export function Pricing({ data, passenger }) {
             passengerType.quantity > 0 && (
               <div className="flex justify-between" key={passengerType.type}>
                 <p>
-                  {passengerType.quantity} {passengerType.type}
+                  {passengerType.quantity} {mappingPassenger[passengerType.type]}
                 </p>
                 <div>
                   <p>

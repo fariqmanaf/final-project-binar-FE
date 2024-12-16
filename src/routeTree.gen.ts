@@ -20,7 +20,7 @@ const R404LazyImport = createFileRoute('/404')();
 const IndexLazyImport = createFileRoute('/')();
 const NotificationIndexLazyImport = createFileRoute('/notification/')();
 const HistoryIndexLazyImport = createFileRoute('/history/')();
-const FlightIndexLazyImport = createFileRoute('/flight/')();
+const FlightsIndexLazyImport = createFileRoute('/flights/')();
 const AccountIndexLazyImport = createFileRoute('/account/')();
 const PaymentDoneLazyImport = createFileRoute('/payment/done')();
 const PaymentTransactionIdLazyImport = createFileRoute('/payment/$transactionId')();
@@ -57,11 +57,11 @@ const HistoryIndexLazyRoute = HistoryIndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/history/index.lazy').then((d) => d.Route));
 
-const FlightIndexLazyRoute = FlightIndexLazyImport.update({
-  id: '/flight/',
-  path: '/flight/',
+const FlightsIndexLazyRoute = FlightsIndexLazyImport.update({
+  id: '/flights/',
+  path: '/flights/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/flight/index.lazy').then((d) => d.Route));
+} as any).lazy(() => import('./routes/flights/index.lazy').then((d) => d.Route));
 
 const AccountIndexLazyRoute = AccountIndexLazyImport.update({
   id: '/account/',
@@ -184,11 +184,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountIndexLazyImport;
       parentRoute: typeof rootRoute;
     };
-    '/flight/': {
-      id: '/flight/';
-      path: '/flight';
-      fullPath: '/flight';
-      preLoaderRoute: typeof FlightIndexLazyImport;
+    '/flights/': {
+      id: '/flights/';
+      path: '/flights';
+      fullPath: '/flights';
+      preLoaderRoute: typeof FlightsIndexLazyImport;
       parentRoute: typeof rootRoute;
     };
     '/history/': {
@@ -234,7 +234,7 @@ export interface FileRoutesByFullPath {
   '/payment/$transactionId': typeof PaymentTransactionIdLazyRoute;
   '/payment/done': typeof PaymentDoneLazyRoute;
   '/account': typeof AccountIndexLazyRoute;
-  '/flight': typeof FlightIndexLazyRoute;
+  '/flights': typeof FlightsIndexLazyRoute;
   '/history': typeof HistoryIndexLazyRoute;
   '/notification': typeof NotificationIndexLazyRoute;
   '/auth/password-reset/$token': typeof AuthPasswordResetTokenLazyRoute;
@@ -251,7 +251,7 @@ export interface FileRoutesByTo {
   '/payment/$transactionId': typeof PaymentTransactionIdLazyRoute;
   '/payment/done': typeof PaymentDoneLazyRoute;
   '/account': typeof AccountIndexLazyRoute;
-  '/flight': typeof FlightIndexLazyRoute;
+  '/flights': typeof FlightsIndexLazyRoute;
   '/history': typeof HistoryIndexLazyRoute;
   '/notification': typeof NotificationIndexLazyRoute;
   '/auth/password-reset/$token': typeof AuthPasswordResetTokenLazyRoute;
@@ -269,7 +269,7 @@ export interface FileRoutesById {
   '/payment/$transactionId': typeof PaymentTransactionIdLazyRoute;
   '/payment/done': typeof PaymentDoneLazyRoute;
   '/account/': typeof AccountIndexLazyRoute;
-  '/flight/': typeof FlightIndexLazyRoute;
+  '/flights/': typeof FlightsIndexLazyRoute;
   '/history/': typeof HistoryIndexLazyRoute;
   '/notification/': typeof NotificationIndexLazyRoute;
   '/auth/password-reset/$token': typeof AuthPasswordResetTokenLazyRoute;
@@ -288,7 +288,7 @@ export interface FileRouteTypes {
     | '/payment/$transactionId'
     | '/payment/done'
     | '/account'
-    | '/flight'
+    | '/flights'
     | '/history'
     | '/notification'
     | '/auth/password-reset/$token'
@@ -304,7 +304,7 @@ export interface FileRouteTypes {
     | '/payment/$transactionId'
     | '/payment/done'
     | '/account'
-    | '/flight'
+    | '/flights'
     | '/history'
     | '/notification'
     | '/auth/password-reset/$token'
@@ -320,7 +320,7 @@ export interface FileRouteTypes {
     | '/payment/$transactionId'
     | '/payment/done'
     | '/account/'
-    | '/flight/'
+    | '/flights/'
     | '/history/'
     | '/notification/'
     | '/auth/password-reset/$token'
@@ -338,7 +338,7 @@ export interface RootRouteChildren {
   PaymentTransactionIdLazyRoute: typeof PaymentTransactionIdLazyRoute;
   PaymentDoneLazyRoute: typeof PaymentDoneLazyRoute;
   AccountIndexLazyRoute: typeof AccountIndexLazyRoute;
-  FlightIndexLazyRoute: typeof FlightIndexLazyRoute;
+  FlightsIndexLazyRoute: typeof FlightsIndexLazyRoute;
   HistoryIndexLazyRoute: typeof HistoryIndexLazyRoute;
   NotificationIndexLazyRoute: typeof NotificationIndexLazyRoute;
   AuthPasswordResetTokenLazyRoute: typeof AuthPasswordResetTokenLazyRoute;
@@ -355,7 +355,7 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentTransactionIdLazyRoute: PaymentTransactionIdLazyRoute,
   PaymentDoneLazyRoute: PaymentDoneLazyRoute,
   AccountIndexLazyRoute: AccountIndexLazyRoute,
-  FlightIndexLazyRoute: FlightIndexLazyRoute,
+  FlightsIndexLazyRoute: FlightsIndexLazyRoute,
   HistoryIndexLazyRoute: HistoryIndexLazyRoute,
   NotificationIndexLazyRoute: NotificationIndexLazyRoute,
   AuthPasswordResetTokenLazyRoute: AuthPasswordResetTokenLazyRoute,
@@ -379,7 +379,7 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
         "/payment/$transactionId",
         "/payment/done",
         "/account/",
-        "/flight/",
+        "/flights/",
         "/history/",
         "/notification/",
         "/auth/password-reset/$token",
@@ -413,8 +413,8 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     "/account/": {
       "filePath": "account/index.lazy.jsx"
     },
-    "/flight/": {
-      "filePath": "flight/index.lazy.jsx"
+    "/flights/": {
+      "filePath": "flights/index.lazy.jsx"
     },
     "/history/": {
       "filePath": "history/index.lazy.jsx"
