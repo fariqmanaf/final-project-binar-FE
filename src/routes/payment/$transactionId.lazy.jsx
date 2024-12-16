@@ -9,6 +9,7 @@ import { BreadCrumb } from '@/components/Breadcrumb';
 import { motion } from 'framer-motion';
 import ReactLoading from 'react-loading';
 import { toast } from 'react-hot-toast';
+import { Button } from '@/components/ui/button';
 
 export const Route = createLazyFileRoute('/payment/$transactionId')({
   component: RouteComponent,
@@ -71,31 +72,28 @@ function RouteComponent() {
   }, []);
 
   function handlePayment() {
-    if (transactionData?.payment?.snapToken && window.snap) {
-      window.snap.embed(transactionData.payment.snapToken, {
+    if (transaction?.payment?.snapToken && window.snap) {
+      window.snap.embed(transaction.payment.snapToken, {
         embedId: 'snap-container',
-        onSuccess: function (result) {
-          // Navigasi ke halaman selesai jika pembayaran berhasil
-          navigate('/payment/done');
+        onSuccess: function () {
           toast.success('Pembayaran berhasil!', {
             duration: 5000,
           });
+          navigate('/payment/done');
         },
-        onPending: function (result) {
-          // Informasikan pengguna bahwa pembayaran dalam status pending
-          toast.info('Pembayaran dalam status pending. Silakan cek email Anda untuk instruksi lebih lanjut.', {
+        onPending: function () {
+          toast.info('Pembayaran dalam status pending. Anda akan diarahkan ke riwayat.', {
             duration: 5000,
           });
+          navigate('/history');
         },
-        onError: function (error) {
-          // Informasikan pengguna bahwa terjadi kesalahan
-          console.error('Terjadi kesalahan pada pembayaran:', error);
-          toast.error('Pembayaran gagal. Silakan coba lagi atau hubungi dukungan.', {
+        onError: function () {
+          toast.error('Pembayaran gagal. Anda akan diarahkan ke riwayat.', {
             duration: 5000,
           });
+          navigate('/history');
         },
         onClose: function () {
-          // Informasikan pengguna bahwa dialog pembayaran ditutup
           toast('Anda menutup dialog pembayaran tanpa menyelesaikannya.', {
             duration: 5000,
           });
@@ -106,11 +104,22 @@ function RouteComponent() {
     }
   }
 
+  function handlePayLater() {
+    toast.info('Pembayaran ditunda. Anda akan diarahkan ke riwayat.', {
+      duration: 5000,
+    });
+    navigate('/history');
+  }
+
   useEffect(() => {
     if (isSuccess && transactionData?.payment?.snapToken) {
       handlePayment();
     }
   }, [isSuccess, transactionData]);
+
+  if (isError) {
+    return <div className="w-screen h-[90vh] flex justify-center items-center">Payment is not found</div>;
+  }
 
   return (
     <>
@@ -150,6 +159,12 @@ function RouteComponent() {
                 )}
                 <Pricing data={transactionData} passenger={passenger} />
               </div>
+              <Button
+                className="bg-[#7126B5] text-white py-2 px-4 rounded-md hover:bg-[#5e2494] mt-2"
+                onClick={handlePayLater}
+              >
+                Bayar Nanti
+              </Button>
             </motion.div>
 
             <div className="md:w-[60%] h-fit border border-slate-300 rounded-lg">

@@ -27,10 +27,10 @@ function Done() {
         </div>
         <div className="flex flex-col gap-[1rem] w-[20%]">
           <Button className="bg-[#7126B5] text-white rounded-xl px-6 py-2 hover:bg-[#5e2494]">
-            <Link to="#">Terbitkan Tiket</Link>
+            <Link to="/history">Terbitkan Tiket</Link>
           </Button>
-          <Button className="bg-[#7126B5] text-white rounded-xl px-6 py-2">
-            <Link to="#">Cari Penerbangan Lain</Link>
+          <Button className="bg-[#7126B5] text-white rounded-xl px-6 py-2 hover:bg-[#5e2494]">
+            <Link to="/flight">Cari Penerbangan Lain</Link>
           </Button>
         </div>
       </div>
