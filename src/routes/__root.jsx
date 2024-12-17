@@ -33,6 +33,8 @@ function Root() {
       dispatch(setUser(userData));
     } else if (isError) {
       localStorage.removeItem('token');
+      dispatch(setToken(null));
+      dispatch(setUser(null));
       navigate({ to: '/auth/login' });
     }
   }, [isError, isSuccess, userData, dispatch, navigate]);
