@@ -3,6 +3,9 @@ import { useNavigate } from '@tanstack/react-router';
 import { Link } from '@tanstack/react-router';
 import { useSelector } from 'react-redux';
 import { NavbarIcon } from '@/components/Navbar/icon-navbar';
+import { IoIosList } from 'react-icons/io';
+import { FiBell } from 'react-icons/fi';
+import { RxPerson } from 'react-icons/rx';
 
 const Navbar = ({ searchBar, isAuth }) => {
   const navigate = useNavigate();
