@@ -330,7 +330,7 @@ const FlightSearch = () => {
                       </Dialog.Title>
 
                       <div className="max-h-[100px] overflow-y-auto mt-4">
-                        {[
+                        {/* {[
                           { label: 'Dewasa', key: 'adult' },
                           { label: 'Anak', key: 'child' },
                           { label: 'Bayi', key: 'infant' },
@@ -358,7 +358,7 @@ const FlightSearch = () => {
                               </button>
                             </div>
                           </div>
-                        ))}
+                        ))} */}
                       </div>
                     </Dialog.Content>
                   </Dialog.Root>
@@ -399,7 +399,7 @@ const FlightSearch = () => {
                         </Dialog.Title>
 
                         {/* Opsi */}
-                        <div className="flex flex-col gap-2">
+                        {/* <div className="flex flex-col gap-2">
                           {['Business', 'Economy'].map((option) => (
                             <button
                               key={option}
@@ -411,7 +411,7 @@ const FlightSearch = () => {
                               {option}
                             </button>
                           ))}
-                        </div>
+                        </div> */}
 
                         {/* Tombol Close */}
                         <div className="flex justify-end mt-4">
