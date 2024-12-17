@@ -10,9 +10,26 @@ export const content = [
 export const safelist = [{ pattern: /^grid-cols-/ }];
 export const theme = {
   extend: {
+    keyframes: {
+      progress: {
+        '0%': { width: '0%' },
+        '100%': { width: '100%' },
+      },
+      character: {
+        '0%': { transform: 'translateX(0%)' },
+        '100%': { transform: 'translateX(40%)' },
+      },
+      blink: {
+        '0%, 100%': { opacity: 1 },
+        '50%': { opacity: 0 },
+      },
+    },
     animation: {
       enter: 'fadeIn 0.3s ease-out',
       leave: 'fadeOut 0.3s ease-in',
+      progress: 'progress 1s linear infinite',
+      character: 'character 1s linear infinite',
+      blink: 'blink 2s infinite',
     },
     fontFamily: {
       sans: ['Poppins', ...fontFamily.sans],
