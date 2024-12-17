@@ -12,7 +12,7 @@ function RouteComponent() {
   return (
     <div className="font-poppins container mx-auto w-[90%] md:w-[80%] px-4 py-8">
       <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left p-4">
-        <img src="/notfound.svg" alt="Tidak Ditemukan" className="mb-4 md:mb-0 md:mr-8 w-64 md:w-auto" />
+        <img src="/notfound2.svg" alt="Tidak Ditemukan" className="mb-4 md:mb-0 md:mr-8 w-64 md:w-auto" />
         <div>
           <h1 className="text-4xl font-bold mb-4">
             Oops! <br /> Halaman Tidak Ditemukan
