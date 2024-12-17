@@ -259,10 +259,10 @@ function History() {
                       />
                     </div>
 
-                    {/* Description for accessibility */}
-                    <div id="dialog-description" className="sr-only">
+                    {/* Add Dialog.Description */}
+                    <Dialog.Description id="dialog-description" className="sr-only">
                       Filter untuk riwayat pencarian.
-                    </div>
+                    </Dialog.Description>
 
                     <hr className="mt-2 mb-2 border-gray-300" />
 

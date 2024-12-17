@@ -181,7 +181,7 @@ const HistoryItem = ({ data, onSelectedOrder, selectedOrderId }) => {
                   </div>
                   <div className="text-right">
                     <h6 className="text-[#4B1979] font-bold text-sm sm:text-base">
-                      {formatRupiah(transaction.departureFlight?.price + transaction.departureFlight?.price)}
+                      {formatRupiah(transaction.departureFlight?.price)}
                     </h6>
                   </div>
                 </div>
@@ -202,13 +202,6 @@ HistoryItem.propTypes = {
       payment: PropTypes.shape({
         status: PropTypes.string.isRequired,
       }).isRequired,
-      bookings: PropTypes.arrayOf(
-        PropTypes.shape({
-          passenger: PropTypes.shape({
-            name: PropTypes.string.isRequired,
-          }).isRequired,
-        })
-      ).isRequired,
       departureFlight: PropTypes.shape({
         departureAirport: PropTypes.shape({
           city: PropTypes.string.isRequired,
@@ -220,15 +213,11 @@ HistoryItem.propTypes = {
         }).isRequired,
         price: PropTypes.number.isRequired,
       }).isRequired,
-      returnFlight: PropTypes.shape({
-        arrivalTimestamp: PropTypes.string.isRequired,
-        departureTimestamp: PropTypes.string.isRequired,
-        price: PropTypes.number.isRequired,
-      }).isRequired,
     })
   ).isRequired,
   onSelectedOrder: PropTypes.func.isRequired,
   selectedOrderId: PropTypes.string,
 };
+
 
 export default memo(HistoryItem);
