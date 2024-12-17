@@ -34,7 +34,7 @@ const Favorite = ({ continent }) => {
         <h1>Destinasi Favorite</h1>
         <div></div>
       </div>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 justify-center">
         {favorites.map((fav, index) => (
           <CardFav key={index} fav={fav} labelImage={fav.labelImage} />
         ))}

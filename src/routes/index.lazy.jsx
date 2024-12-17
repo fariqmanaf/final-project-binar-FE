@@ -43,13 +43,6 @@ function Homepage() {
           {/* <SearchDestination /> */}
           <Favorite />
         </div>
-
-        {/* Harusnya di halaman profile */}
-        <div className="flex justify-center mb-10">
-          <Button onClick={logout} className="rounded-xl bg-red-500 text-white px-6 py-2 hover:bg-red-600">
-            Keluar
-          </Button>
-        </div>
       </main>
     </>
   );
