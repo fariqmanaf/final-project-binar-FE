@@ -2,7 +2,7 @@ import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import Navbar from '@/components/Navbar';
 import notFoundPict from '/notFoundPict.svg';
 import HistoryDetail from '@/components/History/HistoryDetail';
-import HistoryItem from '@/components/History/historyItem';
+import HistoryItem from '@/components/History/HistoryItem';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FaArrowLeft } from 'react-icons/fa';
