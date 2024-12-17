@@ -219,5 +219,4 @@ HistoryItem.propTypes = {
   selectedOrderId: PropTypes.string,
 };
 
-
 export default memo(HistoryItem);
