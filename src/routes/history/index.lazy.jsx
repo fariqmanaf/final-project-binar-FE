@@ -157,10 +157,7 @@ function History() {
       <Navbar isAuth={true} searchBar={true} />
       <main className="flex flex-col justify-center w-screen items-center">
         {/* Header */}
-        <section
-          className="flex justify-center w-full items-center shadow-sm fixed top-[60px] bg-white"
-          style={{ zIndex: '2' }}
-        >
+        <section className="flex justify-center w-full items-center shadow-sm bg-white" style={{ zIndex: '2' }}>
           <div className="container w-screen px-[4rem]">
             {/* Filter and Title */}
             <h1 className="text-xl font-bold mt-[3rem] mb-[3rem]">Riwayat Pemesanan</h1>
@@ -381,7 +378,7 @@ function History() {
         </section>
         {/* Main Content */}
         <section
-          className="flex flex-col justify-center w-full items-center shadow-sm mt-[15rem]"
+          className="flex flex-col justify-center w-full items-center shadow-sm"
           style={{ position: 'relative', zIndex: '1' }}
         >
           <div className="container w-screen px-[4rem]">
