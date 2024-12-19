@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { setToken } from '@/redux/slices/auth';
 import Navbar from '@/components/Navbar';
-import FlightSearch from '@/components/Home/search';
+import SearchFlight from '@/components/Home/searchFlight';
 import Favorite from '@/components/Home/favorite';
 
 export const Route = createLazyFileRoute('/')({
@@ -38,25 +38,18 @@ function Homepage() {
       <Navbar isAuth={true} searchBar={true} />
       <main className="flex flex-col justify-start w-screen items-center">
         {/* Hero */}
-        <div className="mt-[3rem] w-full">
+        <section className="mt-[3rem] w-full">
           <img src="/hero.svg" alt="hero" className="w-full object-cover" />
-        </div>
+        </section>
         {/* Search Form */}
-        <div className="">
-          <FlightSearch searchData={searchData} setSearchData={setSearchData} />
+        <div className="flex justify-center w-full items-center shadow-sm bg-white" style={{ zIndex: '2' }}>
+          <SearchFlight searchData={searchData} setSearchData={setSearchData} />
         </div>
 
         {/* <FavoriteDestination /> */}
-        <div className="mt-10 w-[70%]">
+        <section className="mt-10 w-full" style={{ zIndex: '1' }}>
           <Favorite setSearchData={setSearchData} />
-        </div>
-
-        {/* Harusnya di halaman profile */}
-        {/* <div className="flex justify-center mb-10">
-          <Button onClick={logout} className="rounded-xl bg-red-500 text-white px-6 py-2 hover:bg-red-600">
-            Keluar
-          </Button>
-        </div> */}
+        </section>
       </main>
     </>
   );

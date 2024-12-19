@@ -12,7 +12,6 @@ const Favorite = ({ setSearchData }) => {
   const [nextCursor, setNextCursor] = useState(null);
   const [activeButton, setActiveButton] = useState('Semua');
 
-  // Mapping destinations ke validContinents
   const destinationToContinentMap = {
     Semua: null,
     Asia: 'ASIA',
@@ -24,15 +23,11 @@ const Favorite = ({ setSearchData }) => {
 
   const destinations = Object.keys(destinationToContinentMap);
 
-  // Fungsi untuk fetch data favorit
   const fetchFavorites = async (destination, cursor = null) => {
     try {
       setLoading(true);
-
       const continentParam = destinationToContinentMap[destination];
       const response = await getFavoriteDestination(continentParam, cursor);
-
-      // Update data favorites dan nextCursor
       setFavorites((prevFavorites) => (cursor ? [...prevFavorites, ...response] : response));
       setNextCursor(response.nextCursor);
     } catch (err) {
@@ -42,12 +37,10 @@ const Favorite = ({ setSearchData }) => {
     }
   };
 
-  // Fetch data saat tombol dipilih
   useEffect(() => {
     fetchFavorites(activeButton);
   }, [activeButton]);
 
-  // Fungsi untuk menangani tombol "Load More"
   const handleLoadMore = () => {
     if (nextCursor) {
       fetchFavorites(activeButton, nextCursor);
@@ -61,14 +54,14 @@ const Favorite = ({ setSearchData }) => {
       departureDate: new Date(fav.departureTimestamp).toISOString().split('T')[0],
       returnDate: new Date(fav.arrivalTimestamp).toISOString().split('T')[0],
       seatClass: fav.type,
-      passengers: 1, // Assuming 1 passenger for simplicity
+      passengers: 1,
     });
   };
 
   return (
-    <div className="pb-24">
-      <h1 className="text-xl font-bold">Destinasi Favorit</h1>
-      <div className="flex gap-4 mt-4">
+    <div className="pb-24 px-4 mx-auto max-w-screen-xl">
+      <h1 className="text-xl font-bold mb-4">Destinasi Favorit</h1>
+      <div className="flex gap-4 mb-6 overflow-x-auto">
         {destinations.map((destination) => (
           <Button
             key={destination}
@@ -78,9 +71,9 @@ const Favorite = ({ setSearchData }) => {
             onClick={() => {
               setActiveButton(destination);
               if (activeButton !== destination) {
-                setFavorites([]); // Reset favorites agar tidak tercampur
+                setFavorites([]);
               }
-              setNextCursor(null); // Reset nextCursor
+              setNextCursor(null);
             }}
           >
             <IoSearch size="1.2rem" />
@@ -94,18 +87,19 @@ const Favorite = ({ setSearchData }) => {
           <ReactLoading type="spin" color="#7126B5" />
         </div>
       )}
-      <div className="flex flex-wrap gap-5 mt-4">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {favorites && favorites.length > 0
           ? favorites.map((fav, index) => (
               <div key={index} onClick={() => handleCardClick(fav)}>
                 <CardFav fav={fav} />
               </div>
             ))
-          : !loading && <p>No favorite destinations found.</p>}
+          : !loading && <p className="text-center">No favorite destinations found.</p>}
       </div>
 
       {nextCursor && !loading && (
-        <button className="mt-4 px-4 py-2 bg-[#7126B5] text-white rounded-lg" onClick={handleLoadMore}>
+        <button className="mt-4 px-4 py-2 bg-[#7126B5] text-white rounded-lg block mx-auto" onClick={handleLoadMore}>
           Load More
         </button>
       )}
