@@ -2,7 +2,6 @@ import { getAirportData } from '@/Services/home/airport';
 import { useState, useEffect } from 'react';
 import { FaPlaneArrival, FaPlaneDeparture } from 'react-icons/fa';
 import { TbArrowsExchange } from 'react-icons/tb';
-import * as Dialog from '@radix-ui/react-dialog';
 import * as Popover from '@radix-ui/react-popover';
 import DepartureDialog from './SearchComponent/DepartureDialog';
 import { IoCalendarSharp } from 'react-icons/io5';

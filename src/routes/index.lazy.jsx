@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { useDispatch } from 'react-redux';
-import { Button } from '@/components/ui/button';
 import { setToken } from '@/redux/slices/auth';
 import Navbar from '@/components/Navbar';
 import SearchFlight from '@/components/Home/searchFlight';
