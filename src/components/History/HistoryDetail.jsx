@@ -127,7 +127,7 @@ const HistoryDetail = ({ data }) => {
                 })}
               </p>
               {/* Ensure returnFlight is not null before trying to access properties */}
-              <p style={{ fontSize: '12px' }}>{order.returnFlight?.destinationAirport?.name || 'N/A'}</p>
+              <p style={{ fontSize: '12px' }}>{order.departureFlight?.destinationAirport?.name || 'N/A'}</p>
             </div>
             <hr style={{ margin: '16px 0', borderColor: '#E0E0E0' }} />
             <div>

@@ -68,7 +68,7 @@ export function Pricing({ data, passenger }) {
                     <span className="mr-[0.5rem] text-[#7126B5] font-semibold text-sm">(D)</span>
                     {passengerType.type === 'INFANT'
                       ? 'Rp. 0'
-                      : `${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(data.departureFlight?.price)}`}
+                      : `${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(data?.departureFlight?.price)}`}
                   </p>
                   {data?.returnFlight && (
                     <p>
