@@ -53,4 +53,3 @@ export const getTransactionHistoryById = async (id) => {
 
   return result?.data;
 };
-
