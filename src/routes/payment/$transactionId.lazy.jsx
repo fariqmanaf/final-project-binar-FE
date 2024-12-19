@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createLazyFileRoute, useNavigate, useParams } from '@tanstack/react-router';
+import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import Navbar from '@/components/Navbar';
 import { DetailFlight, Pricing } from '@/components/PassengerForm/detail-flight';
 import { getTransactionById } from '@/Services/payment';
@@ -9,31 +9,17 @@ import { BreadCrumb } from '@/components/Breadcrumb';
 import { motion } from 'framer-motion';
 import ReactLoading from 'react-loading';
 import { toast } from 'react-hot-toast';
-import { Button } from '@/components/ui/button';
+import { useSelector } from 'react-redux';
 
 export const Route = createLazyFileRoute('/payment/$transactionId')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const passenger = [
-    {
-      type: 'ADULT',
-      quantity: 1,
-    },
-    {
-      type: 'CHILD',
-      quantity: 1,
-    },
-    {
-      type: 'INFANT',
-      quantity: 1,
-    },
-  ];
-
   const navigate = useNavigate();
   const transactionId = Route.useParams().transactionId;
   const [transactionData, setTransactionData] = useState(null);
+  const token = useSelector((state) => state.auth.token);
 
   const {
     data: transaction,
@@ -43,7 +29,37 @@ function RouteComponent() {
   } = useQuery({
     queryKey: ['transaction', transactionId],
     queryFn: () => getTransactionById(transactionId),
+    onError: (err) => {
+      console.error('Query Error:', err);
+      toast.error('Gagal mengambil data transaksi.');
+    },
   });
+
+  const passenger = (() => {
+    const passengerCounts = {
+      ADULT: 0,
+      CHILD: 0,
+      INFANT: 0,
+    };
+
+    transactionData?.bookings?.forEach((booking) => {
+      const passengerType = booking.passenger?.type;
+      if (passengerType && Object.prototype.hasOwnProperty.call(passengerCounts, passengerType)) {
+        passengerCounts[passengerType] += 1;
+      }
+    });
+
+    return Object.entries(passengerCounts).map(([type, quantity]) => ({
+      type,
+      quantity,
+    }));
+  })();
+
+  useEffect(() => {
+    if (!token) {
+      navigate({ to: '/auth/login' });
+    }
+  }, [token, navigate]);
 
   useEffect(() => {
     if (isSuccess && transaction) {
@@ -79,19 +95,19 @@ function RouteComponent() {
           toast.success('Pembayaran berhasil!', {
             duration: 5000,
           });
-          navigate('/payment/done');
+          navigate({ to: '/payment/done' });
         },
         onPending: function () {
-          toast.info('Pembayaran dalam status pending. Anda akan diarahkan ke riwayat.', {
+          toast.info('Pembayaran dalam status pending.', {
             duration: 5000,
           });
-          navigate('/history');
+          navigate({ to: '/history' });
         },
         onError: function () {
-          toast.error('Pembayaran gagal. Anda akan diarahkan ke riwayat.', {
+          toast.error('Pembayaran gagal.', {
             duration: 5000,
           });
-          navigate('/history');
+          navigate({ to: '/history' });
         },
         onClose: function () {
           toast('Anda menutup dialog pembayaran tanpa menyelesaikannya.', {
@@ -102,13 +118,6 @@ function RouteComponent() {
     } else {
       console.error('Snap token atau snap.js tidak tersedia');
     }
-  }
-
-  function handlePayLater() {
-    toast.info('Pembayaran ditunda. Anda akan diarahkan ke riwayat.', {
-      duration: 5000,
-    });
-    navigate('/history');
   }
 
   useEffect(() => {
@@ -159,12 +168,6 @@ function RouteComponent() {
                 )}
                 <Pricing data={transactionData} passenger={passenger} />
               </div>
-              <Button
-                className="bg-[#7126B5] text-white py-2 px-4 rounded-md hover:bg-[#5e2494] mt-2"
-                onClick={handlePayLater}
-              >
-                Bayar Nanti
-              </Button>
             </motion.div>
 
             <div className="md:w-[60%] h-fit border border-slate-300 rounded-lg">
