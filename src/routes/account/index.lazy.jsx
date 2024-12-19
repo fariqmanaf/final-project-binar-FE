@@ -1,5 +1,6 @@
+// src/routes/account/index.lazy.jsx
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,9 +15,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { useToast } from '@/components/hooks/use-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
+import { useDispatch } from 'react-redux';
+import { setToken, setUser } from '@/redux/slices/auth';
+import { fetchUserData, updateUserProfile } from '@/Services/account/userAccount';
 
 export const Route = createLazyFileRoute('/account/')({
   component: Account,
@@ -24,16 +28,55 @@ export const Route = createLazyFileRoute('/account/')({
 
 function Account() {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const dispatch = useDispatch();
 
-  const [namaLengkap, setNamaLengkap] = useState('Harry');
-  const [nomorTelepon, setNomorTelepon] = useState('+62 897823232');
-  const [email, setEmail] = useState('Johndoe@gmail.com');
+  const [namaLengkap, setNamaLengkap] = useState('');
+  const [nomorTelepon, setNomorTelepon] = useState('');
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // ubah input
-  const handleNamaLengkapChange = (event) => setNamaLengkap(event.target.value);
-  const handleNomorTeleponChange = (event) => setNomorTelepon(event.target.value);
-  const handleEmailChange = (event) => setEmail(event.target.value);
+  // Fetch data user
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        const userData = await fetchUserData(token);
+        const { name, phoneNumber, email } = userData;
+        setNamaLengkap(name || '');
+        setNomorTelepon(phoneNumber || '');
+        setEmail(email || '');
+      } catch (err) {
+        toast.error('Gagal memuat data pengguna');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Update profile
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      await updateUserProfile(token, namaLengkap, nomorTelepon);
+      toast.success('Data Berhasil Disimpan');
+    } catch (err) {
+      toast.error('Gagal menyimpan data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    dispatch(setToken(null));
+    dispatch(setUser(null));
+    toast.success('Anda telah berhasil keluar');
+    navigate({ to: '/auth/logout' });
+  };
 
   return (
     <>
@@ -76,7 +119,7 @@ function Account() {
                       <AlertDialogCancel className="bg-red-500 hover:bg-red-800 hover:text-white text-white">
                         Batalkan
                       </AlertDialogCancel>
-                      <AlertDialogAction className="bg-[#A06ECE] hover:bg-[#4B1979] text-white">
+                      <AlertDialogAction className="bg-[#A06ECE] hover:bg-[#4B1979] text-white" onClick={handleLogout}>
                         Keluar
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -105,7 +148,7 @@ function Account() {
                     className="w-full p-2 border border-[#D0D0D0] rounded mt-1"
                     placeholder="Nama Lengkap"
                     value={namaLengkap}
-                    onChange={handleNamaLengkapChange}
+                    onChange={(e) => setNamaLengkap(e.target.value)}
                   />
                 </div>
 
@@ -115,7 +158,7 @@ function Account() {
                     className="w-full p-2 border border-[#D0D0D0] rounded mt-1"
                     placeholder="Nomor Telepon"
                     value={nomorTelepon}
-                    onChange={handleNomorTeleponChange}
+                    onChange={(e) => setNomorTelepon(e.target.value)}
                   />
                 </div>
 
@@ -129,19 +172,16 @@ function Account() {
                     placeholder="Email"
                     className="w-full p-2 border border-[#D0D0D0] rounded mt-1"
                     value={email}
-                    onChange={handleEmailChange}
+                    disabled
                   />
                 </div>
                 <div className="flex justify-center">
                   <Button
                     className="bg-[#A06ECE] hover:bg-[#4B1979] text-white w-[150px] h-[48px] rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
-                    onClick={() => {
-                      toast({
-                        title: 'Data Berhasil Disimpan',
-                      });
-                    }}
+                    onClick={handleSave}
+                    disabled={isLoading}
                   >
-                    Simpan
+                    {isLoading ? 'Menyimpan...' : 'Simpan'}
                   </Button>
                 </div>
               </div>
@@ -149,6 +189,7 @@ function Account() {
           </div>
         </div>
       </div>
+      <Toaster position="top-right" />
     </>
   );
 }
