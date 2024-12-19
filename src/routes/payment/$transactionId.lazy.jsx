@@ -87,42 +87,72 @@ function RouteComponent() {
     };
   }, []);
 
-  function handlePayment() {
-    if (transaction?.payment?.snapToken && window.snap) {
-      window.snap.embed(transaction.payment.snapToken, {
+  // function handlePayment() {
+  //   if (transaction?.payment?.snapToken && window.snap) {
+  //     window.snap.embed(transaction.payment.snapToken, {
+  //       embedId: 'snap-container',
+  //       onSuccess: function () {
+  //         toast.success('Pembayaran berhasil!', {
+  //           duration: 5000,
+  //         });
+  //         navigate({ to: '/payment/done' });
+  //       },
+  //       onPending: function () {
+  //         toast.info('Pembayaran dalam status pending.', {
+  //           duration: 5000,
+  //         });
+  //         navigate({ to: '/history' });
+  //       },
+  //       onError: function () {
+  //         toast.error('Pembayaran gagal.', {
+  //           duration: 5000,
+  //         });
+  //         navigate({ to: '/history' });
+  //       },
+  //       onClose: function () {
+  //         toast('Anda menutup dialog pembayaran tanpa menyelesaikannya.', {
+  //           duration: 5000,
+  //         });
+  //       },
+  //     });
+  //   } else {
+  //     console.error('Snap token atau snap.js tidak tersedia');
+  //   }
+  // }
+
+  useEffect(() => {
+    // if (isSuccess && transactionData?.payment?.snapToken) {
+    //   handlePayment();
+    // }
+    if (isSuccess && transactionData?.payment?.snapToken) {
+      if (!window.snap) {
+        console.error('Snap.js belum diinisialisasi.');
+        return;
+      }
+
+      if (document.getElementById('snap-container').childNodes.length > 0) {
+        console.log('Snap sudah aktif, tidak perlu embed ulang.');
+        return;
+      }
+
+      window.snap.embed(transactionData.payment.snapToken, {
         embedId: 'snap-container',
         onSuccess: function () {
-          toast.success('Pembayaran berhasil!', {
-            duration: 5000,
-          });
+          toast.success('Pembayaran berhasil!', { duration: 5000 });
           navigate({ to: '/payment/done' });
         },
         onPending: function () {
-          toast.info('Pembayaran dalam status pending.', {
-            duration: 5000,
-          });
+          toast.info('Pembayaran pending.', { duration: 5000 });
           navigate({ to: '/history' });
         },
         onError: function () {
-          toast.error('Pembayaran gagal.', {
-            duration: 5000,
-          });
+          toast.error('Pembayaran gagal.', { duration: 5000 });
           navigate({ to: '/history' });
         },
         onClose: function () {
-          toast('Anda menutup dialog pembayaran tanpa menyelesaikannya.', {
-            duration: 5000,
-          });
+          toast('Anda menutup dialog pembayaran.', { duration: 5000 });
         },
       });
-    } else {
-      console.error('Snap token atau snap.js tidak tersedia');
-    }
-  }
-
-  useEffect(() => {
-    if (isSuccess && transactionData?.payment?.snapToken) {
-      handlePayment();
     }
   }, [isSuccess, transactionData]);
 
