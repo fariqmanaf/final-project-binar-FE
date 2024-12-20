@@ -12,8 +12,10 @@ import PassengerDialog from './SearchComponent/PassengerDialog';
 import SeatClassDialog from './SearchComponent/ClassDialog';
 import DeestinationDialog from './SearchComponent/DestinationDialog';
 import { Button } from '../ui/button';
+import { useNavigate } from '@tanstack/react-router';
 
 const SearchFlight = () => {
+  const navigate = useNavigate();
   const [airports, setAirports] = useState([]);
   const [isDeptDialogOpen, setIsDeptDialogOpen] = useState(false);
   const [isDestDialogOpen, setIsDestDialogOpen] = useState(false);
@@ -43,6 +45,33 @@ const SearchFlight = () => {
     };
     fetchAirports();
   }, []);
+
+  const handleSearchFlights = () => {
+    const searchParams = {
+      departureAirport: selectedDeptAirport,
+      destinationAirport: selectedDestAirport,
+      departureDate: selectedDeptDate?.toISOString().split('T')[0], // Format ke ISO string
+      returnDate: isReturnChecked && selectedReturnDate ? selectedReturnDate.toISOString().split('T')[0] : null,
+      seatClass: selectedClass,
+      adult: selectedPassengers.adult,
+      child: selectedPassengers.child,
+      infant: selectedPassengers.infant,
+    };
+
+    if (!searchParams.departureAirport || !searchParams.destinationAirport || !searchParams.departureDate) {
+      alert('Mohon lengkapi semua filter pencarian yang wajib!');
+      return;
+    }
+
+    // Filter hanya parameter yang ada nilainya
+    const queryString = Object.entries(searchParams)
+      .filter(([_, value]) => value !== null && value !== undefined)
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
+
+    window.location.href = `/flights?${queryString}`;
+  };
+
 
   const handleSelectDeptAirport = (airport) => {
     setSelectedDeptAirport(airport.id);
@@ -111,14 +140,17 @@ const SearchFlight = () => {
                 <Popover.Root>
                   <Popover.Trigger>
                     <div
-                      className={`w-full block text-left py-2 ${selectedDeptAirport ? 'font-bold text-black' : 'text-gray-500'}`}
+                      className={`w-full block text-left py-2 ${
+                        selectedDeptAirport ? 'font-bold text-black' : 'text-gray-500'
+                      }`}
                     >
                       {selectedDeptAirport
-                        ? `${airports.find((airport) => airport.id === selectedDeptAirport)?.city} (${airports.find((airport) => airport.id === selectedDeptAirport)?.code})`
+                        ? `${airports.find((airport) => airport.id === selectedDeptAirport)?.name} - ${airports.find((airport) => airport.id === selectedDeptAirport)?.city} ${airports.find((airport) => airport.id === selectedDeptAirport)?.code}`
                         : 'Pilih Penerbangan'}
                     </div>
                   </Popover.Trigger>
                   <hr className="w-full border-gray-300 border-[1.5px]" />
+
                   <Popover.Content side="bottom" align="start" className="h-[200px] z-[1]">
                     <DepartureDialog airports={availableDeptAirports} onSelect={handleSelectDeptAirport} />
                   </Popover.Content>
@@ -142,7 +174,7 @@ const SearchFlight = () => {
                       className={`w-full text-left py-2 ${selectedDestAirport ? 'font-bold text-black' : 'text-gray-500'}`}
                     >
                       {selectedDestAirport
-                        ? `${airports.find((airport) => airport.id === selectedDestAirport)?.city} (${airports.find((airport) => airport.id === selectedDestAirport)?.code})`
+                        ? `${airports.find((airport) => airport.id === selectedDestAirport)?.name} - ${airports.find((airport) => airport.id === selectedDestAirport)?.city} (${airports.find((airport) => airport.id === selectedDestAirport)?.code})`
                         : 'Pilih Tujuan'}
                     </div>
                   </Popover.Trigger>
@@ -263,7 +295,7 @@ const SearchFlight = () => {
         </div>
         <div className="mt-4">
           <Button
-            onClick={() => console.log('Cari penerbangan diklik')}
+            onClick={handleSearchFlights}
             className="w-full py-3 px-4 bg-[#7126B5] text-white rounded-lg shadow-lg hover:bg-[#5a1e9d] focus:outline-none focus:ring-2 focus:ring-[#7126B5]"
           >
             Cari Penerbangan

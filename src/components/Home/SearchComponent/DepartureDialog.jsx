@@ -5,7 +5,6 @@ import { IoIosClose } from 'react-icons/io';
 const DepartureDialog = ({ airports, onSelect }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter bandara berdasarkan input pencarian
   const filteredAirports = airports.filter((airport) => airport.city.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
@@ -39,7 +38,7 @@ const DepartureDialog = ({ airports, onSelect }) => {
             onClick={() => onSelect(airport)}
             className="w-full text-left py-2 px-4 border-b hover:bg-[#E2D4F0] cursor-pointer"
           >
-            {airport.city} ({airport.code})
+            {airport.name} - {airport.city} ({airport.code})
           </button>
         ))}
       </div>

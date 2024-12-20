@@ -11,6 +11,8 @@ const Favorite = ({ setSearchData }) => {
   const [loading, setLoading] = useState(false);
   const [nextCursor, setNextCursor] = useState(null);
   const [activeButton, setActiveButton] = useState('Semua');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   const destinationToContinentMap = {
     Semua: null,
@@ -38,6 +40,7 @@ const Favorite = ({ setSearchData }) => {
   };
 
   useEffect(() => {
+    setCurrentPage(1); // Reset pagination saat kategori baru dipilih
     fetchFavorites(activeButton);
   }, [activeButton]);
 
@@ -56,6 +59,17 @@ const Favorite = ({ setSearchData }) => {
       seatClass: fav.type,
       passengers: 1,
     });
+  };
+
+  // Hitung data yang akan ditampilkan berdasarkan halaman saat ini
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentFavorites = favorites.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(favorites.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -89,14 +103,29 @@ const Favorite = ({ setSearchData }) => {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {favorites && favorites.length > 0
-          ? favorites.map((fav, index) => (
+        {currentFavorites && currentFavorites.length > 0
+          ? currentFavorites.map((fav, index) => (
               <div key={index} onClick={() => handleCardClick(fav)}>
                 <CardFav fav={fav} />
               </div>
             ))
           : !loading && <p className="text-center">No favorite destinations found.</p>}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-4">
+          {[...Array(totalPages)].map((_, page) => (
+            <button
+              key={page + 1}
+              className={`px-4 py-2 rounded-lg ${currentPage === page + 1 ? 'bg-[#7126B5] text-white' : 'bg-gray-300'}`}
+              onClick={() => handlePageChange(page + 1)}
+            >
+              {page + 1}
+            </button>
+          ))}
+        </div>
+      )}
 
       {nextCursor && !loading && (
         <button className="mt-4 px-4 py-2 bg-[#7126B5] text-white rounded-lg block mx-auto" onClick={handleLoadMore}>

@@ -35,7 +35,7 @@ function Homepage() {
   return (
     <>
       <Navbar isAuth={true} searchBar={true} />
-      <main className="flex flex-col justify-start w-screen items-center">
+      <div className="flex flex-col justify-start w-screen items-center">
         {/* Hero */}
         <section className="mt-[3rem] w-full">
           <img src="/hero.svg" alt="hero" className="w-full object-cover" />
@@ -49,7 +49,7 @@ function Homepage() {
         <section className="mt-10 w-full" style={{ zIndex: '1' }}>
           <Favorite setSearchData={setSearchData} />
         </section>
-      </main>
+      </div>
     </>
   );
 }
