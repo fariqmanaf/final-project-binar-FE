@@ -39,7 +39,7 @@ const DeestinationDialog = ({ airports, onSelect }) => {
             onClick={() => onSelect(airport)}
             className="w-full text-left py-2 px-4 border-b hover:bg-[#E2D4F0] cursor-pointer"
           >
-            {airport.city} ({airport.code})
+            {airport.name} - {airport.city} ({airport.code})
           </button>
         ))}
       </div>

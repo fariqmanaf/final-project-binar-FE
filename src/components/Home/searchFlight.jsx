@@ -16,8 +16,8 @@ import { useNavigate } from '@tanstack/react-router';
 import toast from 'react-hot-toast';
 
 const SearchFlight = () => {
-  const [airports, setAirports] = useState([]);
   const navigate = useNavigate();
+  const [airports, setAirports] = useState([]);
   const [isDeptDialogOpen, setIsDeptDialogOpen] = useState(false);
   const [isDestDialogOpen, setIsDestDialogOpen] = useState(false);
   const [isDateDeptDialogOpen, setIsDateDeptDialogOpen] = useState(false);
@@ -97,8 +97,8 @@ const SearchFlight = () => {
     return selectedPassengers.adult + selectedPassengers.child;
   };
 
-  const handleSearchFlight = () => {
-    const searchParams = new URLSearchParams({
+  const handleSearchFlights = () => {
+    const searchParams = {
       DA: selectedDeptAirport,
       AA: selectedDestAirport,
       DD: selectedDeptDate ? new Date(selectedDeptDate.getTime() + 86400000).toISOString().split('T')[0] : null,
@@ -107,9 +107,19 @@ const SearchFlight = () => {
       C: selectedPassengers.child,
       I: selectedPassengers.infant,
       SC: selectedClass,
-    }).toString();
+    };
 
-    navigate({ to: `/flights/?${searchParams}` });
+    if (!searchParams.DA || !searchParams.AA || !searchParams.DD || !searchParams.SC) {
+      toast.error('Mohon lengkapi semua filter pencarian yang wajib!');
+      return;
+    }
+
+    const queryString = Object.entries(searchParams)
+      .filter(([_, value]) => value !== null && value !== undefined)
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
+
+    navigate({ to: `/flights/?${queryString}` });
   };
 
   const displayType = {
@@ -135,14 +145,17 @@ const SearchFlight = () => {
                 <Popover.Root open={isDeptDialogOpen} onOpenChange={setIsDeptDialogOpen}>
                   <Popover.Trigger>
                     <div
-                      className={`w-full block text-left py-2 ${selectedDeptAirport ? 'font-bold text-black' : 'text-gray-500'}`}
+                      className={`w-full block text-left py-2 ${
+                        selectedDeptAirport ? 'font-bold text-black' : 'text-gray-500'
+                      }`}
                     >
                       {selectedDeptAirport
-                        ? `${airports.find((airport) => airport.id === selectedDeptAirport)?.city} (${airports.find((airport) => airport.id === selectedDeptAirport)?.code})`
+                        ? `${airports.find((airport) => airport.id === selectedDeptAirport)?.name} - ${airports.find((airport) => airport.id === selectedDeptAirport)?.city} ${airports.find((airport) => airport.id === selectedDeptAirport)?.code}`
                         : 'Pilih Penerbangan'}
                     </div>
                   </Popover.Trigger>
                   <hr className="w-full border-gray-300 border-[1.5px]" />
+
                   <Popover.Content side="bottom" align="start" className="h-[200px] z-[1]">
                     <DepartureDialog airports={availableDeptAirports} onSelect={handleSelectDeptAirport} />
                   </Popover.Content>
@@ -166,7 +179,7 @@ const SearchFlight = () => {
                       className={`w-full text-left py-2 ${selectedDestAirport ? 'font-bold text-black' : 'text-gray-500'}`}
                     >
                       {selectedDestAirport
-                        ? `${airports.find((airport) => airport.id === selectedDestAirport)?.city} (${airports.find((airport) => airport.id === selectedDestAirport)?.code})`
+                        ? `${airports.find((airport) => airport.id === selectedDestAirport)?.name} - ${airports.find((airport) => airport.id === selectedDestAirport)?.city} (${airports.find((airport) => airport.id === selectedDestAirport)?.code})`
                         : 'Pilih Tujuan'}
                     </div>
                   </Popover.Trigger>
@@ -291,7 +304,7 @@ const SearchFlight = () => {
         </div>
         <div className="mt-4">
           <Button
-            onClick={handleSearchFlight}
+            onClick={handleSearchFlights}
             className="w-full py-3 px-4 bg-[#7126B5] text-white rounded-lg shadow-lg hover:bg-[#5a1e9d] focus:outline-none focus:ring-2 focus:ring-[#7126B5]"
             disabled={!selectedDeptAirport || !selectedDestAirport || !selectedDeptDate || !selectedClass}
           >
