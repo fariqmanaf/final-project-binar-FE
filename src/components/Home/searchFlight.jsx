@@ -12,12 +12,16 @@ import PassengerDialog from './SearchComponent/PassengerDialog';
 import SeatClassDialog from './SearchComponent/ClassDialog';
 import DeestinationDialog from './SearchComponent/DestinationDialog';
 import { Button } from '../ui/button';
+import { useNavigate } from '@tanstack/react-router';
+import toast from 'react-hot-toast';
 
 const SearchFlight = () => {
   const [airports, setAirports] = useState([]);
+  const navigate = useNavigate();
   const [isDeptDialogOpen, setIsDeptDialogOpen] = useState(false);
   const [isDestDialogOpen, setIsDestDialogOpen] = useState(false);
-  const [isDateDialogOpen, setIsDateDialogOpen] = useState(false);
+  const [isDateDeptDialogOpen, setIsDateDeptDialogOpen] = useState(false);
+  const [isDateDestDialogOpen, setIsDateDestDialogOpen] = useState(false);
   const [isPassDialogOpen, setIsPassDialogOpen] = useState(false);
   const [isClassDialogOpen, setIsClassDialogOpen] = useState(false);
   const [isReturnChecked, setIsReturnChecked] = useState(false);
@@ -37,8 +41,8 @@ const SearchFlight = () => {
       try {
         const data = await getAirportData();
         setAirports(data);
-      } catch (error) {
-        console.error('Error fetching airport data:', error);
+      } catch {
+        toast.error('Failed to fetch airports');
       }
     };
     fetchAirports();
@@ -69,9 +73,8 @@ const SearchFlight = () => {
     } else {
       setSelectedDeptDate(date);
     }
-    setIsDateDialogOpen(false); // Menutup dialog setelah memilih tanggal
+    setIsDateDeptDialogOpen(false); // Menutup dialog setelah memilih tanggal
   };
-
 
   const handleSelectReturnDate = (date) => {
     if (date === null) {
@@ -79,12 +82,11 @@ const SearchFlight = () => {
     } else {
       setSelectedReturnDate(date); // Menyimpan tanggal yang dipilih
     }
+    setIsDateDestDialogOpen(false); // Menutup dialog setelah memilih tanggal
   };
-
 
   const handleSwitchReturn = (checked) => {
     setIsReturnChecked(checked);
-    setIsDateDialogOpen(false);
   };
 
   const handleSelectCounts = (counts) => {
@@ -93,6 +95,28 @@ const SearchFlight = () => {
 
   const getTotalPassengers = () => {
     return selectedPassengers.adult + selectedPassengers.child;
+  };
+
+  const handleSearchFlight = () => {
+    const searchParams = new URLSearchParams({
+      DA: selectedDeptAirport,
+      AA: selectedDestAirport,
+      DD: selectedDeptDate ? new Date(selectedDeptDate.getTime() + 86400000).toISOString().split('T')[0] : null,
+      RD: selectedReturnDate ? new Date(selectedReturnDate.getTime() + 86400000).toISOString().split('T')[0] : null,
+      A: selectedPassengers.adult,
+      C: selectedPassengers.child,
+      I: selectedPassengers.infant,
+      SC: selectedClass,
+    }).toString();
+
+    navigate({ to: `/flights/?${searchParams}` });
+  };
+
+  const displayType = {
+    ECONOMY: 'Economy',
+    PREMIUM: 'Premium Economy',
+    BUSINESS: 'Business',
+    FIRST_CLASS: 'First Class',
   };
 
   return (
@@ -108,7 +132,7 @@ const SearchFlight = () => {
               <FaPlaneDeparture className="text-xl text-gray-500" />
               <label className="text-gray-500">From</label>
               <div className="flex-1 w-full">
-                <Popover.Root>
+                <Popover.Root open={isDeptDialogOpen} onOpenChange={setIsDeptDialogOpen}>
                   <Popover.Trigger>
                     <div
                       className={`w-full block text-left py-2 ${selectedDeptAirport ? 'font-bold text-black' : 'text-gray-500'}`}
@@ -136,7 +160,7 @@ const SearchFlight = () => {
               <FaPlaneArrival className="text-xl text-gray-500" />
               <label className="text-gray-500">To</label>
               <div className="flex-1 w-full">
-                <Popover.Root>
+                <Popover.Root open={isDestDialogOpen} onOpenChange={setIsDestDialogOpen}>
                   <Popover.Trigger>
                     <div
                       className={`w-full text-left py-2 ${selectedDestAirport ? 'font-bold text-black' : 'text-gray-500'}`}
@@ -164,7 +188,7 @@ const SearchFlight = () => {
                 <div className="flex flex-1 w-full items-center gap-4">
                   <div className="flex-1 flex flex-col">
                     <label className="text-gray-500">Departure</label>
-                    <Popover.Root>
+                    <Popover.Root open={isDateDeptDialogOpen} onOpenChange={setIsDateDeptDialogOpen}>
                       <Popover.Trigger>
                         <div
                           className={`w-full text-sm cursor-pointer py-2 text-start ${
@@ -176,13 +200,13 @@ const SearchFlight = () => {
                       </Popover.Trigger>
                       <hr className="w-full border-gray-300 border-[1.5px]" />
                       <Popover.Content side="bottom" align="start" className="z-[1]">
-                        <DayDialog onSelectDate={handleSelectDeptDate} onClose={() => setIsDateDialogOpen(false)} />
+                        <DayDialog onSelectDate={handleSelectDeptDate} onClose={() => setIsDateDeptDialogOpen(false)} />
                       </Popover.Content>
                     </Popover.Root>
                   </div>
                   <div className="flex-1 flex flex-col">
                     <label className="text-gray-500">Return</label>
-                    <Popover.Root>
+                    <Popover.Root open={isDateDestDialogOpen} onOpenChange={setIsDateDestDialogOpen}>
                       <Popover.Trigger>
                         <div
                           className={`text-sm cursor-pointer py-2 text-start ${
@@ -245,7 +269,7 @@ const SearchFlight = () => {
                         className={`cursor-pointer text-sm py-2 text-start ${selectedClass ? 'font-bold text-black' : 'text-gray-500 font-normal'}`}
                         onClick={() => setIsClassDialogOpen(true)}
                       >
-                        {selectedClass || 'Pilih Kelas'}
+                        {selectedClass ? displayType[selectedClass] : 'Pilih Kelas'}
                       </div>
                     </Popover.Trigger>
                     <hr className="w-full border-gray-300 border-[1px]" />
@@ -253,6 +277,10 @@ const SearchFlight = () => {
                       <SeatClassDialog
                         onClose={() => setIsClassDialogOpen(false)}
                         onSelectClass={(selectedClass) => setSelectedClass(selectedClass)}
+                        dept={selectedDeptAirport}
+                        dest={selectedDestAirport}
+                        deptDate={selectedDeptDate}
+                        retDate={selectedReturnDate}
                       />
                     </Popover.Content>
                   </Popover.Root>
@@ -263,8 +291,9 @@ const SearchFlight = () => {
         </div>
         <div className="mt-4">
           <Button
-            onClick={() => console.log('Cari penerbangan diklik')}
+            onClick={handleSearchFlight}
             className="w-full py-3 px-4 bg-[#7126B5] text-white rounded-lg shadow-lg hover:bg-[#5a1e9d] focus:outline-none focus:ring-2 focus:ring-[#7126B5]"
+            disabled={!selectedDeptAirport || !selectedDestAirport || !selectedDeptDate || !selectedClass}
           >
             Cari Penerbangan
           </Button>

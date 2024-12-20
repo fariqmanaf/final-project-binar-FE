@@ -8,12 +8,14 @@ const DayDialog = ({ onSelectDate, onClose }) => {
   const handleDateSelect = (date) => {
     setSelectedDay(date);
     onSelectDate(date, 'start'); // Mengirimkan tanggal yang dipilih ke komponen induk
-    onClose(); // Menutup popover setelah memilih tanggal
+    // onClose(); // Menutup popover setelah memilih tanggal
   };
+
+  const today = new Date();
 
   return (
     <div className="p-4 bg-white border rounded-md shadow-lg">
-      <DayPicker selected={selectedDay} onDayClick={handleDateSelect} />
+      <DayPicker selected={selectedDay} onDayClick={handleDateSelect} disabled={{ before: today }} />
     </div>
   );
 };
