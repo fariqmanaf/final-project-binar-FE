@@ -10,3 +10,9 @@ export const mappingPassenger = {
   CHILD: 'Child',
   INFANT: 'Infant',
 };
+
+export const mappingStatus = {
+  SUCCESS: 'Issued',
+  PENDING: 'Unpaid',
+  FAILED: 'Canceled',
+};
