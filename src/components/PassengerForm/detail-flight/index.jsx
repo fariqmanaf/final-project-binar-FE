@@ -1,7 +1,7 @@
 import { TimeStampConverter } from '@/utils/timestampConvert';
 import { mappingPassenger } from '@/utils/mappingClass';
 
-export function DetailFlight({ data, returnData, className }) {
+export function DetailFlight({ data, returnData, className, history, isHistory }) {
   const timestamp = TimeStampConverter(data?.departureTimestamp, data?.arrivalTimestamp);
 
   return (
@@ -26,9 +26,26 @@ export function DetailFlight({ data, returnData, className }) {
           <p className="font-semibold">{data?.airline.name}</p>
           <p className="font-semibold mb-[1rem]">{data?.flightNumber}</p>
           <p className="font-semibold">Informasi: </p>
-          <p className="text-sm">Bagasi 7Kg</p>
-          <p className="text-sm">Fasilitas Nyaman</p>
-          <p className="text-sm">Hidangan Gratis</p>
+          {isHistory === true ? (
+            <>
+              {history.map((item, index) => (
+                <div key={item.id} className="text-sm mb-3">
+                  <p>
+                    Penumpang {index + 1}: <span className="font-semibold">{item?.passenger?.name}</span>
+                  </p>
+                  <p>
+                    ID : <span className="font-semibold text-[#7126B5]">{item?.passenger?.id}</span>
+                  </p>
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
+              <p className="text-sm">Bagasi 7Kg</p>
+              <p className="text-sm">Fasilitas Nyaman</p>
+              <p className="text-sm">Hidangan Gratis</p>
+            </>
+          )}
         </div>
       </div>
       <hr />
@@ -49,7 +66,7 @@ export function Pricing({ data, passenger }) {
   const totalPrice = data?.departureFlight?.price + (data?.returnFlight?.price ?? 0);
 
   return (
-    <div className="flex flex-col p-[1.5rem] border border-slate-200 rounded-lg shadow-md mb-[2rem]">
+    <div className="flex flex-col p-[1.5rem] border border-slate-200 rounded-lg shadow-md mb-[1rem]">
       <p className="text-xl font-semibold mb-[1rem]">Rincian Harga</p>
       <div className="text-sm flex mb-[1rem] gap-4 font-semibold text-[#7126B5]">
         <p>(D) Departure</p>

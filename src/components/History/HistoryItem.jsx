@@ -1,222 +1,97 @@
-import React, { useState, useEffect, memo } from 'react';
-import { Card, CardContent } from '../ui/card';
-import { Badge } from '@radix-ui/themes';
-import { IoIosArrowRoundForward } from 'react-icons/io';
+import { mappingStatus, mapping } from '@/utils/mappingClass';
 import { FaLocationDot } from 'react-icons/fa6';
-import PropTypes from 'prop-types';
 
-const HistoryItem = ({ data, onSelectedOrder, selectedOrderId }) => {
-  const [displayedData, setDisplayedData] = useState(data);
-
-  const groupByMonthYear = (transactions) => {
-    if (!Array.isArray(transactions)) return {}; // Ensure transactions is an array
-    return transactions.reduce((acc, transaction) => {
-      const departureDate = transaction.departureFlight?.departureTimestamp;
-      if (!departureDate) return acc;
-
-      // Menggunakan toLocaleDateString dengan parameter 'id-ID' untuk format tanggal Indonesia
-      const formattedDate = new Date(departureDate).toLocaleDateString('id-ID', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-
-      // Memecah tanggal menjadi [day, month, year] berdasarkan format yang lebih konsisten
-      const [day, month, year] = formattedDate.split(' ');
-
-      // Memastikan format bulan dan tahun benar
-      const groupKey = `${month} ${year}`;
-
-      if (!acc[groupKey]) acc[groupKey] = [];
-      acc[groupKey].push(transaction);
-
-      return acc;
-    }, {});
-  };
-
-  const formatRupiah = (amount) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-    }).format(amount);
-  };
-
-  const getBadgeClass = (status) => {
-    const formattedStatus =
-      status === 'PENDING' ? 'Unpaid' : status === 'FAILED' ? 'canceled' : status === 'SUCCESS' ? 'Issued' : status; // Untuk status lainnya tidak diubah
-
-    switch (formattedStatus) {
-      case 'Issued':
-        return 'bg-[#73CA5C] text-white';
-      case 'Unpaid':
-        return 'bg-[#FF0000] text-white';
-      case 'canceled':
-        return 'bg-[#8A8A8A] text-black';
-      default:
-        return 'bg-[#8A8A8A] text-black';
-    }
-  };
-
-  const formatDuration = (durationMinutes) => {
-    const hours = Math.floor(durationMinutes / 60); // Menghitung jam
-    const minutes = durationMinutes % 60; // Menghitung sisa menit
-    return `${hours} jam ${minutes} menit`; // Mengembalikan format
-  };
-
-  const groupedTransactions = groupByMonthYear(displayedData);
-
-  useEffect(() => {
-    if (Array.isArray(data)) {
-      setDisplayedData(data);
-    } else {
-      setDisplayedData([]); // Set an empty array if data is not an array
-    }
-  }, [data]);
+export const HistoryItem = ({ data, className, active, setActive }) => {
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex flex-col h-[50vh] w-full justify-center items-center">
+        <img className="w-[20rem] h-[20rem]" src="/notFound3.svg" />
+        <p className="font-semibold text-[#7126B5]">Riwayat Tidak Ditemukan!</p>
+        <p className="text-sm">Lakukan Pencarian Lain</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="mx-auto w-full sm:max-w-[600px] md:max-w-[800px]">
-      {Object.entries(groupedTransactions).map(([monthYear, transactions], index) => (
-        <div key={index} className="mb-6">
-          <h5 className="text-primary font-bold mt-3 text-base sm:text-lg">{monthYear}</h5>
-
-          {transactions.map((transaction, index) => (
-            <Card
-              key={index}
-              onClick={() => {
-                onSelectedOrder(transaction);
-              }}
-              className="mb-4"
-              style={{
-                border: transaction.id === selectedOrderId ? '2px solid #7126B5' : '1px solid #E5E5E5',
-                borderRadius: '10px',
-                cursor: 'pointer',
-                transition: 'transform 0.25s ease-in-out',
-                padding: '15px',
-                width: '100%',
-                fontSize: '14px',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+    <div className="mb-8">
+      {data.map((item, index) => (
+        <div
+          key={index}
+          className={`${className} ${active === index && 'border-[#7126B5]'}  flex justify-between cursor-pointer hover:scale-[101%] transition duration-100 rounded-2xl w-full gap-[2vh] border p-[1.5rem] shadow-xl mb-[3vh]`}
+          onClick={() => setActive(index)}
+        >
+          <div className="flex flex-col w-full">
+            <div
+              className={`${item?.payment?.status === 'SUCCESS' && 'bg-green-500'} ${item?.payment?.status === 'PENDING' && 'bg-red-500'} ${item?.payment?.status === 'FAILED' && 'bg-gray-500'} p-2 mb-[3vh] h-[2rem] w-[20%] rounded-full text-white flex justify-center items-center`}
             >
-              <CardContent>
-                <div className="flex justify-between items-center mb-4">
-                  <Badge className={`px-3 py-1 rounded-full ${getBadgeClass(transaction.payment?.status)}`}>
-                    {transaction.payment?.status === 'SUCCESS'
-                      ? 'Issued'
-                      : transaction.payment?.status === 'PENDING'
-                        ? 'Unpaid'
-                        : 'Canceled'}
-                  </Badge>
-                </div>
-
-                {/* Departure Flight */}
-                <div className="flex justify-between items-center mb-4">
-                  <FaLocationDot
-                    className="inline-block text-gray-600"
-                    style={{ fontSize: '20px', marginBottom: '15px' }}
-                  />
-                  <div className="text-left">
-                    <p className="font-bold text-sm sm:text-base">
-                      {transaction.departureFlight?.departureAirport?.city}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {new Date(transaction.departureFlight?.departureTimestamp).toLocaleDateString('id-ID', {
-                        year: 'numeric',
+              <p className="md:text-sm text-xs">{mappingStatus[item?.payment?.status]}</p>
+            </div>
+            <div className="flex gap-[2vw] md:text-sm text-sm w-full">
+              <div className="DepartureTime flex flex-col justify-center items-center gap-1">
+                <FaLocationDot />
+                <p className="font-semibold text-center">{item?.departureFlight?.departureAirport?.city}</p>
+                <p className="text-center">
+                  {item?.departureFlight?.departureTimestamp
+                    ? new Date(item?.departureFlight?.departureTimestamp).toLocaleTimeString('id-ID', {
+                        day: '2-digit',
                         month: 'long',
-                        day: 'numeric',
-                      })}
-                    </p>
-
-                    <p className="text-sm text-gray-600">
-                      {new Date(transaction.departureFlight?.departureTimestamp).toLocaleTimeString([], {
+                        year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit',
-                      })}
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-sm text-gray-500">
-                      {formatDuration(transaction.departureFlight?.durationMinutes)}
-                    </p>
-                    <div className="flex items-center justify-center">
-                      <hr className="border-gray-900 w-[100px] hidden md:block" />
-                      <IoIosArrowRoundForward className="text-gray-900" />
-                    </div>
-                  </div>
-                  <FaLocationDot
-                    className="inline-block text-gray-600"
-                    style={{ fontSize: '20px', marginBottom: '15px' }}
-                  />
-                  <div className="text-left">
-                    <p className="font-bold text-sm sm:text-base inline">
-                      {transaction.departureFlight?.destinationAirport?.city}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {new Date(transaction.departureFlight?.arrivalTimestamp).toLocaleDateString('id-ID', {
-                        year: 'numeric',
+                      })
+                    : ''}
+                </p>
+              </div>
+              <div className="w-full flex flex-col justify-center items-center gap-[1vh]">
+                <p className="text-slate-400 font-light">
+                  {item?.departureFlight?.departureTimestamp && item?.departureFlight?.arrivalTimestamp
+                    ? (() => {
+                        const departure = new Date(item?.departureFlight?.departureTimestamp);
+                        const arrival = new Date(item?.departureFlight?.arrivalTimestamp);
+                        const durationMs = arrival - departure;
+                        const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+                        const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+                        return `${durationHours}h ${durationMinutes}m`;
+                      })()
+                    : 'N/A'}
+                </p>
+                <hr className="w-full" />
+              </div>
+              <div className="arrivalTime flex flex-col justify-center items-center gap-1">
+                <FaLocationDot />
+                <p className="font-semibold text-center">{item?.departureFlight?.destinationAirport?.city}</p>
+                <p className="text-center">
+                  {item?.departureFlight?.arrivalTimestamp
+                    ? new Date(item?.departureFlight?.arrivalTimestamp).toLocaleTimeString('id-ID', {
+                        day: '2-digit',
                         month: 'long',
-                        day: 'numeric',
-                      })}
-                    </p>
-
-                    <p className="text-sm text-gray-600">
-                      {new Date(transaction.departureFlight?.arrivalTimestamp).toLocaleTimeString([], {
+                        year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit',
-                      })}
-                    </p>
-                  </div>
-                </div>
-
-                <hr className="my-4" />
-
-                <div className="flex justify-between">
-                  <div>
-                    <p className="font-bold text-sm sm:text-base">Booking Code:</p>
-                    <p className="text-sm text-gray-700">{transaction.code}</p>
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm sm:text-base">Class:</p>
-                    <p className="text-sm text-gray-700">{transaction.departureFlight?.type}</p>
-                  </div>
-                  <div className="text-right">
-                    <h6 className="text-[#4B1979] font-bold text-sm sm:text-base">
-                      {formatRupiah(transaction.departureFlight?.price)}
-                    </h6>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                      })
+                    : ''}
+                </p>
+              </div>
+            </div>
+            <hr className="my-[4vh]" />
+            <div className="flex justify-between">
+              <div className="flex flex-col gap-1">
+                <p className="text-[0.9rem] font-semibold">Kode Booking:</p>
+                <p className="text-[0.9rem]">{item?.code}</p>
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="text-[0.9rem] font-semibold">Class:</p>
+                <p className="text-[0.9rem]">{mapping[item?.departureFlight?.type]}</p>
+              </div>
+              <div className="flex flex-col gap-1 justify-center">
+                <p className="text-[0.9rem] text-[#7126B5] font-semibold">
+                  {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item?.payment?.amount)}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       ))}
     </div>
   );
 };
-
-HistoryItem.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      code: PropTypes.string.isRequired,
-      payment: PropTypes.shape({
-        status: PropTypes.string.isRequired,
-      }).isRequired,
-      departureFlight: PropTypes.shape({
-        departureAirport: PropTypes.shape({
-          city: PropTypes.string.isRequired,
-        }).isRequired,
-        departureTimestamp: PropTypes.string.isRequired,
-        durationMinutes: PropTypes.number.isRequired,
-        destinationAirport: PropTypes.shape({
-          city: PropTypes.string.isRequired,
-        }).isRequired,
-        price: PropTypes.number.isRequired,
-      }).isRequired,
-    })
-  ).isRequired,
-  onSelectedOrder: PropTypes.func.isRequired,
-  selectedOrderId: PropTypes.string,
-};
-
-export default memo(HistoryItem);
