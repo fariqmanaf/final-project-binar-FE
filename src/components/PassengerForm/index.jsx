@@ -68,11 +68,12 @@ export function PassengerForm({ form, index, type }) {
         />
       )}
       <BirthOdDate form={form} identifier={`passengers.${index}.PDOB`} label="Tanggal Lahir" />
-      <BookerFieldComponent
+      <SelectFieldComponent
         form={form}
         identifier={`passengers.${index}.PNationality`}
         label="Kewarganegaraan"
-        placeholder="Masukkan Kewarganegaraanmu"
+        items={countries}
+        placeholder="Pilih Kewarganegaraan"
       />
       <BookerFieldComponent
         form={form}

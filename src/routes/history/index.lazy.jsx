@@ -156,7 +156,7 @@ function History() {
         className="fixed bottom-10 right-10 w-[2rem] h-[2rem] cursor-pointer hover:text-[#A06ECE]"
       />
       <div className="w-screen min-h-[90vh] px-4 md:px-[10vw]">
-        <p className="md:mt-[10vh] mt-[5vh] mb-[4vh] font-semibold text-xl">Riwayat Pemesanan</p>
+        <p className="mt-[5vh] mb-[4vh] font-semibold text-xl">Riwayat Pemesanan</p>
         <div className="w-full flex md:flex-row flex-col gap-3 justify-center">
           <div className="bg-[#A06ECE] gap-2 px-5 flex items-center w-full h-[7vh] text-white text-[1rem] rounded-2xl">
             <FaArrowLeft onClick={() => navigate({ to: '/' })} className="cursor-pointer" />

@@ -49,18 +49,22 @@ export const AccordionFlight = ({ flight, RD, DF, DD, A, C, I }) => {
       key={index}
       className="w-full"
     >
-      <Accordion type="single" collapsible className="shadow-lg border rounded-xl px-[2vw] py-[2vh]">
+      <Accordion
+        type="single"
+        collapsible
+        className="shadow-lg border rounded-xl px-[1rem] py-[1rem] md:px-[2rem] md:py-[2rem]"
+      >
         <AccordionItem value={`item-${index + 1}`}>
           <AccordionTrigger>
-            <div className="flex justify-between items-center w-full pr-[2vw] gap-[2vw]">
+            <div className="flex justify-between items-center w-full pr-[2rem] gap-[2rem]">
               <div className="flex flex-col w-[80%]">
-                <div className="flex gap-[1vw] text-[1vw] font-normal items-center mb-[1vh]">
-                  <img src={item?.airline?.image} className="w-[4vw]" />
-                  <p className="">
+                <div className="flex gap-[1rem] text-sm font-normal items-center mb-[1rem]">
+                  <img src={item?.airline?.image} className="w-[3rem]" />
+                  <p className="md:text-sm text-xs">
                     {item?.airline?.name} - {mapping[item?.type]}
                   </p>
                 </div>
-                <div className="flex gap-[2vw] text-[1vw] pr-[2vw] w-full">
+                <div className="flex gap-[2rem] text-sm pr-[1rem] w-full">
                   <div className="DepartureTime flex flex-col justify-center items-center">
                     <p className="font-semibold">
                       {item?.departureTimestamp
@@ -72,8 +76,8 @@ export const AccordionFlight = ({ flight, RD, DF, DD, A, C, I }) => {
                     </p>
                     <p>{item?.departureAirport?.code}</p>
                   </div>
-                  <div className="w-full flex flex-col justify-center items-center gap-[1vh]">
-                    <p className="text-slate-400 font-light">
+                  <div className="w-full flex flex-col justify-center items-center gap-[0.5rem]">
+                    <p className="text-slate-400 font-light text-xs md:text-sm">
                       {item?.departureTimestamp && item?.arrivalTimestamp
                         ? (() => {
                             const departure = new Date(item.departureTimestamp);
@@ -99,11 +103,11 @@ export const AccordionFlight = ({ flight, RD, DF, DD, A, C, I }) => {
                     </p>
                     <p>{item?.destinationAirport?.code}</p>
                   </div>
-                  <img src="/baggage-delay.svg" className="w-[2vw]" />
+                  <img src="/baggage-delay.svg" className="w-[2rem]" />
                 </div>
               </div>
-              <div className="flex flex-col gap-[1vh]">
-                <p className="text-[1.2vw] text-[#7126B5] font-semibold">
+              <div className="flex flex-col gap-[1rem]">
+                <p className="text-sm text-[#7126B5] font-semibold">
                   {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item?.price)}
                 </p>
                 <div

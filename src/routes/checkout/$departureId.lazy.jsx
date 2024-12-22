@@ -110,13 +110,14 @@ function RouteComponent() {
   });
 
   const formSchema = z.object({
-    fullName: z.string().min(3, { message: 'Nama Lengkap minimal 3 karakter' }),
+    fullName: z.string().min(3, { message: 'Nama Lengkap minimal 3 karakter' }).optional(),
     familyName: z.string().optional(),
     phoneNumber: z
       .string()
       .regex(/^\+62\d+$/, { message: 'Nomor Telepon harus berupa angka' })
-      .min(11, { message: 'Nomor Telepon minimal 11 karakter' }),
-    email: z.string().email({ message: 'Email tidak valid' }),
+      .min(11, { message: 'Nomor Telepon minimal 11 karakter' })
+      .optional(),
+    email: z.string().email({ message: 'Email tidak valid' }).optional(),
     passengers: z.array(passengerSchema),
   });
 

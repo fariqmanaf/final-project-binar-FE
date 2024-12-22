@@ -26,7 +26,7 @@ export const HistoryItem = ({ data, className, active, setActive }) => {
             >
               <p className="md:text-sm text-xs">{mappingStatus[item?.payment?.status]}</p>
             </div>
-            <div className="flex gap-[2vw] md:text-[1vw] text-[0.8rem] w-full">
+            <div className="flex gap-[2vw] md:text-sm text-sm w-full">
               <div className="DepartureTime flex flex-col justify-center items-center gap-1">
                 <FaLocationDot />
                 <p className="font-semibold text-center">{item?.departureFlight?.departureAirport?.city}</p>

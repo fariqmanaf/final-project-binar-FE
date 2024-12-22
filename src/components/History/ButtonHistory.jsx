@@ -34,6 +34,6 @@ export const ButtonHistory = ({ status, transactionId, onPrint, isPending }) => 
       </Button>
     );
   } else if (status === 'FAILED') {
-    return null;
+    return <Button disabled>Dibatalkan</Button>;
   }
 };

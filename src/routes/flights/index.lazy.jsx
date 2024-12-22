@@ -22,13 +22,14 @@ function SelectFlight() {
   const searchParams = Route.useSearch();
   const navigate = useNavigate();
 
-  const RD = searchParams?.RD ? new Date(searchParams?.RD) : null;
+  let RD = searchParams?.RD ? new Date(searchParams?.RD) : null;
   const DF = searchParams?.DF ? searchParams?.DF : null;
-  const DD = searchParams?.DD ? new Date(searchParams?.DD) : new Date();
+  let DD = searchParams?.DD ? new Date(searchParams?.DD) : new Date();
   const PD = searchParams?.PD ? new Date(searchParams?.PD) : null;
   const A = searchParams?.A ? parseInt(searchParams?.A) : null;
   const C = searchParams?.C ? parseInt(searchParams?.C) : null;
   const I = searchParams?.I ? parseInt(searchParams?.I) : null;
+  const type = searchParams?.type ? searchParams?.type : null;
 
   const [departureDate, setDepartureDate] = useState(DD);
   const [flightsData, setFlightsData] = useState([]);
@@ -41,7 +42,7 @@ function SelectFlight() {
   }, [searchParams?.DD]);
 
   const dates = getDatesAround(departureDate, 2, 3);
-  const querySearch = `departureDate=${DD.toISOString().split('T')[0]}&departureAirportId=${searchParams?.DA}&destinationAirportId=${searchParams?.AA}&sortBy=${filter || ''}`;
+  const querySearch = `departureDate=${DD.toISOString().split('T')[0]}&departureAirportId=${searchParams?.DA}&destinationAirportId=${searchParams?.AA}&sortBy=${filter || ''}&type=${type.toUpperCase()}`;
 
   const {
     data: flights,
@@ -123,7 +124,7 @@ function SelectFlight() {
               ) : flightsData.length === 0 ? (
                 <NotFound />
               ) : (
-                <div className="w-full flex justify-between gap-[3vw]">
+                <div className="w-full flex flex-col md:flex-row justify-between gap-[3vw]">
                   <div className="md:w-[30%] w-full h-full flex justify-center items-start">
                     <YourFlight
                       DD={departureDate}
