@@ -6,7 +6,12 @@ const DeestinationDialog = ({ airports, onSelect }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Filter bandara berdasarkan input pencarian
-  const filteredAirports = airports.filter((airport) => airport.city.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredAirports = airports.filter(
+    (airport) =>
+      airport.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      airport.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      airport.code.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className=" bg-white border rounded-lg p-4 shadow-lg max-w-[400px] w-full">

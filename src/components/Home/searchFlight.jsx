@@ -24,7 +24,7 @@ const SearchFlight = () => {
   const [isDateDestDialogOpen, setIsDateDestDialogOpen] = useState(false);
   const [isPassDialogOpen, setIsPassDialogOpen] = useState(false);
   const [isClassDialogOpen, setIsClassDialogOpen] = useState(false);
-  const [isReturnChecked, setIsReturnChecked] = useState(false);
+  const [isReturnChecked, setIsReturnChecked] = useState('');
   const [selectedDeptAirport, setSelectedDeptAirport] = useState(null);
   const [selectedDestAirport, setSelectedDestAirport] = useState(null);
   const [selectedDeptDate, setSelectedDeptDate] = useState();
@@ -97,19 +97,69 @@ const SearchFlight = () => {
     return selectedPassengers.adult + selectedPassengers.child;
   };
 
+  useEffect(() => {
+    const savedSearchData = JSON.parse(localStorage.getItem('searchData'));
+    if (savedSearchData) {
+      const currentTime = new Date().getTime();
+      const savedTime = savedSearchData.timestamp;
+      const oneHour = 60 * 60 * 1000;
+
+      if (currentTime - savedTime > oneHour) {
+        localStorage.removeItem('searchData');
+      } else {
+        setSelectedDeptAirport(savedSearchData.selectedDeptAirport);
+        setSelectedDestAirport(savedSearchData.selectedDestAirport);
+        setSelectedDeptDate(new Date(savedSearchData.selectedDeptDate));
+        setSelectedReturnDate(savedSearchData.selectedReturnDate ? new Date(savedSearchData.selectedReturnDate) : null);
+        setSelectedClass(savedSearchData.selectedClass);
+        setSelectedPassengers(savedSearchData.selectedPassengers);
+        setIsReturnChecked(savedSearchData.selectedReturnDate ? true : false);
+      }
+    } else {
+      // Set default values if no saved search data is found
+      setSelectedDeptAirport(airports[0]?.id || null);
+      setSelectedDestAirport(airports[1]?.id || null);
+      setSelectedDeptDate(new Date(Date.now()));
+    }
+  }, [airports]);
+
   const handleSearchFlights = () => {
+    const formatDateToLocal = (date) => {
+      const offset = date.getTimezoneOffset();
+      const adjustedDate = new Date(date.getTime() - offset * 60 * 1000);
+      return adjustedDate.toISOString().split('T')[0];
+    };
+
+    localStorage.setItem(
+      'searchData',
+      JSON.stringify({
+        selectedDeptAirport,
+        selectedDestAirport,
+        selectedDeptDate: selectedDeptDate ? formatDateToLocal(selectedDeptDate) : null,
+        selectedReturnDate: isReturnChecked
+          ? selectedReturnDate
+            ? formatDateToLocal(selectedReturnDate)
+            : null
+          : null,
+        selectedClass,
+        selectedPassengers,
+        isReturnChecked,
+        timestamp: new Date().getTime(),
+      })
+    );
+
     const searchParams = {
       DA: selectedDeptAirport,
       AA: selectedDestAirport,
-      DD: selectedDeptDate ? new Date(selectedDeptDate.getTime() + 86400000).toISOString().split('T')[0] : null,
-      RD: selectedReturnDate ? new Date(selectedReturnDate.getTime() + 86400000).toISOString().split('T')[0] : null,
+      DD: selectedDeptDate ? formatDateToLocal(selectedDeptDate) : null,
+      RD: selectedReturnDate && isReturnChecked === true ? formatDateToLocal(selectedReturnDate) : null,
       A: selectedPassengers.adult,
       C: selectedPassengers.child,
       I: selectedPassengers.infant,
       SC: selectedClass,
     };
 
-    if (!searchParams.DA || !searchParams.AA || !searchParams.DD || !searchParams.SC) {
+    if (!searchParams.DA || !searchParams.AA || !searchParams.DD) {
       toast.error('Mohon lengkapi semua filter pencarian yang wajib!');
       return;
     }
@@ -143,12 +193,8 @@ const SearchFlight = () => {
               <label className="text-gray-500">From</label>
               <div className="flex-1 w-full">
                 <Popover.Root open={isDeptDialogOpen} onOpenChange={setIsDeptDialogOpen}>
-                  <Popover.Trigger>
-                    <div
-                      className={`w-full block text-left py-2 ${
-                        selectedDeptAirport ? 'font-bold text-black' : 'text-gray-500'
-                      }`}
-                    >
+                  <Popover.Trigger className="w-full">
+                    <div className={`text-left py-2 ${selectedDeptAirport ? 'font-bold text-black' : 'text-gray-500'}`}>
                       {selectedDeptAirport
                         ? `${airports.find((airport) => airport.id === selectedDeptAirport)?.name} - ${airports.find((airport) => airport.id === selectedDeptAirport)?.city} ${airports.find((airport) => airport.id === selectedDeptAirport)?.code}`
                         : 'Pilih Penerbangan'}
@@ -174,10 +220,8 @@ const SearchFlight = () => {
               <label className="text-gray-500">To</label>
               <div className="flex-1 w-full">
                 <Popover.Root open={isDestDialogOpen} onOpenChange={setIsDestDialogOpen}>
-                  <Popover.Trigger>
-                    <div
-                      className={`w-full text-left py-2 ${selectedDestAirport ? 'font-bold text-black' : 'text-gray-500'}`}
-                    >
+                  <Popover.Trigger className="w-full">
+                    <div className={`text-left py-2 ${selectedDestAirport ? 'font-bold text-black' : 'text-gray-500'}`}>
                       {selectedDestAirport
                         ? `${airports.find((airport) => airport.id === selectedDestAirport)?.name} - ${airports.find((airport) => airport.id === selectedDestAirport)?.city} (${airports.find((airport) => airport.id === selectedDestAirport)?.code})`
                         : 'Pilih Tujuan'}
@@ -241,11 +285,14 @@ const SearchFlight = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Switch.Root
-                      className="w-10 h-6 bg-gray-300 rounded-full relative data-[state=checked]:bg-[#7126B5] transition-colors"
+                      className={`w-10 h-6 rounded-full relative transition-colors ${isReturnChecked ? 'bg-[#7126B5]' : 'bg-gray-300'}`}
                       id="return-date-switch"
+                      checked={isReturnChecked}
                       onCheckedChange={handleSwitchReturn}
                     >
-                      <Switch.Thumb className="block w-4 h-4 bg-white rounded-full shadow-md transform transition-transform data-[state=checked]:translate-x-4" />
+                      <Switch.Thumb
+                        className={`block w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${isReturnChecked ? 'translate-x-5' : 'translate-x-1'}`}
+                      />
                     </Switch.Root>
                   </div>
                 </div>
@@ -306,7 +353,7 @@ const SearchFlight = () => {
           <Button
             onClick={handleSearchFlights}
             className="w-full py-3 px-4 bg-[#7126B5] text-white rounded-lg shadow-lg hover:bg-[#5a1e9d] focus:outline-none focus:ring-2 focus:ring-[#7126B5]"
-            disabled={!selectedDeptAirport || !selectedDestAirport || !selectedDeptDate || !selectedClass}
+            disabled={!selectedDeptAirport || !selectedDestAirport || !selectedDeptDate}
           >
             Cari Penerbangan
           </Button>

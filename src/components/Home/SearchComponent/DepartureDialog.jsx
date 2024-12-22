@@ -5,7 +5,12 @@ import { IoIosClose } from 'react-icons/io';
 const DepartureDialog = ({ airports, onSelect }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredAirports = airports.filter((airport) => airport.city.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredAirports = airports.filter(
+    (airport) =>
+      airport.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      airport.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      airport.code.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className=" bg-white border rounded-lg p-4 shadow-lg max-w-[400px] w-full">

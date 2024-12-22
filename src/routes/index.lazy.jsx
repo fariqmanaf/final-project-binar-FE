@@ -12,9 +12,6 @@ export const Route = createLazyFileRoute('/')({
 });
 
 function Homepage() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const [searchData, setSearchData] = useState({
     selectedDeptAirport: '',
     selectedDestAirport: '',
@@ -23,14 +20,6 @@ function Homepage() {
     seatClass: '',
     passengers: '',
   });
-
-  const logout = (event) => {
-    event.preventDefault();
-
-    dispatch(setToken(null));
-
-    navigate({ to: '/auth/login' });
-  };
 
   return (
     <>
