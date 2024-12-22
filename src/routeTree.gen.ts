@@ -8,11 +8,11 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
+import { Route as rootRoute } from './routes/__root';
 
 // Create Virtual Routes
 
@@ -37,39 +37,37 @@ const R404LazyRoute = R404LazyImport.update({
   id: '/404',
   path: '/404',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/404.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/404.lazy').then((d) => d.Route));
 
 const IndexLazyRoute = IndexLazyImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route));
 
 const NotificationIndexLazyRoute = NotificationIndexLazyImport.update({
   id: '/notification/',
   path: '/notification/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/notification/index.lazy').then((d) => d.Route),
-)
+} as any).lazy(() => import('./routes/notification/index.lazy').then((d) => d.Route));
 
 const HistoryIndexLazyRoute = HistoryIndexLazyImport.update({
   id: '/history/',
   path: '/history/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/history/index.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/history/index.lazy').then((d) => d.Route));
 
 const FlightsIndexLazyRoute = FlightsIndexLazyImport.update({
   id: '/flights/',
   path: '/flights/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/flights/index.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/flights/index.lazy').then((d) => d.Route));
 
 const AccountIndexLazyRoute = AccountIndexLazyImport.update({
   id: '/account/',
   path: '/account/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/account/index.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/account/index.lazy').then((d) => d.Route));
 
 const PaymentDoneLazyRoute = PaymentDoneLazyImport.update({
   id: '/payment/done',
@@ -87,88 +85,77 @@ const CheckoutDepartureIdLazyRoute = CheckoutDepartureIdLazyImport.update({
   id: '/checkout/$departureId',
   path: '/checkout/$departureId',
   getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/checkout/$departureId.lazy').then((d) => d.Route),
-)
+} as any).lazy(() => import('./routes/checkout/$departureId.lazy').then((d) => d.Route));
 
 const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
   id: '/auth/register',
   path: '/auth/register',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/auth/register.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/auth/register.lazy').then((d) => d.Route));
 
 const AuthLogoutLazyRoute = AuthLogoutLazyImport.update({
   id: '/auth/logout',
   path: '/auth/logout',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/auth/logout.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/auth/logout.lazy').then((d) => d.Route));
 
 const AuthLoginLazyRoute = AuthLoginLazyImport.update({
   id: '/auth/login',
   path: '/auth/login',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route));
 
-const AuthPasswordResetVerifyEmailLazyRoute =
-  AuthPasswordResetVerifyEmailLazyImport.update({
-    id: '/auth/password-reset/verify-email',
-    path: '/auth/password-reset/verify-email',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/auth/password-reset/verify-email.lazy').then(
-      (d) => d.Route,
-    ),
-  )
+const AuthPasswordResetVerifyEmailLazyRoute = AuthPasswordResetVerifyEmailLazyImport.update({
+  id: '/auth/password-reset/verify-email',
+  path: '/auth/password-reset/verify-email',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/auth/password-reset/verify-email.lazy').then((d) => d.Route));
 
-const AuthPasswordResetTokenLazyRoute = AuthPasswordResetTokenLazyImport.update(
-  {
-    id: '/auth/password-reset/$token',
-    path: '/auth/password-reset/$token',
-    getParentRoute: () => rootRoute,
-  } as any,
-).lazy(() =>
-  import('./routes/auth/password-reset/$token.lazy').then((d) => d.Route),
-)
+const AuthPasswordResetTokenLazyRoute = AuthPasswordResetTokenLazyImport.update({
+  id: '/auth/password-reset/$token',
+  path: '/auth/password-reset/$token',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/auth/password-reset/$token.lazy').then((d) => d.Route));
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof IndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/404': {
-      id: '/404'
-      path: '/404'
-      fullPath: '/404'
-      preLoaderRoute: typeof R404LazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/404';
+      path: '/404';
+      fullPath: '/404';
+      preLoaderRoute: typeof R404LazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/auth/login': {
-      id: '/auth/login'
-      path: '/auth/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/auth/login';
+      path: '/auth/login';
+      fullPath: '/auth/login';
+      preLoaderRoute: typeof AuthLoginLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/auth/logout': {
-      id: '/auth/logout'
-      path: '/auth/logout'
-      fullPath: '/auth/logout'
-      preLoaderRoute: typeof AuthLogoutLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/auth/logout';
+      path: '/auth/logout';
+      fullPath: '/auth/logout';
+      preLoaderRoute: typeof AuthLogoutLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/auth/register': {
-      id: '/auth/register'
-      path: '/auth/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthRegisterLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/auth/register';
+      path: '/auth/register';
+      fullPath: '/auth/register';
+      preLoaderRoute: typeof AuthRegisterLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/checkout/$departureId': {
       id: '/checkout/$departureId';
       path: '/checkout/$departureId';
@@ -191,26 +178,26 @@ declare module '@tanstack/react-router' {
       parentRoute: typeof rootRoute;
     };
     '/account/': {
-      id: '/account/'
-      path: '/account'
-      fullPath: '/account'
-      preLoaderRoute: typeof AccountIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/account/';
+      path: '/account';
+      fullPath: '/account';
+      preLoaderRoute: typeof AccountIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/flights/': {
-      id: '/flights/'
-      path: '/flights'
-      fullPath: '/flights'
-      preLoaderRoute: typeof FlightsIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/flights/';
+      path: '/flights';
+      fullPath: '/flights';
+      preLoaderRoute: typeof FlightsIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/history/': {
-      id: '/history/'
-      path: '/history'
-      fullPath: '/history'
-      preLoaderRoute: typeof HistoryIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/history/';
+      path: '/history';
+      fullPath: '/history';
+      preLoaderRoute: typeof HistoryIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/notification/': {
       id: '/notification/';
       path: '/notification';
@@ -219,19 +206,19 @@ declare module '@tanstack/react-router' {
       parentRoute: typeof rootRoute;
     };
     '/auth/password-reset/$token': {
-      id: '/auth/password-reset/$token'
-      path: '/auth/password-reset/$token'
-      fullPath: '/auth/password-reset/$token'
-      preLoaderRoute: typeof AuthPasswordResetTokenLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/auth/password-reset/$token';
+      path: '/auth/password-reset/$token';
+      fullPath: '/auth/password-reset/$token';
+      preLoaderRoute: typeof AuthPasswordResetTokenLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/auth/password-reset/verify-email': {
-      id: '/auth/password-reset/verify-email'
-      path: '/auth/password-reset/verify-email'
-      fullPath: '/auth/password-reset/verify-email'
-      preLoaderRoute: typeof AuthPasswordResetVerifyEmailLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/auth/password-reset/verify-email';
+      path: '/auth/password-reset/verify-email';
+      fullPath: '/auth/password-reset/verify-email';
+      preLoaderRoute: typeof AuthPasswordResetVerifyEmailLazyImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
@@ -290,7 +277,7 @@ export interface FileRoutesById {
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | '/'
     | '/404'
@@ -305,8 +292,8 @@ export interface FileRouteTypes {
     | '/history'
     | '/notification'
     | '/auth/password-reset/$token'
-    | '/auth/password-reset/verify-email'
-  fileRoutesByTo: FileRoutesByTo
+    | '/auth/password-reset/verify-email';
+  fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
     | '/404'
@@ -321,7 +308,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/notification'
     | '/auth/password-reset/$token'
-    | '/auth/password-reset/verify-email'
+    | '/auth/password-reset/verify-email';
   id:
     | '__root__'
     | '/'
@@ -337,8 +324,8 @@ export interface FileRouteTypes {
     | '/history/'
     | '/notification/'
     | '/auth/password-reset/$token'
-    | '/auth/password-reset/verify-email'
-  fileRoutesById: FileRoutesById
+    | '/auth/password-reset/verify-email';
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
@@ -373,11 +360,9 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationIndexLazyRoute: NotificationIndexLazyRoute,
   AuthPasswordResetTokenLazyRoute: AuthPasswordResetTokenLazyRoute,
   AuthPasswordResetVerifyEmailLazyRoute: AuthPasswordResetVerifyEmailLazyRoute,
-}
+};
 
-export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {

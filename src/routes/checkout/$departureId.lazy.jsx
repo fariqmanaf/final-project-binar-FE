@@ -171,7 +171,6 @@ function RouteComponent() {
     };
 
     createBookingMutate(data);
-    console.log(data);
   }
 
   const handleSeatSelection = (seat) => {
@@ -232,7 +231,7 @@ function RouteComponent() {
             </motion.div>
             <div className="md:w-[60%]">
               <Form {...form} id="form">
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 mb-5">
                   <div className="p-[1.5rem] border border-slate-300 rounded-lg">
                     <p className="font-semibold text-xl">Isi Data Pemesan</p>
                     <p className="bg-gray-700 text-white text-sm py-2 px-4 my-[3vh] rounded-t-xl">Data Diri Pemesan</p>

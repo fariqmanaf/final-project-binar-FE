@@ -17,3 +17,7 @@ export function formatDate(date) {
 export function formatLocaleDate(date) {
   return date.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
+
+export function dateToString(date) {
+  return date.toISOString().split('T')[0];
+}
