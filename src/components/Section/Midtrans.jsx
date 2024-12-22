@@ -23,7 +23,5 @@ let parameter = {
 };
 
 snap.createTransaction(parameter).then((transaction) => {
-  // transaction token
   let transactionToken = transaction.token;
-  console.log('transactionToken:', transactionToken);
 });

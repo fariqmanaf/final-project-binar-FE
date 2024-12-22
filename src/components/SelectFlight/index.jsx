@@ -9,8 +9,8 @@ export const LabelSearch = ({ departureCity, destinationCity }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full flex gap-3">
-      <div className="bg-[#A06ECE] gap-2 px-5 flex items-center w-[80%] h-[7vh] text-white text-[2vh] rounded-2xl">
+    <div className="w-full flex md:flex-row flex-col gap-3">
+      <div className="bg-[#A06ECE] gap-2 px-5 flex items-center w-full md:w-[80%] h-[7vh] text-white text-sm rounded-2xl">
         <FaArrowLeft onClick={() => navigate({ to: '/' })} className="cursor-pointer" />
         {departureCity && (
           <>
@@ -24,7 +24,7 @@ export const LabelSearch = ({ departureCity, destinationCity }) => {
       </div>
       <Link
         to={'/'}
-        className="bg-[#73CA5C] flex justify-center items-center gap-4 px-5 py-3 w-[20%] h-[7vh] text-white text-[2vh] rounded-2xl hover:bg-[#50993d]"
+        className="bg-[#73CA5C] flex justify-center items-center gap-4 px-5 py-3 w-full md:w-[20%] h-[7vh] text-white text-sm rounded-2xl hover:bg-[#50993d]"
       >
         Ubah Pencarian
       </Link>
@@ -59,8 +59,9 @@ export const SearchDate = ({ dates, handleDateChange, departureDate }) => {
           <Button
             variants={childVariants}
             key={index}
+            disabled={date < new Date()}
             onClick={() => handleDateChange(date)}
-            className={`flex text-[2vh] bg-transparent text-black flex-col gap-0 w-full h-[7vh] font-light border-r
+            className={`flex text-sm bg-transparent text-black flex-col gap-0 w-full h-[7vh] font-light border-r
                     ${
                       date.toDateString() === departureDate.toDateString()
                         ? 'bg-[#A06ECE] text-white hover:bg-[#A06ECE]'

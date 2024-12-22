@@ -16,7 +16,6 @@ export const login = async (request) => {
 };
 
 export const register = async (data) => {
-  console.log(JSON.stringify(data));
   const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
     method: 'POST',
     body: JSON.stringify(data),

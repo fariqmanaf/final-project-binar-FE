@@ -1,4 +1,4 @@
-import { createRootRoute, Outlet, useLocation, useNavigate } from '@tanstack/react-router';
+import { createRootRoute, notFound, Outlet, useLocation, useNavigate } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import '../index.css';
 import { useEffect } from 'react';
@@ -6,15 +6,17 @@ import { getCurrentUser } from '@/Services/auth/auth';
 import { useQuery } from '@tanstack/react-query';
 import { setToken, setUser } from '@/redux/slices/auth';
 import { useDispatch } from 'react-redux';
+import { NotFoundPage } from '@/components/404';
 
 export const Route = createRootRoute({
-  component: Root,
+  component: () => <Root />,
+  notFoundComponent: () => <NotFoundPage />,
 });
 
 function Root() {
   const location = useLocation();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
 
@@ -44,6 +46,9 @@ function Root() {
     if (location.pathname === '/auth/logout') {
       localStorage.removeItem('token');
       navigate({ to: '/auth/login' });
+    }
+    if (location.pathname === '*') {
+      navigate({ to: '/404' });
     }
   }, [location, navigate]);
 

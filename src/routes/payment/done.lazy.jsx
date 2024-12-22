@@ -1,14 +1,31 @@
 import { BreadCrumb } from '@/components/Breadcrumb';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
-import { createLazyFileRoute, Link } from '@tanstack/react-router';
-import { Toaster } from 'react-hot-toast';
+import { printTicket } from '@/Services/payment';
+import { useMutation } from '@tanstack/react-query';
+import { createLazyFileRoute, Link, useSearch } from '@tanstack/react-router';
+import { useState } from 'react';
+import { Toaster, toast } from 'react-hot-toast';
+import ReactLoading from 'react-loading';
 
 export const Route = createLazyFileRoute('/payment/done')({
   component: Done,
 });
 
 function Done() {
+  const searchParams = Route.useSearch();
+  const order_id = searchParams?.order_id;
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (transactionId) => printTicket(transactionId),
+    onSuccess: () => {
+      toast.success('Tiket Berhasil Dicetak, Cek Email Anda');
+    },
+    onError: () => {
+      toast.error('Gagal Mencetak Tiket');
+    },
+  });
+
   return (
     <>
       <Toaster position="top-right" reverseOrder={false} />
@@ -26,11 +43,26 @@ function Done() {
           </p>
         </div>
         <div className="flex flex-col gap-[1rem] w-[20%]">
-          <Button className="bg-[#7126B5] text-white rounded-xl px-6 py-2 hover:bg-[#5e2494]">
-            <Link to="/history">Terbitkan Tiket</Link>
+          <Button
+            className="bg-[#7126B5] text-white rounded-xl px-6 py-2 hover:bg-[#5e2494]"
+            onClick={() => {
+              mutate(order_id);
+            }}
+          >
+            {isPending ? (
+              <ReactLoading
+                type={'spin'}
+                color={'#FFFFFF'}
+                height={'15%'}
+                width={'15%'}
+                className="flex justify-center items-center"
+              />
+            ) : (
+              <p>Terbitkan Tiket</p>
+            )}{' '}
           </Button>
           <Button className="bg-[#7126B5] text-white rounded-xl px-6 py-2 hover:bg-[#5e2494]">
-            <Link to="/flight">Cari Penerbangan Lain</Link>
+            <Link to="/">Cari Penerbangan Lain</Link>
           </Button>
         </div>
       </div>
