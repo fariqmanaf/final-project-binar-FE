@@ -1,5 +1,5 @@
 import { createLazyFileRoute, useNavigate, useSearch, Link } from '@tanstack/react-router';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import Navbar from '@/components/Navbar';
 import { useEffect, useState } from 'react';
 import { getTransactionHistory } from '@/Services/history/transaction';
@@ -11,6 +11,10 @@ import { SeacrhPopUp } from '@/components/HistoryComponent/SearchPopup';
 import { HistoryItem } from '@/components/History/HistoryItem';
 import { Loading } from '@/components/Loading';
 import { DetailFlight, Pricing } from '@/components/PassengerForm/detail-flight';
+import { FaChevronCircleUp } from 'react-icons/fa';
+import { dateToString } from '@/utils/dateInSearch';
+import { ButtonHistory } from '@/components/History/ButtonHistory';
+import { printTicket } from '@/Services/history/transaction';
 
 export const Route = createLazyFileRoute('/history/')({
   component: History,
@@ -23,31 +27,60 @@ function History() {
 
   const startDate = searchParams.SD;
   const endDate = searchParams.ED;
+  const bookingCode = searchParams.BC || '';
 
   const [history, setHistory] = useState([]);
   const [active, setActive] = useState(null);
   const [activeDetail, setActiveDetail] = useState(null);
-  console.log('activeDetail', activeDetail);
+  const [isDetailView, setIsDetailView] = useState(false);
   const [date, setDate] = useState({
     from: new Date(),
     to: addDays(new Date(), 7),
   });
-  const [bookingCode, setBookingCode] = useState(searchParams.BC || '');
 
-  const passenger = [
-    {
-      type: 'ADULT',
-      quantity: activeDetail,
-    },
-    {
-      type: 'CHILD',
-      quantity: searchParams?.C ? parseInt(searchParams?.C) : 0,
-    },
-    {
-      type: 'INFANT',
-      quantity: searchParams?.I ? parseInt(searchParams?.I) : 0,
-    },
-  ];
+  const [passenger, setPassenger] = useState([]);
+
+  const handleBackToList = () => {
+    setIsDetailView(false);
+  };
+
+  const handleHistoryItemClick = (index) => {
+    setActive(index);
+    if (window.innerWidth < 768) {
+      setIsDetailView(true);
+    }
+  };
+
+  useEffect(() => {
+    if (activeDetail?.bookings) {
+      const passengerCounts = {
+        ADULT: 0,
+        CHILD: 0,
+        INFANT: 0,
+      };
+
+      activeDetail.bookings.forEach((booking) => {
+        if (booking.passenger && booking.passenger.type) {
+          passengerCounts[booking.passenger.type]++;
+        }
+      });
+
+      setPassenger([
+        {
+          type: 'ADULT',
+          quantity: passengerCounts.ADULT,
+        },
+        {
+          type: 'CHILD',
+          quantity: passengerCounts.CHILD,
+        },
+        {
+          type: 'INFANT',
+          quantity: passengerCounts.INFANT,
+        },
+      ]);
+    }
+  }, [activeDetail]);
 
   useEffect(() => {
     if (active !== null) {
@@ -65,8 +98,7 @@ function History() {
     isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: ['history', bookingCode, startDate, endDate],
-    queryFn: ({ pageParam = 1 }, bookingCode, startDate, endDate) =>
-      getTransactionHistory(bookingCode, startDate, endDate, pageParam),
+    queryFn: ({ pageParam = 1 }) => getTransactionHistory(bookingCode, startDate, endDate, pageParam),
     getNextPageParam: (lastPage) => {
       const currentPage = lastPage?.meta?.page;
       const pageCount = lastPage?.meta?.pageCount;
@@ -74,6 +106,30 @@ function History() {
       return currentPage < pageCount ? currentPage + 1 : undefined;
     },
   });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (transactionId) => printTicket(transactionId),
+    onSuccess: () => {
+      toast.success('Tiket Berhasil Dicetak, Cek Email Anda');
+    },
+    onError: () => {
+      toast.error('Gagal Mencetak Tiket');
+    },
+  });
+
+  const handleSubmit = (bookingCode, startDate, endDate) => {
+    if (!startDate || !endDate) {
+      navigate({ search: { BC: bookingCode } });
+    } else {
+      navigate({
+        search: {
+          BC: bookingCode,
+          SD: dateToString(startDate),
+          ED: dateToString(endDate),
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     if (isSuccess) {
@@ -93,50 +149,114 @@ function History() {
     <>
       <Navbar isAuth={true} searchBar={true} />
       <Toaster position="top-right" />
-      <div className="w-screen h-[90vh] px-[10vw]">
+      <FaChevronCircleUp
+        onClick={() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        className="fixed bottom-10 right-10 w-[2rem] h-[2rem] cursor-pointer hover:text-[#A06ECE]"
+      />
+      <div className="w-screen min-h-[90vh] px-4 md:px-[10vw]">
         <p className="md:mt-[10vh] mt-[5vh] mb-[4vh] font-semibold text-xl">Riwayat Pemesanan</p>
         <div className="w-full flex md:flex-row flex-col gap-3 justify-center">
           <div className="bg-[#A06ECE] gap-2 px-5 flex items-center w-full h-[7vh] text-white text-[1rem] rounded-2xl">
             <FaArrowLeft onClick={() => navigate({ to: '/' })} className="cursor-pointer" />
             <p>Beranda</p>
           </div>
-          <DatePickerWithRange setDate={setDate} date={date} className={'flex-grow'} />
-          <SeacrhPopUp setBookingCode={setBookingCode} />
+          <DatePickerWithRange
+            bookingCode={bookingCode}
+            handleSubmit={handleSubmit}
+            setDate={setDate}
+            date={date}
+            className={'flex-grow'}
+          />
+          <SeacrhPopUp handleSubmit={handleSubmit} />
         </div>
-        <div className="flex justify-center mt-[5vh] gap-[5vw]">
-          {isLoading ? (
-            <div className="w-full h-[60vh] flex justify-center items-center">
-              <Loading />
+
+        {isLoading ? (
+          <div className="w-full h-[60vh] flex justify-center items-center">
+            <Loading />
+          </div>
+        ) : (
+          <>
+            {/* Mobile View */}
+            <div className="md:hidden">
+              {!isDetailView ? (
+                <div className="flex flex-col mt-[5vh] gap-[5vh]">
+                  <HistoryItem data={history} className="w-full" active={active} setActive={handleHistoryItemClick} />
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4 mt-[5vh] mb-5">
+                  <button onClick={handleBackToList} className="text-[#A06ECE] flex items-center gap-2">
+                    <FaArrowLeft /> Kembali ke Daftar
+                  </button>
+                  {activeDetail?.departureFlight && (
+                    <>
+                      <DetailFlight
+                        isHistory={true}
+                        history={activeDetail?.bookings}
+                        data={activeDetail?.departureFlight}
+                        returnData={false}
+                      />
+                      {activeDetail?.returnFlight && (
+                        <DetailFlight
+                          isHistory={true}
+                          history={activeDetail?.bookings}
+                          data={activeDetail?.returnFlight}
+                          returnData={true}
+                        />
+                      )}
+                      <Pricing data={activeDetail} passenger={passenger} />
+                      <ButtonHistory
+                        status={activeDetail?.payment?.status}
+                        transactionId={activeDetail?.id}
+                        onPrint={mutate}
+                        isPending={isPending}
+                      />
+                    </>
+                  )}
+                </div>
+              )}
             </div>
-          ) : (
-            <>
-              <div className="flex flex-col w-[60%] gap-[5vh]">
+
+            {/* Desktop View */}
+            <div className="hidden md:flex justify-center mt-[5vh] gap-[5vw]">
+              <div className="flex flex-col md:w-[60%] w-[100%] gap-[5vh]">
                 <HistoryItem data={history} className="w-full" active={active} setActive={setActive} />
               </div>
-              <div className="flex flex-col w-[40%] gap-[5vh]">
-                {activeDetail?.departureFlight && (
-                  <>
-                    <DetailFlight
-                      className={'mt-[7vh] sticky top-[20%]'}
-                      data={activeDetail?.departureFlight}
-                      returnData={false}
-                    />
-                    {activeDetail?.returnFlight && (
+              {history.length > 0 && (
+                <div className="flex flex-col w-[40%] gap-[2vh]">
+                  {activeDetail?.departureFlight && (
+                    <>
                       <DetailFlight
-                        className={'mt-[7vh] sticky top-[20%]'}
-                        data={activeDetail?.returnFlight}
-                        returnData={true}
+                        isHistory={true}
+                        history={activeDetail?.bookings}
+                        className={''}
+                        data={activeDetail?.departureFlight}
+                        returnData={false}
                       />
-                    )}
-                  </>
-                )}
-
-                {/* {activeDetail?.returnFlight && <DetailFlight data={activeDetail?.returnFlight} returnData={true} />}
-                <Pricing data={activeDetail} passenger={passenger} />{' '} */}
-              </div>
-            </>
-          )}
-        </div>
+                      {activeDetail?.returnFlight && (
+                        <DetailFlight
+                          isHistory={true}
+                          history={activeDetail?.bookings}
+                          className={''}
+                          data={activeDetail?.returnFlight}
+                          returnData={true}
+                        />
+                      )}
+                      <Pricing data={activeDetail} passenger={passenger} />
+                      <ButtonHistory
+                        status={activeDetail?.payment?.status}
+                        transactionId={activeDetail?.id}
+                        onPrint={mutate}
+                        isPending={isPending}
+                      />
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </>
   );

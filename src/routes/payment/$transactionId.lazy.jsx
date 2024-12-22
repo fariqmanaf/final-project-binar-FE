@@ -131,7 +131,6 @@ function RouteComponent() {
       }
 
       if (document.getElementById('snap-container').childNodes.length > 0) {
-        console.log('Snap sudah aktif, tidak perlu embed ulang.');
         return;
       }
 

@@ -2,8 +2,11 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { FaSearch } from 'react-icons/fa';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
-export const SeacrhPopUp = ({ className, setBookingCode }) => {
+export const SeacrhPopUp = ({ className, handleSubmit }) => {
+  const [tempBookingCode, setTempBookingCode] = useState('');
+
   return (
     <div className={`grid gap-2 ${className}`}>
       <Popover>
@@ -19,11 +22,16 @@ export const SeacrhPopUp = ({ className, setBookingCode }) => {
             <Input
               onChange={(e) => {
                 e.preventDefault();
-                setBookingCode(e.target.value);
+                setTempBookingCode(e.target.value);
               }}
               placeholder="Cari kode booking"
             />
-            <Button className="bg-[#7126B5] text-white hover:bg-[#7126B5]">Cari</Button>
+            <Button
+              onClick={() => handleSubmit(tempBookingCode)}
+              className="bg-[#7126B5] text-white hover:bg-[#7126B5]"
+            >
+              Cari
+            </Button>
           </div>
         </PopoverContent>
       </Popover>

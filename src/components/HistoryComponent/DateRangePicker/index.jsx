@@ -3,7 +3,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { FaFilter } from 'react-icons/fa';
 
-export const DatePickerWithRange = ({ className, date, setDate }) => {
+export const DatePickerWithRange = ({ className, date, setDate, handleSubmit, bookingCode }) => {
   return (
     <div className={`grid gap-2 ${className}`}>
       <Popover>
@@ -24,7 +24,12 @@ export const DatePickerWithRange = ({ className, date, setDate }) => {
             onSelect={setDate}
             numberOfMonths={1}
           />
-          <Button className="bg-[#7126B5] text-white hover:bg-[#7126B5]">Terapkan</Button>
+          <Button
+            onClick={() => handleSubmit(bookingCode, date.from, date.to)}
+            className="bg-[#7126B5] text-white hover:bg-[#7126B5]"
+          >
+            Terapkan
+          </Button>
         </PopoverContent>
       </Popover>
     </div>

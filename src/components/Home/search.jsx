@@ -102,17 +102,7 @@ const FlightSearch = () => {
     };
   };
 
-  const handleSearchClick = () => {
-    console.log('search for flights');
-    console.log({
-      selectedDeptAirport,
-      selectedDestAirport,
-      departureDate,
-      returnDate,
-      passengers,
-      seatClass,
-    });
-  };
+  const handleSearchClick = () => {};
 
   return (
     <div className="max-w-full flex justify-center items-center p-2 lg-mt-[-100px] md:mt-[-50px]">
