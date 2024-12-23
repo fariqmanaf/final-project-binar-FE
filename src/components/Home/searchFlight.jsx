@@ -15,7 +15,7 @@ import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import toast from 'react-hot-toast';
 
-const SearchFlight = () => {
+const SearchFlight = ({ searchData }) => {
   const navigate = useNavigate();
   const [airports, setAirports] = useState([]);
   const [isDeptDialogOpen, setIsDeptDialogOpen] = useState(false);
@@ -99,29 +99,48 @@ const SearchFlight = () => {
 
   useEffect(() => {
     const savedSearchData = JSON.parse(localStorage.getItem('searchData'));
-    if (savedSearchData) {
-      const currentTime = new Date().getTime();
-      const savedTime = savedSearchData.timestamp;
-      const oneHour = 60 * 60 * 1000;
+    if (searchData == null) {
+      if (savedSearchData) {
+        const currentTime = new Date().getTime();
+        const savedTime = savedSearchData.timestamp;
+        const oneHour = 60 * 60 * 1000;
 
-      if (currentTime - savedTime > oneHour) {
-        localStorage.removeItem('searchData');
+        if (currentTime - savedTime > oneHour) {
+          localStorage.removeItem('searchData');
+        } else {
+          setSelectedDeptAirport(savedSearchData.selectedDeptAirport);
+          setSelectedDestAirport(savedSearchData.selectedDestAirport);
+          setSelectedDeptDate(new Date(savedSearchData.selectedDeptDate));
+          setSelectedReturnDate(
+            savedSearchData.selectedReturnDate ? new Date(savedSearchData.selectedReturnDate) : null
+          );
+          setSelectedClass(savedSearchData.selectedClass);
+          setSelectedPassengers(savedSearchData.selectedPassengers);
+          setIsReturnChecked(savedSearchData.selectedReturnDate ? true : false);
+        }
       } else {
-        setSelectedDeptAirport(savedSearchData.selectedDeptAirport);
-        setSelectedDestAirport(savedSearchData.selectedDestAirport);
-        setSelectedDeptDate(new Date(savedSearchData.selectedDeptDate));
-        setSelectedReturnDate(savedSearchData.selectedReturnDate ? new Date(savedSearchData.selectedReturnDate) : null);
-        setSelectedClass(savedSearchData.selectedClass);
-        setSelectedPassengers(savedSearchData.selectedPassengers);
-        setIsReturnChecked(savedSearchData.selectedReturnDate ? true : false);
+        // Set default values if no saved search data is found
+        setSelectedDeptAirport(airports[0]?.id || null);
+        setSelectedDestAirport(airports[1]?.id || null);
+        setSelectedDeptDate(new Date(Date.now()));
       }
     } else {
-      // Set default values if no saved search data is found
-      setSelectedDeptAirport(airports[0]?.id || null);
-      setSelectedDestAirport(airports[1]?.id || null);
-      setSelectedDeptDate(new Date(Date.now()));
+      const currentDate = new Date();
+      const deptDate = new Date(searchData.departureDate);
+      const returnDate = new Date(searchData.returnDate);
+
+      setSelectedDeptAirport(searchData.selectedDeptAirport);
+      setSelectedDestAirport(searchData.selectedDestAirport);
+      setSelectedDeptDate(deptDate < currentDate ? currentDate : deptDate);
+      setSelectedReturnDate(returnDate < currentDate ? currentDate : returnDate);
+      setSelectedClass(searchData.seatClass);
+      setSelectedPassengers({
+        adult: 1,
+        child: 0,
+        infant: 0,
+      });
     }
-  }, [airports]);
+  }, [airports, searchData]);
 
   const handleSearchFlights = () => {
     const formatDateToLocal = (date) => {

@@ -5,7 +5,7 @@ const CardFav = ({ fav }) => {
   const { departureAirport, destinationAirport, type, price, departureTimestamp, arrivalTimestamp, discount } = fav;
 
   return (
-    <Card className="rounded-lg shadow-lg overflow-hidden min-w-[250px] max-w-[300px] m-4 flex-shrink-0">
+    <Card className="rounded-lg shadow-lg overflow-hidden min-w-[250px] max-w-[300px] m-4 flex-shrink-0 flex-col items-center">
       <div className="relative">
         <img
           src={destinationAirport.image} // Use the departure airport image
@@ -19,14 +19,14 @@ const CardFav = ({ fav }) => {
         </div>
         <div></div>
       </div>
-      <CardHeader className="p-4 py-2">
+      <CardHeader className="p-4 py-2 justify-start items-start flex">
         <CardTitle className="text-sm font-medium">{`${departureAirport.city} -> ${destinationAirport.city}`}</CardTitle>
         <CardDescription className="font-bold text-[#7126B5] text-xs">{type}</CardDescription>
       </CardHeader>
-      <CardContent className="p-4 py-1 text-xs">
+      <CardContent className="p-4 py-2 text-xs justify-start items-start flex">
         <p>{`${new Date(departureTimestamp).toLocaleDateString('id-ID', { day: 'numeric' })} - ${new Date(arrivalTimestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`}</p>
       </CardContent>
-      <CardFooter className="p-4 pt-0 text-xs">
+      <CardFooter className="p-4 pt-1 text-xs">
         <p>
           Mulai dari{' '}
           <span className="font-bold text-[#FF0000]">{`${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price)}`}</span>
