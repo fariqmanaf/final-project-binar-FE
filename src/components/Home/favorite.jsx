@@ -104,7 +104,13 @@ const Favorite = ({ setSearchData }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {currentFavorites && currentFavorites.length > 0
             ? currentFavorites.map((fav, index) => (
-                <Button key={index} onClick={() => handleCardClick(fav)}>
+                <Button
+                  key={index}
+                  onClick={() => {
+                    handleCardClick(fav);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                >
                   <CardFav fav={fav} />
                 </Button>
               ))
