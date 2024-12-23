@@ -55,7 +55,7 @@ function Notification() {
     isSuccess,
     isError,
   } = useQuery({
-    queryKey: 'notifications',
+    queryKey: ['notifications'],
     queryFn: () => getNotifications(),
   });
 

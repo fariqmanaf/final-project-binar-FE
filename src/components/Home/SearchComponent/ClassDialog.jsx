@@ -31,7 +31,7 @@ const SeatClassDialog = ({ onClose, onSelectClass, dept, dest, deptDate, retDate
     isSuccess,
     isError,
     isLoading,
-  } = useQuery({ queryKey: 'flightClasses', queryFn: () => getFlightData(dept, dest, deptDate, retDate) });
+  } = useQuery({ queryKey: ['flightClasses'], queryFn: () => getFlightData(dept, dest, deptDate, retDate) });
 
   useEffect(() => {
     if (isSuccess) {

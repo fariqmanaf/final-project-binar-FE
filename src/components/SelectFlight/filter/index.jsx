@@ -9,7 +9,7 @@ export const FilterFlight = ({ setFilter }) => {
   return (
     <Popover>
       <PopoverTrigger>
-        <button className="btn btn-primary flex items-center gap-[1vw] rounded-full border border-[#7126B5] px-[2vw] py-[1vh]">
+        <div className="btn btn-primary flex items-center gap-[1vw] rounded-full border border-[#7126B5] px-[2vw] py-[1vh]">
           <span>
             <FaFilter className="text-[#7126B5]" />
           </span>
@@ -18,7 +18,7 @@ export const FilterFlight = ({ setFilter }) => {
           ) : (
             <span className="text-[#7126B5] font-semibold">Filter</span>
           )}
-        </button>
+        </div>
       </PopoverTrigger>
       <PopoverContent>
         <div className="flex flex-col gap-[1vh]">
