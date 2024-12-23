@@ -175,7 +175,7 @@ function History() {
 
         {isLoading ? (
           <div className="w-full h-[60vh] flex justify-center items-center">
-            <Loading />
+            <Loading text={'Mencari Riwayat Penerbangan'} />
           </div>
         ) : (
           <>

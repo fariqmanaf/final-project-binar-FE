@@ -121,7 +121,7 @@ function SelectFlight() {
             <div className="w-full h-full flex justify-center">
               {isLoading ? (
                 <div className="w-full h-full flex justify-center items-center">
-                  <Loading />
+                  <Loading text={'Mencari penerbangan terbaik...'} />
                 </div>
               ) : flightsData.length === 0 ? (
                 <NotFound />

@@ -27,7 +27,7 @@ export function Notification({ notifications, handleDeleteNotif, handleReadNotif
                       })}
                       <span>
                         <div
-                          className={`${notif?.viewed === true ? 'bg-red-600' : 'bg-green-500'} w-[0.6rem] h-[0.6rem] rounded-full`}
+                          className={`${notif?.viewed === true ? 'bg-green-500' : 'bg-red-600'} w-[0.6rem] h-[0.6rem] rounded-full`}
                         ></div>
                       </span>
                     </span>

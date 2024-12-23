@@ -9,6 +9,8 @@ import Navbar from '@/components/Navbar';
 import { getNotifications, deleteNotification, readAllNotifications, readNotification } from '@/Services/notifications';
 import toast, { Toaster } from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
+import { FaChevronCircleUp } from 'react-icons/fa';
+import { Loading } from '@/components/Loading';
 
 export const Route = createLazyFileRoute('/notification/')({
   component: Notification,
@@ -111,6 +113,12 @@ function Notification() {
   return (
     <>
       <Toaster position="top-right" />
+      <FaChevronCircleUp
+        onClick={() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        className="fixed bottom-10 right-10 w-[2rem] h-[2rem] cursor-pointer hover:text-[#A06ECE]"
+      />
       <Navbar isAuth={true} searchBar={false} />
       <div className="font-poppins container mx-auto w-full md:w-[90%] lg:w-[80%] px-4 py-8">
         <div className="w-full flex justify-between items-center mb-5">
@@ -120,7 +128,7 @@ function Notification() {
         </div>
         <div className="flex flex-col md:flex-row px-[1vw] py-[1vh] justify-between items-center">
           <div
-            className="bg-[#A06ECE] text-white p-4 md:w-[10rem] w-full flex-grow rounded-xl mb-4 md:mb-0 flex items-center h-[8vh]"
+            className="bg-[#A06ECE] text-white p-4 md:w-[10rem] w-full flex-grow rounded-xl mb-4 md:mb-0 flex items-center h-[3rem]"
             onClick={() => navigate({ to: `/` })}
           >
             <img src="/fi_arrow-left.svg" alt="back-button" className="cursor-pointer mr-2" />
@@ -152,12 +160,18 @@ function Notification() {
             Read All
           </Button>
         </div>
-        <div className="w-full md:w-5/6">
-          <Notifications
-            notifications={filteredNotifications.length > 0 ? filteredNotifications : notificationsData}
-            handleDeleteNotif={handleDeleteNotif}
-            handleReadNotif={handleReadNotif}
-          />
+        <div className="w-full mt-[4vh]">
+          {isLoading ? (
+            <div className="w-full h-[60vh] flex justify-center items-center">
+              <Loading text={'Memuat Notifikasi Anda...'} />
+            </div>
+          ) : (
+            <Notifications
+              notifications={filteredNotifications.length > 0 ? filteredNotifications : notificationsData}
+              handleDeleteNotif={handleDeleteNotif}
+              handleReadNotif={handleReadNotif}
+            />
+          )}
         </div>
       </div>
     </>
