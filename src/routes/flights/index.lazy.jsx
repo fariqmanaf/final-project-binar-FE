@@ -13,6 +13,7 @@ import { YourFlight } from '@/components/SelectFlight/yourFlight';
 import { AccordionFlight } from '@/components/SelectFlight/accordionFlight';
 import { motion } from 'framer-motion';
 import { FilterFlight } from '@/components/SelectFlight/filter';
+import { getUserTimezone } from '@/utils/getUserTimezone';
 
 export const Route = createLazyFileRoute('/flights/')({
   component: SelectFlight,
@@ -42,7 +43,7 @@ function SelectFlight() {
   }, [searchParams?.DD]);
 
   const dates = getDatesAround(departureDate, 2, 3);
-  const querySearch = `departureDate=${DD.toISOString().split('T')[0]}&departureAirportId=${searchParams?.DA}&destinationAirportId=${searchParams?.AA}&sortBy=${filter || ''}&type=${type?.toUpperCase()}`;
+  const querySearch = `departureDate=${DD.toISOString().split('T')[0]}&departureAirportId=${searchParams?.DA}&destinationAirportId=${searchParams?.AA}&sortBy=${filter || ''}&type=${type?.toUpperCase()}&timezoneUtc=${getUserTimezone()}`;
 
   const {
     data: flights,

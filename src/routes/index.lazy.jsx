@@ -10,6 +10,7 @@ export const Route = createLazyFileRoute('/')({
 
 function Homepage() {
   const [searchData, setSearchData] = useState(null);
+
   return (
     <>
       <Navbar isAuth={true} searchBar={true} />
