@@ -55,25 +55,29 @@ export const SearchDate = ({ dates, handleDateChange, departureDate }) => {
       animate="show"
       className="grid grid-cols-3 space-y-2 md:space-y-0 md:grid-cols-6 space-x-2 mt-[4vh] px-[2vw]"
     >
-      {dates.map((date, index) => (
-        <motion.div key={index} variants={childVariants} className="w-">
-          <Button
-            variants={childVariants}
-            key={index}
-            disabled={date < new Date()}
-            onClick={() => handleDateChange(date)}
-            className={`flex text-sm bg-transparent text-black flex-col gap-0 w-full h-[7vh] font-light border-r
+      {dates.map((date, index) => {
+        const today = new Date();
+        today.setDate(today.getDate() - 1);
+        return (
+          <motion.div key={index} variants={childVariants} className="w-">
+            <Button
+              variants={childVariants}
+              key={index}
+              disabled={date < today}
+              onClick={() => handleDateChange(date)}
+              className={`flex text-sm bg-transparent text-black flex-col gap-0 w-full h-[7vh] font-light border-r
                     ${
                       date.toDateString() === departureDate.toDateString()
                         ? 'bg-[#A06ECE] text-white hover:bg-[#A06ECE]'
                         : 'hover:bg-[#A06ECE] hover:text-white'
                     }`}
-          >
-            <p className="font-semibold">{date.toLocaleDateString('id-ID', { weekday: 'long' })}</p>
-            <p>{formatDate(date)}</p>
-          </Button>
-        </motion.div>
-      ))}
+            >
+              <p className="font-semibold">{date.toLocaleDateString('id-ID', { weekday: 'long' })}</p>
+              <p>{formatDate(date)}</p>
+            </Button>
+          </motion.div>
+        );
+      })}
     </motion.div>
   );
 };
