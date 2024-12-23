@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CardFav from './CardFav';
 import { getFavoriteDestination } from '@/Services/home/favoriteDestination';
 import toast from 'react-hot-toast';
@@ -9,10 +9,8 @@ import ReactLoading from 'react-loading';
 const Favorite = ({ setSearchData }) => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [nextCursor, setNextCursor] = useState(null);
+  const [visibleFavorites, setVisibleFavorites] = useState(8);
   const [activeButton, setActiveButton] = useState('Semua');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
 
   const destinationToContinentMap = {
     Semua: null,
@@ -25,13 +23,12 @@ const Favorite = ({ setSearchData }) => {
 
   const destinations = Object.keys(destinationToContinentMap);
 
-  const fetchFavorites = async (destination, cursor = null) => {
+  const fetchFavorites = async (destination) => {
     try {
       setLoading(true);
       const continentParam = destinationToContinentMap[destination];
-      const response = await getFavoriteDestination(continentParam, cursor);
-      setFavorites((prevFavorites) => (cursor ? [...prevFavorites, ...response] : response));
-      setNextCursor(response.nextCursor);
+      const response = await getFavoriteDestination(continentParam);
+      setFavorites(response);
     } catch (err) {
       toast.error(err.message || 'Gagal memuat data destinasi favorit');
     } finally {
@@ -40,15 +37,8 @@ const Favorite = ({ setSearchData }) => {
   };
 
   useEffect(() => {
-    setCurrentPage(1); // Reset pagination saat kategori baru dipilih
     fetchFavorites(activeButton);
   }, [activeButton]);
-
-  const handleLoadMore = () => {
-    if (nextCursor) {
-      fetchFavorites(activeButton, nextCursor);
-    }
-  };
 
   const handleCardClick = (fav) => {
     setSearchData({
@@ -61,15 +51,8 @@ const Favorite = ({ setSearchData }) => {
     });
   };
 
-  // Hitung data yang akan ditampilkan berdasarkan halaman saat ini
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentFavorites = favorites.slice(indexOfFirstItem, indexOfLastItem);
-
-  const totalPages = Math.ceil(favorites.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handleLoadMore = () => {
+    setVisibleFavorites((prev) => prev + 4);
   };
 
   return (
@@ -84,10 +67,8 @@ const Favorite = ({ setSearchData }) => {
             }`}
             onClick={() => {
               setActiveButton(destination);
-              if (activeButton !== destination) {
-                setFavorites([]);
-              }
-              setNextCursor(null);
+              setFavorites([]);
+              setVisibleFavorites(4);
             }}
           >
             <IoSearch size="1.2rem" />
@@ -101,43 +82,38 @@ const Favorite = ({ setSearchData }) => {
           <ReactLoading type="spin" color="#7126B5" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {currentFavorites && currentFavorites.length > 0
-            ? currentFavorites.map((fav, index) => (
-                <Button
-                  key={index}
-                  onClick={() => {
-                    handleCardClick(fav);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                >
-                  <CardFav fav={fav} />
-                </Button>
-              ))
-            : !loading && <p className="text-center">No favorite destinations found.</p>}
-        </div>
-      )}
-
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 mt-4">
-          {[...Array(totalPages)].map((_, page) => (
-            <button
-              key={page + 1}
-              className={`px-4 py-2 rounded-lg ${currentPage === page + 1 ? 'bg-[#7126B5] text-white' : 'bg-gray-300'}`}
-              onClick={() => handlePageChange(page + 1)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center sm:justify-start items-center">
+          {favorites.slice(0, visibleFavorites).map((fav, index) => (
+            <Button
+              key={index}
+              onClick={() => {
+                handleCardClick(fav);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="w-full sm:w-auto flex justify-center sm:justify-start"
             >
-              {page + 1}
-            </button>
+              <CardFav fav={fav} />
+            </Button>
           ))}
         </div>
       )}
 
-      {nextCursor && !loading && (
-        <button className="mt-4 px-4 py-2 bg-[#7126B5] text-white rounded-lg block mx-auto" onClick={handleLoadMore}>
-          Load More
-        </button>
-      )}
+      <div className="text-center mt-4">
+        {loading ? (
+          <span>Loading more...</span>
+        ) : visibleFavorites < favorites.length ? (
+          <button
+            className="mt-1 px-4 py-2 rounded-lg text-md pb-[3vh] text-[#7126B5] font-semibold animate-pulse"
+            onClick={handleLoadMore}
+          >
+            Load More
+          </button>
+        ) : (
+          <p className="mt-1 px-4 py-2 rounded-lg text-md pb-[3vh] text-[#7126B5] font-semibold">
+            Nothing more to load
+          </p>
+        )}
+      </div>
     </div>
   );
 };
