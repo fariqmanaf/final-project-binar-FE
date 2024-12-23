@@ -52,8 +52,8 @@ const Favorite = ({ setSearchData }) => {
 
   const handleCardClick = (fav) => {
     setSearchData({
-      selectedDeptAirport: fav.departureAirport.name,
-      selectedDestAirport: fav.destinationAirport.name,
+      selectedDeptAirport: fav.departureAirport.id,
+      selectedDestAirport: fav.destinationAirport.id,
       departureDate: new Date(fav.departureTimestamp).toISOString().split('T')[0],
       returnDate: new Date(fav.arrivalTimestamp).toISOString().split('T')[0],
       seatClass: fav.type,
@@ -96,21 +96,27 @@ const Favorite = ({ setSearchData }) => {
         ))}
       </div>
 
-      {loading && (
+      {loading ? (
         <div className="flex justify-center items-start w-full my-5">
           <ReactLoading type="spin" color="#7126B5" />
         </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {currentFavorites && currentFavorites.length > 0
+            ? currentFavorites.map((fav, index) => (
+                <Button
+                  key={index}
+                  onClick={() => {
+                    handleCardClick(fav);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                >
+                  <CardFav fav={fav} />
+                </Button>
+              ))
+            : !loading && <p className="text-center">No favorite destinations found.</p>}
+        </div>
       )}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {currentFavorites && currentFavorites.length > 0
-          ? currentFavorites.map((fav, index) => (
-              <div key={index} onClick={() => handleCardClick(fav)}>
-                <CardFav fav={fav} />
-              </div>
-            ))
-          : !loading && <p className="text-center">No favorite destinations found.</p>}
-      </div>
 
       {/* Pagination Controls */}
       {totalPages > 1 && (

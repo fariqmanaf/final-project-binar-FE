@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { useNavigate } from '@tanstack/react-router';
-import { useDispatch } from 'react-redux';
-import { setToken } from '@/redux/slices/auth';
 import Navbar from '@/components/Navbar';
 import SearchFlight from '@/components/Home/searchFlight';
 import Favorite from '@/components/Home/favorite';
@@ -12,26 +9,7 @@ export const Route = createLazyFileRoute('/')({
 });
 
 function Homepage() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const [searchData, setSearchData] = useState({
-    selectedDeptAirport: '',
-    selectedDestAirport: '',
-    departureDate: '',
-    returnDate: '',
-    seatClass: '',
-    passengers: '',
-  });
-
-  const logout = (event) => {
-    event.preventDefault();
-
-    dispatch(setToken(null));
-
-    navigate({ to: '/auth/login' });
-  };
-
+  const [searchData, setSearchData] = useState(null);
   return (
     <>
       <Navbar isAuth={true} searchBar={true} />
@@ -42,7 +20,7 @@ function Homepage() {
         </section>
         {/* Search Form */}
         <div className="flex justify-center w-full items-center shadow-sm bg-white" style={{ zIndex: '2' }}>
-          <SearchFlight searchData={searchData} setSearchData={setSearchData} />
+          <SearchFlight searchData={searchData} />
         </div>
 
         {/* <FavoriteDestination /> */}

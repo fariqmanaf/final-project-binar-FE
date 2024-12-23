@@ -19,6 +19,11 @@ const SeatClassDialog = ({ onClose, onSelectClass, dept, dest, deptDate, retDate
       ];
       setFlightClasses(defaultFlightClasses);
     }
+
+    const savedData = JSON.parse(localStorage.getItem('searchData'));
+    if (savedData && savedData.selectedClass) {
+      setSelectedClass(savedData.selectedClass);
+    }
   }, [dept, dest, deptDate, retDate]);
 
   const {
@@ -57,6 +62,9 @@ const SeatClassDialog = ({ onClose, onSelectClass, dept, dest, deptDate, retDate
   }, [flightClasses, isSuccess, isError, dept, dest, deptDate]);
 
   const handleSave = () => {
+    const savedData = JSON.parse(localStorage.getItem('searchData')) || {};
+    savedData.selectedClass = selectedClass;
+    localStorage.setItem('searchData', JSON.stringify(savedData));
     onSelectClass(selectedClass); // Kirim kelas yang dipilih ke komponen induk
     onClose(); // Tutup modal
   };

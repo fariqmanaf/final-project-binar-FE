@@ -1,5 +1,5 @@
 // import * as Popover from '@radix-ui/react-popover';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaBaby, FaChild, FaUser } from 'react-icons/fa';
 
 const PassengerDialog = ({ onSelectCounts, onClose }) => {
@@ -8,6 +8,13 @@ const PassengerDialog = ({ onSelectCounts, onClose }) => {
     child: 0,
     infant: 0,
   });
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem('searchData'));
+    if (savedData && savedData.selectedPassengers) {
+      setCounts(savedData.selectedPassengers);
+    }
+  }, []);
 
   const handleCountChange = (type, operation) => {
     setCounts((prevCounts) => {
@@ -23,6 +30,9 @@ const PassengerDialog = ({ onSelectCounts, onClose }) => {
   };
 
   const handleSave = () => {
+    const savedData = JSON.parse(localStorage.getItem('searchData')) || {};
+    savedData.selectedPassengers = counts;
+    localStorage.setItem('searchData', JSON.stringify(savedData));
     onSelectCounts(counts);
     onClose();
   };
@@ -59,9 +69,7 @@ const PassengerDialog = ({ onSelectCounts, onClose }) => {
             >
               -
             </button>
-            <span className="border px-4 py-1 rounded text-center w-[3rem]">
-              {!onSelectCounts ? onSelectCounts?.[type] : counts[type]}
-            </span>
+            <span className="border px-4 py-1 rounded text-center w-[3rem]">{counts[type]}</span>
 
             <button
               className="border border-purple-500 text-purple-500 rounded w-8 h-8 flex items-center justify-center"
