@@ -29,8 +29,7 @@ function RouteComponent() {
   } = useQuery({
     queryKey: ['transaction', transactionId],
     queryFn: () => getTransactionById(transactionId),
-    onError: (err) => {
-      console.error('Query Error:', err);
+    onError: () => {
       toast.error('Gagal mengambil data transaksi.');
     },
   });
@@ -87,46 +86,10 @@ function RouteComponent() {
     };
   }, []);
 
-  // function handlePayment() {
-  //   if (transaction?.payment?.snapToken && window.snap) {
-  //     window.snap.embed(transaction.payment.snapToken, {
-  //       embedId: 'snap-container',
-  //       onSuccess: function () {
-  //         toast.success('Pembayaran berhasil!', {
-  //           duration: 5000,
-  //         });
-  //         navigate({ to: '/payment/done' });
-  //       },
-  //       onPending: function () {
-  //         toast.info('Pembayaran dalam status pending.', {
-  //           duration: 5000,
-  //         });
-  //         navigate({ to: '/history' });
-  //       },
-  //       onError: function () {
-  //         toast.error('Pembayaran gagal.', {
-  //           duration: 5000,
-  //         });
-  //         navigate({ to: '/history' });
-  //       },
-  //       onClose: function () {
-  //         toast('Anda menutup dialog pembayaran tanpa menyelesaikannya.', {
-  //           duration: 5000,
-  //         });
-  //       },
-  //     });
-  //   } else {
-  //     console.error('Snap token atau snap.js tidak tersedia');
-  //   }
-  // }
-
   useEffect(() => {
-    // if (isSuccess && transactionData?.payment?.snapToken) {
-    //   handlePayment();
-    // }
     if (isSuccess && transactionData?.payment?.snapToken) {
       if (!window.snap) {
-        console.error('Snap.js belum diinisialisasi.');
+        toast.error('Midtrans Snap is not available.', { duration: 5000 });
         return;
       }
 
@@ -136,17 +99,38 @@ function RouteComponent() {
 
       window.snap.embed(transactionData.payment.snapToken, {
         embedId: 'snap-container',
-        onSuccess: function () {
+        onSuccess: function (result) {
           toast.success('Pembayaran berhasil!', { duration: 5000 });
-          navigate({ to: '/payment/done' });
+          navigate({
+            to: '/payment/done',
+            params: {
+              order_id: result.order_id,
+              status_code: result.status_code,
+              transaction_status: result.transaction_status,
+            },
+          });
         },
-        onPending: function () {
+        onPending: function (result) {
           toast.info('Pembayaran pending.', { duration: 5000 });
-          navigate({ to: '/history' });
+          navigate({
+            to: '/history',
+            params: {
+              order_id: result.order_id,
+              status_code: result.status_code,
+              transaction_status: result.transaction_status,
+            },
+          });
         },
-        onError: function () {
+        onError: function (result) {
           toast.error('Pembayaran gagal.', { duration: 5000 });
-          navigate({ to: '/history' });
+          navigate({
+            to: '/history',
+            params: {
+              order_id: result.order_id,
+              status_code: result.status_code,
+              transaction_status: result.transaction_status,
+            },
+          });
         },
         onClose: function () {
           toast('Anda menutup dialog pembayaran.', { duration: 5000 });
