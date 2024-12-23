@@ -67,7 +67,7 @@ export function SelectFieldComponent({ form, identifier, label, items, placehold
                 ))}
             </SelectContent>
           </Select>
-          <FormMessage />
+          <FormMessage className="text-xs" />
         </FormItem>
       )}
     />

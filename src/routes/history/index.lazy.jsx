@@ -15,6 +15,7 @@ import { FaChevronCircleUp } from 'react-icons/fa';
 import { dateToString } from '@/utils/dateInSearch';
 import { ButtonHistory } from '@/components/History/ButtonHistory';
 import { printTicket } from '@/Services/history/transaction';
+import { motion } from 'framer-motion';
 
 export const Route = createLazyFileRoute('/history/')({
   component: History,
@@ -133,7 +134,7 @@ function History() {
 
   useEffect(() => {
     if (isSuccess) {
-      setHistory(historyData.pages.map((page) => page).flat());
+      setHistory(historyData.pages.map((page) => page.data).flat());
     } else if (isError) {
       toast.error('Gagal memuat data riwayat penerbangan');
     }
@@ -158,7 +159,7 @@ function History() {
       <div className="w-screen min-h-[90vh] px-4 md:px-[10vw]">
         <p className="mt-[5vh] mb-[4vh] font-semibold text-xl">Riwayat Pemesanan</p>
         <div className="w-full flex md:flex-row flex-col gap-3 justify-center">
-          <div className="bg-[#A06ECE] gap-2 px-5 flex items-center w-full h-[7vh] text-white text-[1rem] rounded-2xl">
+          <div className="bg-[#A06ECE] gap-2 px-5 flex items-center w-full h-[3rem] text-white text-[1rem] rounded-2xl">
             <FaArrowLeft onClick={() => navigate({ to: '/' })} className="cursor-pointer" />
             <p>Beranda</p>
           </div>
@@ -181,9 +182,21 @@ function History() {
             {/* Mobile View */}
             <div className="md:hidden">
               {!isDetailView ? (
-                <div className="flex flex-col mt-[5vh] gap-[5vh]">
+                <motion.div
+                  initial={{ opacity: 0, y: 100 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1 }}
+                  className="flex flex-col mt-[5vh] gap-[5vh]"
+                >
                   <HistoryItem data={history} className="w-full" active={active} setActive={handleHistoryItemClick} />
-                </div>
+                  <button
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                    className="text-md pb-[3vh] -mt-10 text-[#7126B5] font-semibold"
+                  >
+                    {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load More' : 'Nothing more to load'}
+                  </button>
+                </motion.div>
               ) : (
                 <div className="flex flex-col gap-4 mt-[5vh] mb-5">
                   <button onClick={handleBackToList} className="text-[#A06ECE] flex items-center gap-2">
@@ -220,9 +233,21 @@ function History() {
 
             {/* Desktop View */}
             <div className="hidden md:flex justify-center mt-[5vh] gap-[5vw]">
-              <div className="flex flex-col md:w-[60%] w-[100%] gap-[5vh]">
+              <motion.div
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+                className="flex flex-col md:w-[60%] w-[100%] gap-[5vh]"
+              >
                 <HistoryItem data={history} className="w-full" active={active} setActive={setActive} />
-              </div>
+                <button
+                  onClick={() => fetchNextPage()}
+                  disabled={!hasNextPage || isFetchingNextPage}
+                  className="text-md pb-[3vh] -mt-10 text-[#7126B5] font-semibold"
+                >
+                  {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load More' : 'Nothing more to load'}
+                </button>
+              </motion.div>
               {history.length > 0 && (
                 <div className="flex flex-col w-[40%] gap-[2vh]">
                   {activeDetail?.departureFlight && (

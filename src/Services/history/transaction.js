@@ -31,7 +31,7 @@ export const getTransactionHistory = async (bookingCode, startDate, endDate, pag
     throw new Error(result?.message);
   }
 
-  return result?.data;
+  return result;
 };
 
 export const printTicket = async (transactionId) => {

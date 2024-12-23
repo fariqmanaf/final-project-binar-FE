@@ -107,11 +107,6 @@ const SeatClassDialog = ({ onClose, onSelectClass, dept, dest, deptDate, retDate
                 >
                   {displayType}
                 </div>
-                <div className="text-sm">
-                  <span className={`${selectedClass === flightClass.type ? 'text-white' : 'text-[#7126B5]'}`}>
-                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(flightClass.price)}
-                  </span>
-                </div>
               </div>
               {selectedClass === flightClass.type && <FaCheckCircle size={20} color="#28a745" />}
             </div>

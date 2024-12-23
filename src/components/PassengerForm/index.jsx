@@ -26,25 +26,12 @@ export function UserForm({ form }) {
   );
 }
 
-export function PassengerForm({ form, index, type }) {
+export function PassengerForm({ form, index }) {
   const [isHaveFamilyName, setIsHaveFamilyName] = useState(false);
-
-  const items = [
-    { value: 'Mr.', label: 'Mr.' },
-    { value: 'Mrs.', label: 'Mrs.' },
-    { value: 'Miss.', label: 'Miss.' },
-  ];
 
   return (
     <>
       <TypeFieldComponent form={form} identifier={`passengers.${index}.Ptype`} />
-      <SelectFieldComponent
-        form={form}
-        identifier={`passengers.${index}.Ptitle`}
-        label="Title"
-        items={items}
-        placeholder="Pilih Title Untuk Penumpang"
-      />
       <BookerFieldComponent
         form={form}
         identifier={`passengers.${index}.PFullName`}

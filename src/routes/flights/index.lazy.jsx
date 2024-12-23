@@ -29,7 +29,7 @@ function SelectFlight() {
   const A = searchParams?.A ? parseInt(searchParams?.A) : null;
   const C = searchParams?.C ? parseInt(searchParams?.C) : null;
   const I = searchParams?.I ? parseInt(searchParams?.I) : null;
-  const type = searchParams?.type ? searchParams?.type : null;
+  const type = searchParams?.SC ? searchParams?.SC : null;
 
   const [departureDate, setDepartureDate] = useState(DD);
   const [flightsData, setFlightsData] = useState([]);
@@ -110,6 +110,8 @@ function SelectFlight() {
           <LabelSearch
             departureCity={flightsData[0]?.departureAirport?.code}
             destinationCity={flightsData[0]?.destinationAirport?.code}
+            passengerTotal={A + C + I}
+            typePlane={type ? type : 'All'}
           />
           <SearchDate dates={dates} handleDateChange={handleDateChange} departureDate={departureDate} />
           <div className="mt-[3vh] w-full flex justify-end px-[3vw]">

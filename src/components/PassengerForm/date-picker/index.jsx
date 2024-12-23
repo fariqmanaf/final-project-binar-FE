@@ -48,7 +48,7 @@ export function BirthOdDate({ form, identifier, label }) {
               />
             </PopoverContent>
           </Popover>
-          <FormMessage />
+          <FormMessage className="text-xs" />
         </FormItem>
       )}
     />
@@ -96,7 +96,7 @@ export function ExpiredUntil({ form, identifier, label }) {
               />
             </PopoverContent>
           </Popover>
-          <FormMessage />
+          <FormMessage className="text-xs" />
         </FormItem>
       )}
     />

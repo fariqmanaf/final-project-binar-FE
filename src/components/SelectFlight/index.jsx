@@ -4,8 +4,9 @@ import { Link } from '@tanstack/react-router';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'motion/react';
+import { mapping } from '@/utils/mappingClass';
 
-export const LabelSearch = ({ departureCity, destinationCity }) => {
+export const LabelSearch = ({ departureCity, destinationCity, typePlane, passengerTotal }) => {
   const navigate = useNavigate();
 
   return (
@@ -20,7 +21,7 @@ export const LabelSearch = ({ departureCity, destinationCity }) => {
             -
           </>
         )}
-        <p>2 Penumpang</p> -<p>Economy</p>
+        <p>{passengerTotal} Penumpang</p> -<p>{mapping[typePlane.toUpperCase()]}</p>
       </div>
       <Link
         to={'/'}

@@ -98,7 +98,6 @@ function RouteComponent() {
   }, [flight, isSuccess, isError]);
 
   const passengerSchema = z.object({
-    Ptitle: z.string().nonempty({ message: 'Title harus diisi' }),
     PDOB: z.date(),
     PFullName: z.string().nonempty({ message: 'Nama Lengkap harus diisi' }),
     PFamilyName: z.string().optional(),
@@ -129,7 +128,6 @@ function RouteComponent() {
       email: user?.email,
       passengers: passenger.flatMap((passengerType) =>
         Array.from({ length: passengerType.quantity }, () => ({
-          Ptitle: '',
           PDOB: undefined,
           PFullName: '',
           PFamilyName: '',
@@ -251,7 +249,7 @@ function RouteComponent() {
                               Data Diri Penumpang {globalIndex + 1} - {mappingPassenger[passengerType.type]}
                             </p>
                             <div className="space-y-5">
-                              <PassengerForm form={form} index={globalIndex} type={passengerType.type} />
+                              <PassengerForm form={form} index={globalIndex} />
                             </div>
                           </div>
                         );
@@ -295,15 +293,7 @@ function RouteComponent() {
                       </div>
                     )}
                   </div>
-                  <Button
-                    disabled={
-                      !form.formState.isValid ||
-                      selectedSeats.length < maxPassenger ||
-                      (flightData?.returnFlight !== null && selectedReturnSeats.length < maxPassenger)
-                    }
-                    type="submit"
-                    className="w-full rounded-xl mt-3 bg-[#7126B5] h-12 hover:bg-[#4c0f85]"
-                  >
+                  <Button type="submit" className="w-full rounded-xl mt-3 bg-[#7126B5] h-12 hover:bg-[#4c0f85]">
                     {isPendingMutate ? (
                       <ReactLoading
                         type={'spin'}
