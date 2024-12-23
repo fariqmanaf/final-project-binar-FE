@@ -104,7 +104,7 @@ function SelectFlight() {
     <>
       <Toaster position="top-right" reverseOrder={false} />
       <Navbar searchBar={true} isAuth={true} />
-      <div className="w-screen flex justify-center px-[10vw]">
+      <div className="w-screen flex justify-center md:px-[10vw] px-[5vw]">
         <div className="bg-white w-[100vw] h-[50vh] mt-[7vh]">
           <p className="text-[3vh] font-semibold mb-[3vh]">Pilih Penerbangan</p>
           <LabelSearch
