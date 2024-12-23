@@ -101,36 +101,39 @@ function RouteComponent() {
         embedId: 'snap-container',
         onSuccess: function (result) {
           toast.success('Pembayaran berhasil!', { duration: 5000 });
-          navigate({
-            to: '/payment/done',
-            params: {
+          localStorage.setItem(
+            'paymentResult',
+            JSON.stringify({
               order_id: result.order_id,
               status_code: result.status_code,
               transaction_status: result.transaction_status,
-            },
-          });
+            })
+          );
+          navigate({ to: '/payment/done' });
         },
         onPending: function (result) {
           toast.info('Pembayaran pending.', { duration: 5000 });
-          navigate({
-            to: '/history',
-            params: {
+          localStorage.setItem(
+            'paymentResult',
+            JSON.stringify({
               order_id: result.order_id,
               status_code: result.status_code,
               transaction_status: result.transaction_status,
-            },
-          });
+            })
+          );
+          navigate({ to: '/history' });
         },
         onError: function (result) {
           toast.error('Pembayaran gagal.', { duration: 5000 });
-          navigate({
-            to: '/history',
-            params: {
+          localStorage.setItem(
+            'paymentResult',
+            JSON.stringify({
               order_id: result.order_id,
               status_code: result.status_code,
               transaction_status: result.transaction_status,
-            },
-          });
+            })
+          );
+          navigate({ to: '/history' });
         },
         onClose: function () {
           toast('Anda menutup dialog pembayaran.', { duration: 5000 });
