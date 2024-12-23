@@ -3,8 +3,7 @@ import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { printTicket } from '@/Services/payment';
 import { useMutation } from '@tanstack/react-query';
-import { createLazyFileRoute, Link, useSearch } from '@tanstack/react-router';
-import { useState } from 'react';
+import { createLazyFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { Toaster, toast } from 'react-hot-toast';
 import ReactLoading from 'react-loading';
 
@@ -13,13 +12,16 @@ export const Route = createLazyFileRoute('/payment/done')({
 });
 
 function Done() {
-  const searchParams = Route.useSearch();
-  const order_id = searchParams?.order_id;
+  const navigate = useNavigate();
+  const paymentResult = JSON.parse(localStorage.getItem('paymentResult'));
+  const order_id = paymentResult?.order_id;
 
   const { mutate, isPending } = useMutation({
     mutationFn: (transactionId) => printTicket(transactionId),
     onSuccess: () => {
       toast.success('Tiket Berhasil Dicetak, Cek Email Anda');
+      navigate({ to: '/history' });
+      localStorage.removeItem('paymentResult');
     },
     onError: () => {
       toast.error('Gagal Mencetak Tiket');
