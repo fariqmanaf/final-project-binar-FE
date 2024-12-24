@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import Navbar from '@/components/Navbar';
 import SearchFlight from '@/components/Home/searchFlight';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import Favorite from '@/components/Home/favorite';
 
 export const Route = createLazyFileRoute('/')({
   component: Homepage,
 });
+
+const queryClient = new QueryClient();
 
 function Homepage() {
   const [searchData, setSearchData] = useState(null);
@@ -24,9 +27,11 @@ function Homepage() {
         </div>
 
         {/* <FavoriteDestination /> */}
-        <section className="mt-10 w-full" style={{ zIndex: '1' }}>
-          <Favorite setSearchData={setSearchData} />
-        </section>
+        <QueryClientProvider client={queryClient}>
+          <section className="mt-10 w-full" style={{ zIndex: '1' }}>
+            <Favorite setSearchData={setSearchData} />
+          </section>
+        </QueryClientProvider>
       </div>
     </>
   );

@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import CardFav from './CardFav';
 import { getFavoriteDestination } from '@/Services/home/favoriteDestination';
 import toast from 'react-hot-toast';
 import { Button } from '@radix-ui/themes';
 import { IoSearch } from 'react-icons/io5';
 import ReactLoading from 'react-loading';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 const Favorite = ({ setSearchData }) => {
-  const [favorites, setFavorites] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [visibleFavorites, setVisibleFavorites] = useState(8);
   const [activeButton, setActiveButton] = useState('Semua');
+  const [showAll, setShowAll] = useState(false);
 
   const destinationToContinentMap = {
     Semua: null,
@@ -23,22 +22,29 @@ const Favorite = ({ setSearchData }) => {
 
   const destinations = Object.keys(destinationToContinentMap);
 
-  const fetchFavorites = async (destination) => {
-    try {
-      setLoading(true);
-      const continentParam = destinationToContinentMap[destination];
-      const response = await getFavoriteDestination(continentParam);
-      setFavorites(response);
-    } catch (err) {
-      toast.error(err.message || 'Gagal memuat data destinasi favorit');
-    } finally {
-      setLoading(false);
+  const fetchFavorites = async ({ pageParam = 1 }) => {
+    const continentParam = destinationToContinentMap[activeButton];
+    const response = await getFavoriteDestination(continentParam, pageParam);
+    if (!response) {
+      throw new Error('Data not found');
     }
+    return {
+      favorites: response,
+      nextPage: pageParam + 1,
+      isLast: response.length === 0,
+    };
   };
 
-  useEffect(() => {
-    fetchFavorites(activeButton);
-  }, [activeButton]);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } = useInfiniteQuery({
+    queryKey: ['favorites', activeButton],
+    queryFn: fetchFavorites,
+    getNextPageParam: (lastPage) => {
+      if (lastPage && !lastPage.isLast) {
+        return lastPage.nextPage;
+      }
+      return undefined;
+    },
+  });
 
   const handleCardClick = (fav) => {
     setSearchData({
@@ -51,9 +57,12 @@ const Favorite = ({ setSearchData }) => {
     });
   };
 
-  const handleLoadMore = () => {
-    setVisibleFavorites((prev) => prev + 4);
-  };
+  const initialFavorites = data?.pages[0]?.favorites.slice(0, 8) || [];
+  const allFavorites = Array.from(new Set(data?.pages.flatMap((page) => page.favorites.map((fav) => fav.id)))).map(
+    (id) => {
+      return data.pages.flatMap((page) => page.favorites).find((fav) => fav.id === id);
+    }
+  );
 
   return (
     <div className="pb-24 px-4 mx-auto max-w-screen-xl">
@@ -67,8 +76,7 @@ const Favorite = ({ setSearchData }) => {
             }`}
             onClick={() => {
               setActiveButton(destination);
-              setFavorites([]);
-              setVisibleFavorites(4);
+              setShowAll(false);
             }}
           >
             <IoSearch size="1.2rem" />
@@ -77,13 +85,15 @@ const Favorite = ({ setSearchData }) => {
         ))}
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center items-start w-full my-5">
           <ReactLoading type="spin" color="#7126B5" />
         </div>
+      ) : isError ? (
+        <div>Error: {error.message}</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center sm:justify-start items-center">
-          {favorites.slice(0, visibleFavorites).map((fav, index) => (
+          {(showAll ? allFavorites : initialFavorites).map((fav, index) => (
             <Button
               key={index}
               onClick={() => {
@@ -99,12 +109,17 @@ const Favorite = ({ setSearchData }) => {
       )}
 
       <div className="text-center mt-4">
-        {loading ? (
-          <span>Loading more...</span>
-        ) : visibleFavorites < favorites.length ? (
+        {isFetchingNextPage ? (
+          <span className="mt-1 px-4 py-2 rounded-lg text-md pb-[3vh] text-[#7126B5] font-semibold">
+            Loading more...
+          </span>
+        ) : hasNextPage && !showAll ? (
           <button
             className="mt-1 px-4 py-2 rounded-lg text-md pb-[3vh] text-[#7126B5] font-semibold animate-pulse"
-            onClick={handleLoadMore}
+            onClick={() => {
+              fetchNextPage();
+              setShowAll(true);
+            }}
           >
             Load More
           </button>
