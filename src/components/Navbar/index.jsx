@@ -73,7 +73,7 @@ const Navbar = ({ searchBar, isAuth }) => {
               ) : (
                 <Link
                   to={'/auth/login'}
-                  className="rounded-xl bg-[#7126B5] w-[10vw] h-[6vh] flex justify-center items-center hover:bg-[#4c0f85]"
+                  className="rounded-xl bg-[#7126B5] w-[10rem] h-[6vh] flex justify-center items-center hover:bg-[#4c0f85]"
                 >
                   <img src="/log-in.svg" alt="login-icon" className="mr-2" />
                   <p className="text-white">Masuk</p>
