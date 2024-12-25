@@ -104,7 +104,7 @@ function SelectFlight() {
   return (
     <>
       <Toaster position="top-right" reverseOrder={false} />
-      <Navbar searchBar={true} isAuth={true} />
+      <Navbar isAuth={true} />
       <div className="w-screen flex justify-center md:px-[10vw] px-[5vw]">
         <div className="bg-white w-[100vw] h-[50vh] mt-[7vh]">
           <p className="text-[3vh] font-semibold mb-[3vh]">Pilih Penerbangan</p>
@@ -112,7 +112,7 @@ function SelectFlight() {
             departureCity={flightsData[0]?.departureAirport?.code}
             destinationCity={flightsData[0]?.destinationAirport?.code}
             passengerTotal={A + C + I}
-            typePlane={type ? type : 'All'}
+            typePlane={type !== null ? type : 'All'}
           />
           <SearchDate dates={dates} handleDateChange={handleDateChange} departureDate={departureDate} />
           <div className="mt-[3vh] w-full flex justify-end px-[3vw]">

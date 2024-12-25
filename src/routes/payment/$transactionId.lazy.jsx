@@ -149,7 +149,7 @@ function RouteComponent() {
   return (
     <>
       <Toaster position="top-right" reverseOrder={false} />
-      <Navbar searchBar={true} isAuth={true} />
+      <Navbar isAuth={true} />
       {isLoading && (
         <div className="flex justify-center items-center w-screen h-[90vh]">
           <ReactLoading type="spin" color="#7126B5" />

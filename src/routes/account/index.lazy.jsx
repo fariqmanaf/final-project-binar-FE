@@ -80,7 +80,7 @@ function Account() {
 
   return (
     <>
-      <Navbar isAuth={true} searchBar={false} />
+      <Navbar isAuth={true} />
       <div className="font-poppins container mx-auto w-[90%] md:w-[70%] px-4 py-8">
         <div className="w-full flex justify-between items-center mb-5">
           <h1 className="text-[20px] lg:text-2xl">

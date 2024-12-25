@@ -119,7 +119,7 @@ function Notification() {
         }}
         className="fixed bottom-10 right-10 w-[2rem] h-[2rem] cursor-pointer hover:text-[#A06ECE]"
       />
-      <Navbar isAuth={true} searchBar={false} />
+      <Navbar isAuth={true} />
       <div className="font-poppins container mx-auto w-full md:w-[90%] lg:w-[80%] px-4 py-8">
         <div className="w-full flex justify-between items-center mb-5">
           <h1 className="md:text-[1rem] text-[1.5rem] font-bold lg:text-2xl">

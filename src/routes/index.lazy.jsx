@@ -13,7 +13,7 @@ function Homepage() {
 
   return (
     <>
-      <Navbar isAuth={true} searchBar={true} />
+      <Navbar isAuth={true} />
       <div className="flex flex-col justify-start w-screen items-center">
         {/* Hero */}
         <section className="mt-[3rem] w-full">
