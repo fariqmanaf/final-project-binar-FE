@@ -124,9 +124,11 @@ const Favorite = ({ setSearchData }) => {
             Load More
           </button>
         ) : (
-          <p className="mt-1 px-4 py-2 rounded-lg text-md pb-[3vh] text-[#7126B5] font-semibold">
-            Nothing more to load
-          </p>
+          !isLoading && !isFetchingNextPage && (
+            <p className="mt-1 px-4 py-2 rounded-lg text-md pb-[3vh] text-[#7126B5] font-semibold">
+              Nothing more to load
+            </p>
+          )
         )}
       </div>
     </div>
