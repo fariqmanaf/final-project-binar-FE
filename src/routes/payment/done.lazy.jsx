@@ -1,7 +1,7 @@
 import { BreadCrumb } from '@/components/Breadcrumb';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
-import { printTicket } from '@/Services/payment';
+import { printTicket } from '@/Services/history/transaction';
 import { useMutation } from '@tanstack/react-query';
 import { createLazyFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { Toaster, toast } from 'react-hot-toast';

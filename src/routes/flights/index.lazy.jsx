@@ -43,7 +43,7 @@ function SelectFlight() {
   }, [searchParams?.DD]);
 
   const dates = getDatesAround(departureDate, 2, 3);
-  const querySearch = `departureDate=${DD.toISOString().split('T')[0]}&departureAirportId=${searchParams?.DA}&destinationAirportId=${searchParams?.AA}&sortBy=${filter || ''}&type=${type?.toUpperCase()}&timezoneUtc=${getUserTimezone()}`;
+  const querySearch = `departureDate=${DD.toISOString().split('T')[0]}&departureAirportId=${searchParams?.DA}&destinationAirportId=${searchParams?.AA}&sortBy=${filter || ''}&type=${type?.toUpperCase()}&utcTimezone=${encodeURIComponent(getUserTimezone())}`;
 
   const {
     data: flights,

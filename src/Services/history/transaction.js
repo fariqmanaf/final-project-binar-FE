@@ -1,3 +1,5 @@
+import { getUserTimezone } from '@/utils/getUserTimezone';
+
 export const getTransactionHistory = async (bookingCode, startDate, endDate, page) => {
   let params = {};
   if (bookingCode) {
@@ -39,7 +41,11 @@ export const printTicket = async (transactionId) => {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
     },
+    body: JSON.stringify({
+      utcTimezone: getUserTimezone(),
+    }),
   });
 
   const result = await response.json();
