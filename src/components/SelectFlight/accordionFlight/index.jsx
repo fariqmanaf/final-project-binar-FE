@@ -52,11 +52,11 @@ export const AccordionFlight = ({ flight, RD, DF, DD, A, C, I }) => {
       <Accordion
         type="single"
         collapsible
-        className="shadow-lg border rounded-xl px-[1rem] py-[1rem] md:px-[2rem] md:py-[2rem]"
+        className="shadow-lg  border rounded-xl px-[1rem] py-[1rem] md:px-[2rem] md:py-[2rem]"
       >
         <AccordionItem value={`item-${index + 1}`}>
           <AccordionTrigger>
-            <div className="flex justify-between items-center w-full pr-[2rem] gap-[2rem]">
+            <div className="flex justify-between items-center w-full md:pr-[2rem] pr-[1rem]">
               <div className="flex flex-col w-[80%]">
                 <div className="flex gap-[1rem] text-sm font-normal items-center mb-[1rem]">
                   <img src={item?.airline?.image} className="w-[3rem]" />
@@ -103,7 +103,7 @@ export const AccordionFlight = ({ flight, RD, DF, DD, A, C, I }) => {
                     </p>
                     <p>{item?.destinationAirport?.code}</p>
                   </div>
-                  <img src="/baggage-delay.svg" className="w-[2rem]" />
+                  <img src="/baggage-delay.svg" className="w-[2rem] md:block hidden" />
                 </div>
               </div>
               <div className="flex flex-col gap-[1rem]">
@@ -111,7 +111,7 @@ export const AccordionFlight = ({ flight, RD, DF, DD, A, C, I }) => {
                   {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item?.price)}
                 </p>
                 <div
-                  className="bg-[#7126B5] hover:bg-[#A06ECE] rounded-full text-white px-[2vw] py-[1vh]"
+                  className="bg-[#7126B5] hover:bg-[#A06ECE] rounded-full text-white px-[0.5rem] py-[0.5rem]"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleRedirect(item);

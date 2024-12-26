@@ -148,7 +148,7 @@ function History() {
 
   return (
     <>
-      <Navbar isAuth={true} searchBar={true} />
+      <Navbar isAuth={true} />
       <Toaster position="top-right" />
       <FaChevronCircleUp
         onClick={() => {

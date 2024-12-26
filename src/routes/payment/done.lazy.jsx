@@ -1,7 +1,7 @@
 import { BreadCrumb } from '@/components/Breadcrumb';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
-import { printTicket } from '@/Services/payment';
+import { printTicket } from '@/Services/history/transaction';
 import { useMutation } from '@tanstack/react-query';
 import { createLazyFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { Toaster, toast } from 'react-hot-toast';
@@ -31,7 +31,7 @@ function Done() {
   return (
     <>
       <Toaster position="top-right" reverseOrder={false} />
-      <Navbar isAuth={true} searchBar={true} />
+      <Navbar isAuth={true} />
       <div className="w-screen h-[10vh] md:px-[10rem] px-[3rem] py-[3rem]">
         <BreadCrumb active="done" />
       </div>

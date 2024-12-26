@@ -22,7 +22,7 @@ function Homepage() {
         }}
         className="fixed bottom-10 right-10 w-[2rem] h-[2rem] z-50 cursor-pointer hover:text-[#A06ECE]"
       />
-      <Navbar isAuth={true} searchBar={true} />
+      <Navbar isAuth={true} />
       <div className="flex flex-col justify-start w-screen items-center">
         {/* Hero */}
         <section className="mt-[3rem] w-full">

@@ -3,6 +3,7 @@ export const mapping = {
   BUSINESS: 'Business',
   PREMIUM: 'Premium',
   ECONOMY: 'Economy',
+  ALL: 'All',
 };
 
 export const mappingPassenger = {
