@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import CardFav from './CardFav';
 import { getFavoriteDestination } from '@/Services/home/favoriteDestination';
-import toast from 'react-hot-toast';
 import { Button } from '@radix-ui/themes';
 import { IoSearch } from 'react-icons/io5';
-import ReactLoading from 'react-loading';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { Loading } from '../Loading';
+import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 const Favorite = ({ setSearchData }) => {
-  const [favorites, setFavorites] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [nextCursor, setNextCursor] = useState(null);
   const [activeButton, setActiveButton] = useState('Semua');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const [favorites, setFavorites] = useState([]);
 
   const destinationToContinentMap = {
     Semua: null,
@@ -25,55 +23,50 @@ const Favorite = ({ setSearchData }) => {
 
   const destinations = Object.keys(destinationToContinentMap);
 
-  const fetchFavorites = async (destination, cursor = null) => {
-    try {
-      setLoading(true);
-      const continentParam = destinationToContinentMap[destination];
-      const response = await getFavoriteDestination(continentParam, cursor);
-      setFavorites((prevFavorites) => (cursor ? [...prevFavorites, ...response] : response));
-      setNextCursor(response.nextCursor);
-    } catch (err) {
-      toast.error(err.message || 'Gagal memuat data destinasi favorit');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const continent = destinationToContinentMap[activeButton];
+
+  const {
+    data: favData,
+    isLoading,
+    isError,
+    isSuccess,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['favorites', continent],
+    queryFn: ({ pageParam = {} }) => getFavoriteDestination(pageParam, continent),
+    getNextPageParam: (lastPage) => {
+      const { nextCursorId } = lastPage.meta;
+      if (!nextCursorId) return null;
+      return { nextCursorId };
+    },
+  });
 
   useEffect(() => {
-    setCurrentPage(1); // Reset pagination saat kategori baru dipilih
-    fetchFavorites(activeButton);
-  }, [activeButton]);
-
-  const handleLoadMore = () => {
-    if (nextCursor) {
-      fetchFavorites(activeButton, nextCursor);
+    if (isSuccess) {
+      setFavorites(favData.pages.map((page) => page.data).flat());
+    } else if (isError) {
+      toast.error('Gagal memuat data destinasi favorit');
     }
-  };
+  }, [isSuccess, favData]);
 
   const handleCardClick = (fav) => {
+    const returnDate = new Date(fav.departureTimestamp);
+    returnDate.setDate(returnDate.getDate() + 1);
+
     setSearchData({
       selectedDeptAirport: fav.departureAirport.id,
       selectedDestAirport: fav.destinationAirport.id,
-      departureDate: new Date(fav.departureTimestamp).toISOString().split('T')[0],
-      returnDate: new Date(fav.arrivalTimestamp).toISOString().split('T')[0],
+      departureDate: new Date(fav.departureTimestamp).toLocaleString('en-CA').slice(0, 10),
+      returnDate: new Date(returnDate).toLocaleString('en-CA').slice(0, 10),
       seatClass: fav.type,
       passengers: 1,
     });
   };
 
-  // Hitung data yang akan ditampilkan berdasarkan halaman saat ini
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentFavorites = favorites.slice(indexOfFirstItem, indexOfLastItem);
-
-  const totalPages = Math.ceil(favorites.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   return (
-    <div className="pb-24 px-4 mx-auto max-w-screen-xl">
+    <div className="pb-10 px-4 mx-auto max-w-screen-xl">
       <h1 className="text-xl font-bold mb-4">Destinasi Favorit</h1>
       <div className="flex gap-4 mb-6 overflow-x-auto">
         {destinations.map((destination) => (
@@ -84,10 +77,6 @@ const Favorite = ({ setSearchData }) => {
             }`}
             onClick={() => {
               setActiveButton(destination);
-              if (activeButton !== destination) {
-                setFavorites([]);
-              }
-              setNextCursor(null);
             }}
           >
             <IoSearch size="1.2rem" />
@@ -96,47 +85,44 @@ const Favorite = ({ setSearchData }) => {
         ))}
       </div>
 
-      {loading ? (
-        <div className="flex justify-center items-start w-full my-5">
-          <ReactLoading type="spin" color="#7126B5" />
+      {isLoading ? (
+        <div className="flex justify-center items-center w-full h-[30vh] my-5">
+          <Loading text={'Mencari Penerbangan Favorit'} />
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {currentFavorites && currentFavorites.length > 0
-            ? currentFavorites.map((fav, index) => (
-                <Button
-                  key={index}
-                  onClick={() => {
-                    handleCardClick(fav);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                >
-                  <CardFav fav={fav} />
-                </Button>
-              ))
-            : !loading && <p className="text-center">No favorite destinations found.</p>}
-        </div>
-      )}
-
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 mt-4">
-          {[...Array(totalPages)].map((_, page) => (
-            <button
-              key={page + 1}
-              className={`px-4 py-2 rounded-lg ${currentPage === page + 1 ? 'bg-[#7126B5] text-white' : 'bg-gray-300'}`}
-              onClick={() => handlePageChange(page + 1)}
+        <div className="grid grid-cols-1 md:grid-cols-4">
+          {favorites.map((fav, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
             >
-              {page + 1}
-            </button>
+              <Button
+                key={index}
+                onClick={() => {
+                  handleCardClick(fav);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="w-full sm:w-auto flex justify-center sm:justify-start"
+              >
+                <CardFav fav={fav} />
+              </Button>
+            </motion.div>
           ))}
         </div>
       )}
 
-      {nextCursor && !loading && (
-        <button className="mt-4 px-4 py-2 bg-[#7126B5] text-white rounded-lg block mx-auto" onClick={handleLoadMore}>
-          Load More
-        </button>
+      {!isLoading && (
+        <div className="text-center mt-4">
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={!hasNextPage || isFetchingNextPage}
+            className="text-md text-[#7126B5] font-semibold"
+          >
+            {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load More' : 'Nothing more to load'}
+          </button>
+        </div>
       )}
     </div>
   );

@@ -75,7 +75,7 @@ export const FilterFlight = ({ setFilter }) => {
             size="sm"
             className="flex justify-start font-semibold hover:bg-[#7126B5] hover:text-white"
             onClick={() => {
-              setFilter('earliestArrival');
+              setFilter('earliestReturn');
               setActive('Kedatangan - Paling Awal');
             }}
           >
@@ -87,7 +87,7 @@ export const FilterFlight = ({ setFilter }) => {
             size="sm"
             className="flex justify-start font-semibold hover:bg-[#7126B5] hover:text-white"
             onClick={() => {
-              setFilter('latestArrival');
+              setFilter('latestReturn');
               setActive('Kedatangan - Paling Akhir');
             }}
           >

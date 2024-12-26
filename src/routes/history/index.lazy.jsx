@@ -189,13 +189,16 @@ function History() {
                   className="flex flex-col mt-[5vh] gap-[5vh]"
                 >
                   <HistoryItem data={history} className="w-full" active={active} setActive={handleHistoryItemClick} />
-                  <button
-                    onClick={() => fetchNextPage()}
-                    disabled={!hasNextPage || isFetchingNextPage}
-                    className="text-md pb-[3vh] -mt-10 text-[#7126B5] font-semibold"
-                  >
-                    {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load More' : 'Nothing more to load'}
-                  </button>
+                  {!isLoading ||
+                    (history.length === 0 && (
+                      <button
+                        onClick={() => fetchNextPage()}
+                        disabled={!hasNextPage || isFetchingNextPage}
+                        className="text-md pb-[3vh] -mt-10 text-[#7126B5] font-semibold"
+                      >
+                        {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load More' : 'Nothing more to load'}
+                      </button>
+                    ))}
                 </motion.div>
               ) : (
                 <div className="flex flex-col gap-4 mt-[5vh] mb-5">
@@ -240,13 +243,16 @@ function History() {
                 className="flex flex-col md:w-[60%] w-[100%] gap-[5vh]"
               >
                 <HistoryItem data={history} className="w-full" active={active} setActive={setActive} />
-                <button
-                  onClick={() => fetchNextPage()}
-                  disabled={!hasNextPage || isFetchingNextPage}
-                  className="text-md pb-[3vh] -mt-10 text-[#7126B5] font-semibold"
-                >
-                  {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load More' : 'Nothing more to load'}
-                </button>
+                {!isLoading ||
+                  (history.length === 0 && (
+                    <button
+                      onClick={() => fetchNextPage()}
+                      disabled={!hasNextPage || isFetchingNextPage}
+                      className="text-md pb-[3vh] -mt-10 text-[#7126B5] font-semibold"
+                    >
+                      {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load More' : 'Nothing more to load'}
+                    </button>
+                  ))}
               </motion.div>
               {history.length > 0 && (
                 <div className="flex flex-col w-[40%] gap-[2vh]">

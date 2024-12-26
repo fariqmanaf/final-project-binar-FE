@@ -88,11 +88,11 @@ function Account() {
           </h1>
         </div>
         <div
-          className="flex-1 bg-[#A06ECE] text-white p-4 rounded-xl mb-4 flex items-center h-16"
+          className="bg-[#A06ECE] text-white p-4 w-full flex items-center h-[3rem] rounded-xl mb-4 md:mb-0 justify-start"
           onClick={() => navigate({ to: `/` })}
         >
           <img src="/fi_arrow-left.svg" alt="back-button" className="cursor-pointer mr-2" />
-          <span className="text-[16px]">Beranda</span>
+          <span className="text-[1rem]">Beranda</span>
         </div>
 
         <div className="flex flex-col lg:flex-row mt-[20px]">
