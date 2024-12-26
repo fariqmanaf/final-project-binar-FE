@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CardFav from './CardFav';
 import { getFavoriteDestination } from '@/Services/home/favoriteDestination';
-import toast from 'react-hot-toast';
 import { Button } from '@radix-ui/themes';
 import { IoSearch } from 'react-icons/io5';
-import ReactLoading from 'react-loading';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { Loading } from '../Loading';
+import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 const Favorite = ({ setSearchData }) => {
   const [activeButton, setActiveButton] = useState('Semua');
-  const [showAll, setShowAll] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   const destinationToContinentMap = {
     Semua: null,
@@ -22,50 +23,50 @@ const Favorite = ({ setSearchData }) => {
 
   const destinations = Object.keys(destinationToContinentMap);
 
-  const fetchFavorites = async ({ pageParam = 1 }) => {
-    const continentParam = destinationToContinentMap[activeButton];
-    const response = await getFavoriteDestination(continentParam, pageParam);
-    if (!response) {
-      throw new Error('Data not found');
-    }
-    return {
-      favorites: response,
-      nextPage: pageParam + 1,
-      isLast: response.length === 0,
-    };
-  };
+  const continent = destinationToContinentMap[activeButton];
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } = useInfiniteQuery({
-    queryKey: ['favorites', activeButton],
-    queryFn: fetchFavorites,
+  const {
+    data: favData,
+    isLoading,
+    isError,
+    isSuccess,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['favorites', continent],
+    queryFn: ({ pageParam = {} }) => getFavoriteDestination(pageParam, continent),
     getNextPageParam: (lastPage) => {
-      if (lastPage && !lastPage.isLast) {
-        return lastPage.nextPage;
-      }
-      return undefined;
+      const { nextCursorId } = lastPage.meta;
+      if (!nextCursorId) return null;
+      return { nextCursorId };
     },
   });
 
+  useEffect(() => {
+    if (isSuccess) {
+      setFavorites(favData.pages.map((page) => page.data).flat());
+    } else if (isError) {
+      toast.error('Gagal memuat data destinasi favorit');
+    }
+  }, [isSuccess, favData]);
+
   const handleCardClick = (fav) => {
+    const returnDate = new Date(fav.departureTimestamp);
+    returnDate.setDate(returnDate.getDate() + 1);
+
     setSearchData({
       selectedDeptAirport: fav.departureAirport.id,
       selectedDestAirport: fav.destinationAirport.id,
-      departureDate: new Date(fav.departureTimestamp).toISOString().split('T')[0],
-      returnDate: new Date(fav.arrivalTimestamp).toISOString().split('T')[0],
+      departureDate: new Date(fav.departureTimestamp).toLocaleString('en-CA').slice(0, 10),
+      returnDate: new Date(returnDate).toLocaleString('en-CA').slice(0, 10),
       seatClass: fav.type,
       passengers: 1,
     });
   };
 
-  const initialFavorites = data?.pages[0]?.favorites.slice(0, 8) || [];
-  const allFavorites = Array.from(new Set(data?.pages.flatMap((page) => page.favorites.map((fav) => fav.id)))).map(
-    (id) => {
-      return data.pages.flatMap((page) => page.favorites).find((fav) => fav.id === id);
-    }
-  );
-
   return (
-    <div className="pb-24 px-4 mx-auto max-w-screen-xl">
+    <div className="pb-10 px-4 mx-auto max-w-screen-xl">
       <h1 className="text-xl font-bold mb-4">Destinasi Favorit</h1>
       <div className="flex gap-4 mb-6 overflow-x-auto">
         {destinations.map((destination) => (
@@ -76,7 +77,6 @@ const Favorite = ({ setSearchData }) => {
             }`}
             onClick={() => {
               setActiveButton(destination);
-              setShowAll(false);
             }}
           >
             <IoSearch size="1.2rem" />
@@ -86,51 +86,44 @@ const Favorite = ({ setSearchData }) => {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center items-start w-full my-5">
-          <ReactLoading type="spin" color="#7126B5" />
+        <div className="flex justify-center items-center w-full h-[30vh] my-5">
+          <Loading text={'Mencari Penerbangan Favorit'} />
         </div>
-      ) : isError ? (
-        <div>Error: {error.message}</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center sm:justify-start items-center">
-          {(showAll ? allFavorites : initialFavorites).map((fav, index) => (
-            <Button
+        <div className="grid grid-cols-1 md:grid-cols-4">
+          {favorites.map((fav, index) => (
+            <motion.div
               key={index}
-              onClick={() => {
-                handleCardClick(fav);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="w-full sm:w-auto flex justify-center sm:justify-start"
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
             >
-              <CardFav fav={fav} />
-            </Button>
+              <Button
+                key={index}
+                onClick={() => {
+                  handleCardClick(fav);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="w-full sm:w-auto flex justify-center sm:justify-start"
+              >
+                <CardFav fav={fav} />
+              </Button>
+            </motion.div>
           ))}
         </div>
       )}
 
-      <div className="text-center mt-4">
-        {isFetchingNextPage ? (
-          <span className="mt-1 px-4 py-2 rounded-lg text-md pb-[3vh] text-[#7126B5] font-semibold">
-            Loading more...
-          </span>
-        ) : hasNextPage && !showAll ? (
+      {!isLoading && (
+        <div className="text-center mt-4">
           <button
-            className="mt-1 px-4 py-2 rounded-lg text-md pb-[3vh] text-[#7126B5] font-semibold animate-pulse"
-            onClick={() => {
-              fetchNextPage();
-              setShowAll(true);
-            }}
+            onClick={() => fetchNextPage()}
+            disabled={!hasNextPage || isFetchingNextPage}
+            className="text-md text-[#7126B5] font-semibold"
           >
-            Load More
+            {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load More' : 'Nothing more to load'}
           </button>
-        ) : (
-          !isLoading && !isFetchingNextPage && (
-            <p className="mt-1 px-4 py-2 rounded-lg text-md pb-[3vh] text-[#7126B5] font-semibold">
-              Nothing more to load
-            </p>
-          )
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

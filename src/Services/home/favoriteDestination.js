@@ -1,20 +1,7 @@
-export const getFavoriteDestination = async (continent, nextCursor) => {
-  const validContinents = ['ASIA', 'EUROPE', 'AFRICA', 'AMERICA', 'AUSTRALIA'];
+export const getFavoriteDestination = async ({ pageParam = {} }, continent) => {
+  const { nextCursorId = null } = pageParam;
 
-  let url = `${import.meta.env.VITE_API_URL}/flights/favorites`;
-
-  if (continent) {
-    if (!validContinents.includes(continent)) {
-      throw new Error(
-        `Invalid continent value. Expected one of ${validContinents.join(', ')}, received '${continent}'`
-      );
-    }
-    url += `?continent=${encodeURIComponent(continent)}`;
-  }
-
-  if (nextCursor) {
-    url += `${continent ? '&' : '?'}nextCursor=${encodeURIComponent(nextCursor)}`;
-  }
+  let url = `${import.meta.env.VITE_API_URL}/flights/favorites?continent=${continent}&nextCursorId=${nextCursorId}`;
 
   const response = await fetch(url, {
     method: 'GET',
@@ -28,5 +15,5 @@ export const getFavoriteDestination = async (continent, nextCursor) => {
     throw new Error(result?.message || 'Failed to fetch favorite destinations');
   }
 
-  return result?.data;
+  return result;
 };
