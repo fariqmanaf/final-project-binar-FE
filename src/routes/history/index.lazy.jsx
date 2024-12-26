@@ -146,6 +146,25 @@ function History() {
     }
   }, [token, navigate]);
 
+  const parsedHistory = history.map((transaction) => {
+    if (transaction.payment.status !== 'PENDING') return transaction;
+
+    transaction.payment.expiredCustomExpiredAt = new Date();
+
+    const isTransactionExpiredEarly =
+      !transaction.payment.method && new Date().toISOString() >= transaction.payment.expiredAtWithoutMethod;
+
+    const isTransactionExpiredLate = new Date().toISOString() >= transaction.payment.expiredAt;
+
+    const isPaymentExpired = isTransactionExpiredEarly || isTransactionExpiredLate;
+
+    if (isPaymentExpired) {
+      transaction.payment.status = 'FAILED';
+    }
+
+    return transaction;
+  });
+
   return (
     <>
       <Navbar isAuth={true} />
@@ -188,7 +207,12 @@ function History() {
                   transition={{ duration: 1 }}
                   className="flex flex-col mt-[5vh] gap-[5vh]"
                 >
-                  <HistoryItem data={history} className="w-full" active={active} setActive={handleHistoryItemClick} />
+                  <HistoryItem
+                    data={parsedHistory}
+                    className="w-full"
+                    active={active}
+                    setActive={handleHistoryItemClick}
+                  />
                   {history.length > 0 && (
                     <button
                       onClick={() => fetchNextPage()}
@@ -241,7 +265,7 @@ function History() {
                 transition={{ duration: 1 }}
                 className="flex flex-col md:w-[60%] w-[100%] gap-[5vh]"
               >
-                <HistoryItem data={history} className="w-full" active={active} setActive={setActive} />
+                <HistoryItem data={parsedHistory} className="w-full" active={active} setActive={setActive} />
                 {history.length > 0 && (
                   <button
                     onClick={() => fetchNextPage()}
