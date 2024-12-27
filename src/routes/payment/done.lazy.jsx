@@ -44,7 +44,7 @@ function Done() {
             Transaksi Pembayaran Tiket sukses!
           </p>
         </div>
-        <div className="flex flex-col gap-[1rem] w-[20%]">
+        <div className="flex flex-col gap-[1rem]">
           <Button
             className="bg-[#7126B5] text-white rounded-xl px-6 py-2 hover:bg-[#5e2494]"
             onClick={() => {

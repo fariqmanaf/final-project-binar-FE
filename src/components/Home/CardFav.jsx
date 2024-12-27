@@ -5,7 +5,7 @@ const CardFav = ({ fav }) => {
   const { departureAirport, destinationAirport, type, price, departureTimestamp, arrivalTimestamp, discount } = fav;
 
   return (
-    <Card className="rounded-lg shadow-lg overflow-hidden min-w-full md:min-w-[250px] max-w-[300px] m-4 flex-shrink-0 cursor-pointer transform transition-transform hover:-translate-y-2">
+    <Card className="rounded-lg shadow-lg cursor-pointer transform transition-transform hover:-translate-y-2">
       <div className="relative">
         <img
           src={destinationAirport.image} // Use the departure airport image

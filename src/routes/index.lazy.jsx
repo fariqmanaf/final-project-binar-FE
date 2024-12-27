@@ -29,7 +29,7 @@ function Homepage() {
           <img src="/hero.svg" alt="hero" className="w-full object-cover" />
         </section>
         {/* Search Form */}
-        <div className="flex justify-center w-full items-center shadow-sm bg-white z-20">
+        <div className="flex justify-center w-full items-center bg-white z-20">
           <SearchFlight searchData={searchData} />
         </div>
 

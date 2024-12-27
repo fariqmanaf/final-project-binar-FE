@@ -10,8 +10,8 @@ export const LabelSearch = ({ departureCity, destinationCity, typePlane, passeng
   const navigate = useNavigate();
 
   return (
-    <div className="w-full flex md:flex-row flex-col gap-3">
-      <div className="bg-[#A06ECE] gap-2 px-5 flex items-center w-full md:w-[80%] h-[7vh] text-white text-sm rounded-2xl">
+    <div className="w-full flex md:flex-row flex-col gap-3 px-2">
+      <div className="bg-[#A06ECE] gap-2 p-4 flex items-center w-full text-white text-sm rounded-2xl">
         <FaArrowLeft onClick={() => navigate({ to: '/' })} className="cursor-pointer" />
         {departureCity && (
           <>
@@ -25,7 +25,7 @@ export const LabelSearch = ({ departureCity, destinationCity, typePlane, passeng
       </div>
       <Link
         to={'/'}
-        className="bg-[#73CA5C] flex justify-center items-center gap-4 px-5 py-3 w-full md:w-[20%] h-[7vh] text-white text-sm rounded-2xl hover:bg-[#50993d]"
+        className="bg-[#73CA5C] flex justify-center items-center gap-4 p-4 shrink-0 text-white text-sm rounded-2xl hover:bg-[#50993d]"
       >
         Ubah Pencarian
       </Link>
@@ -53,19 +53,18 @@ export const SearchDate = ({ dates, handleDateChange, departureDate }) => {
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      className="grid grid-cols-3 space-y-2 md:space-y-0 md:grid-cols-6 space-x-2 mt-[4vh] px-[2vw]"
+      className="grid px-2 grid-cols-3 gap-4 md:grid-cols-6 mb-4 mt-6"
     >
       {dates.map((date, index) => {
         const today = new Date();
         today.setDate(today.getDate() - 1);
         return (
-          <motion.div key={index} variants={childVariants} className="w-">
+          <motion.div key={index} variants={childVariants}>
             <Button
-              variants={childVariants}
               key={index}
               disabled={date < today}
               onClick={() => handleDateChange(date)}
-              className={`flex text-sm bg-transparent text-black flex-col gap-0 w-full h-[7vh] font-light border-r
+              className={`flex text-sm bg-transparent text-black flex-col gap-2 w-full font-light p-4 border
                     ${
                       date.toDateString() === departureDate.toDateString()
                         ? 'bg-[#A06ECE] text-white hover:bg-[#A06ECE]'

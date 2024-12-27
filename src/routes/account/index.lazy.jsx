@@ -134,7 +134,7 @@ function Account() {
           </div>
 
           <div className="w-full lg:w-4/6">
-            <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="bg-white p-6 rounded-lg border">
               <h2 className="text-[20px] mb-4 text-bold">
                 <strong>Ubah Data Profil</strong>
               </h2>

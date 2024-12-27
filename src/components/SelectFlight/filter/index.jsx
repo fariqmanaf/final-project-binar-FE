@@ -21,7 +21,7 @@ export const FilterFlight = ({ setFilter }) => {
         </div>
       </PopoverTrigger>
       <PopoverContent>
-        <div className="flex flex-col gap-[1vh]">
+        <div className="flex flex-col gap-2 [&>button]:p-2">
           <Button
             variant="primary"
             size="sm"

@@ -42,15 +42,14 @@ const Navbar = ({ isAuth }) => {
     <>
       <div className="h-[10vh]"></div>
       <nav
-        className={`w-full bg-white shadow-md h-[10vh] flex justify-center px-[5vw] fixed top-0 z-50 transition-transform duration-300 ${
+        className={`w-full bg-white shadow-md flex justify-center p-4 md:p-6 fixed top-0 z-50 transition-transform duration-300 ${
           showNavbar ? 'translate-y-0' : '-translate-y-full'
         }`}
       >
         <div className="container mx-auto flex justify-between items-center">
           <img src="/logo.svg" alt="Logo" className="h-10 cursor-pointer" onClick={() => navigate({ to: '/' })} />
-
           {isAuth && (
-            <div className="flex items-center gap-6 mr-[2rem]">
+            <div className="flex items-center gap-6">
               {token ? (
                 <>
                   <NavbarIcon Content="History" ImageLink="/list.svg" Redirect="/history" />
@@ -60,7 +59,7 @@ const Navbar = ({ isAuth }) => {
               ) : (
                 <Link
                   to={'/auth/login'}
-                  className="rounded-xl bg-[#7126B5] w-[10rem] h-[6vh] flex justify-center items-center hover:bg-[#4c0f85]"
+                  className="rounded-xl bg-[#7126B5] p-4 flex justify-center items-center hover:bg-[#4c0f85]"
                 >
                   <img src="/log-in.svg" alt="login-icon" className="mr-2" />
                   <p className="text-white">Masuk</p>

@@ -14,10 +14,11 @@ import DeestinationDialog from './SearchComponent/DestinationDialog';
 import { Button } from '../ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import toast from 'react-hot-toast';
+import { useLocalStorage } from '../hooks/use-local-storage';
 
 const SearchFlight = ({ searchData }) => {
   const navigate = useNavigate();
-  const [airports, setAirports] = useState([]);
+  const [airports, setAirports] = useLocalStorage('airports', []);
   const [isDeptDialogOpen, setIsDeptDialogOpen] = useState(false);
   const [isDestDialogOpen, setIsDestDialogOpen] = useState(false);
   const [isDateDeptDialogOpen, setIsDateDeptDialogOpen] = useState(false);
@@ -200,7 +201,7 @@ const SearchFlight = ({ searchData }) => {
 
   return (
     <div className="w-full flex justify-center items-center p-2 lg-mt-[-100px] md:mt-[-50px]">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl p-6">
+      <div className="bg-white rounded-xl border w-full max-w-4xl p-6">
         <h2 className="text-xl font-bold text-gray-800 mb-6 text-center md:text-left">
           Pilih Jadwal Penerbangan spesial di <span className="text-[#7126B5]">Tiketku!</span>
         </h2>
@@ -213,7 +214,9 @@ const SearchFlight = ({ searchData }) => {
               <div className="flex-1 w-full">
                 <Popover.Root open={isDeptDialogOpen} onOpenChange={setIsDeptDialogOpen}>
                   <Popover.Trigger className="w-full">
-                    <div className={`text-left py-2 ${selectedDeptAirport ? 'font-bold text-black' : 'text-gray-500'}`}>
+                    <div
+                      className={`text-left md:truncate md:max-w-64 lg:max-w-72 ${selectedDeptAirport ? 'font-bold text-black' : 'text-gray-500'}`}
+                    >
                       {selectedDeptAirport
                         ? `${airports.find((airport) => airport.id === selectedDeptAirport)?.name} - ${airports.find((airport) => airport.id === selectedDeptAirport)?.city} ${airports.find((airport) => airport.id === selectedDeptAirport)?.code}`
                         : 'Pilih Penerbangan'}
@@ -229,7 +232,7 @@ const SearchFlight = ({ searchData }) => {
             </div>
 
             <TbArrowsExchange
-              className="rounded-xl bg-black text-white p-1 w-8 h-8 cursor-pointer self-center md:self-auto hover:bg-gray-500"
+              className="rounded-xl sm:shrink-0 bg-black text-white p-1 w-8 h-8 cursor-pointer self-center md:self-auto hover:bg-gray-500"
               onClick={handleSwitchAirports}
             />
 
@@ -240,7 +243,9 @@ const SearchFlight = ({ searchData }) => {
               <div className="flex-1 w-full">
                 <Popover.Root open={isDestDialogOpen} onOpenChange={setIsDestDialogOpen}>
                   <Popover.Trigger className="w-full">
-                    <div className={`text-left py-2 ${selectedDestAirport ? 'font-bold text-black' : 'text-gray-500'}`}>
+                    <div
+                      className={`text-left md:truncate md:max-w-64 lg:max-w-72 ${selectedDestAirport ? 'font-bold text-black' : 'text-gray-500'}`}
+                    >
                       {selectedDestAirport
                         ? `${airports.find((airport) => airport.id === selectedDestAirport)?.name} - ${airports.find((airport) => airport.id === selectedDestAirport)?.city} (${airports.find((airport) => airport.id === selectedDestAirport)?.code})`
                         : 'Pilih Tujuan'}

@@ -106,8 +106,8 @@ function SelectFlight() {
       <Toaster position="top-right" reverseOrder={false} />
       <Navbar isAuth={true} />
       <div className="w-screen flex justify-center md:px-[10vw] px-[5vw]">
-        <div className="bg-white w-[100vw] h-[50vh] mt-[7vh]">
-          <p className="text-[3vh] font-semibold mb-[3vh]">Pilih Penerbangan</p>
+        <div className="bg-white w-[100vw] h-[50vh] mt-[4vh]">
+          <p className="text-[3vh] font-semibold px-4 mb-[3vh]">Pilih Penerbangan</p>
           <LabelSearch
             departureCity={flightsData[0]?.departureAirport?.code}
             destinationCity={flightsData[0]?.destinationAirport?.code}
@@ -128,7 +128,7 @@ function SelectFlight() {
                 <NotFound />
               ) : (
                 <div className="w-full flex flex-col md:flex-row justify-between gap-[3vw]">
-                  <div className="md:w-[30%] w-full h-full flex justify-center items-start">
+                  <div className="md:w-[30%] px-2 w-full h-full flex justify-center items-start">
                     <YourFlight
                       DD={departureDate}
                       DF={DF}

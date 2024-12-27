@@ -90,7 +90,7 @@ const Favorite = ({ setSearchData }) => {
           <Loading text={'Mencari Penerbangan Favorit'} />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-4">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
           {favorites.map((fav, index) => (
             <motion.div
               key={index}
@@ -100,11 +100,11 @@ const Favorite = ({ setSearchData }) => {
             >
               <Button
                 key={index}
+                className="w-full"
                 onClick={() => {
                   handleCardClick(fav);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="w-full sm:w-auto flex justify-center sm:justify-start"
               >
                 <CardFav fav={fav} />
               </Button>

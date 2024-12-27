@@ -149,8 +149,6 @@ function History() {
   const parsedHistory = history.map((transaction) => {
     if (transaction.payment.status !== 'PENDING') return transaction;
 
-    transaction.payment.expiredCustomExpiredAt = new Date();
-
     const isTransactionExpiredEarly =
       !transaction.payment.method && new Date().toISOString() >= transaction.payment.expiredAtWithoutMethod;
 
@@ -176,7 +174,7 @@ function History() {
         className="fixed bottom-10 right-10 w-[2rem] h-[2rem] cursor-pointer hover:text-[#A06ECE]"
       />
       <div className="w-screen min-h-[90vh] px-4 md:px-[10vw]">
-        <p className="mt-[5vh] mb-[4vh] font-semibold text-xl">Riwayat Pemesanan</p>
+        <p className="mt-[4vh] mb-4 font-semibold text-xl">Riwayat Pemesanan</p>
         <div className="w-full flex md:flex-row flex-col gap-3 justify-center">
           <div className="bg-[#A06ECE] gap-2 px-5 flex items-center w-full h-[3rem] text-white text-[1rem] rounded-2xl">
             <FaArrowLeft onClick={() => navigate({ to: '/' })} className="cursor-pointer" />
@@ -205,7 +203,7 @@ function History() {
                   initial={{ opacity: 0, y: 100 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1 }}
-                  className="flex flex-col mt-[5vh] gap-[5vh]"
+                  className="flex flex-col mt-8 gap-6"
                 >
                   <HistoryItem
                     data={parsedHistory}
@@ -224,7 +222,7 @@ function History() {
                   )}
                 </motion.div>
               ) : (
-                <div className="flex flex-col gap-4 mt-[5vh] mb-5">
+                <div className="flex flex-col gap-4 mt-8 mb-5">
                   <button onClick={handleBackToList} className="text-[#A06ECE] flex items-center gap-2">
                     <FaArrowLeft /> Kembali ke Daftar
                   </button>
@@ -258,12 +256,12 @@ function History() {
             </div>
 
             {/* Desktop View */}
-            <div className="hidden md:flex justify-center mt-[5vh] gap-[5vw]">
+            <div className="hidden md:flex justify-center mt-8 gap-6">
               <motion.div
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1 }}
-                className="flex flex-col md:w-[60%] w-[100%] gap-[5vh]"
+                className="flex flex-col md:w-[60%] w-[100%] gap-6"
               >
                 <HistoryItem data={parsedHistory} className="w-full" active={active} setActive={setActive} />
                 {history.length > 0 && (
@@ -277,7 +275,7 @@ function History() {
                 )}
               </motion.div>
               {history.length > 0 && (
-                <div className="flex flex-col w-[40%] gap-[2vh]">
+                <div className="flex flex-col mb-8 w-[40%] gap-[2vh]">
                   {activeDetail?.departureFlight && (
                     <>
                       <DetailFlight

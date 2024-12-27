@@ -126,15 +126,15 @@ function Notification() {
             <p>Notifikasi</p>
           </h1>
         </div>
-        <div className="flex flex-col md:flex-row px-[1vw] py-[1vh] justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div
-            className="bg-[#A06ECE] text-white p-4 md:w-[10rem] w-full flex-grow rounded-xl mb-4 md:mb-0 flex items-center h-[3rem]"
+            className="bg-[#A06ECE] text-white p-4 md:w-[10rem] w-full flex-grow rounded-xl flex items-center h-[3rem]"
             onClick={() => navigate({ to: `/` })}
           >
             <img src="/fi_arrow-left.svg" alt="back-button" className="cursor-pointer mr-2" />
             <span className="text-[1rem]">Beranda</span>
           </div>
-          <div className="w-full md:w-auto lg:w-1/6 mt-2 md:mt-0 flex justify-center items-center">
+          <div className="w-full md:w-auto flex justify-center items-center">
             <Select className="border border-[#A06ECE] rounded-3xl" onValueChange={handleSortChange}>
               <SelectTrigger className="w-full lg:w-auto border-[#A06ECE] rounded-3xl text-black ">
                 <img src="/Prefix_icon.svg" alt="prefix-icon" className="cursor-pointer mr-2" />
@@ -155,12 +155,12 @@ function Notification() {
           </div>
           <Button
             onClick={handleReadAllNotif}
-            className="w-full md:w-auto lg:w-1/8 mt-2 md:mt-0 flex justify-center items-center rounded-full bg-transparent border border-[#7126B5] text-gray-800 hover:bg-transparent"
+            className="w-full md:w-auto lg:w-1/8 flex justify-center items-center rounded-full bg-transparent border border-[#7126B5] text-gray-800 hover:bg-transparent"
           >
             Read All
           </Button>
         </div>
-        <div className="w-full mt-[4vh]">
+        <div className="w-full mt-4">
           {isLoading ? (
             <div className="w-full h-[60vh] flex justify-center items-center">
               <Loading text={'Memuat Notifikasi Anda...'} />
