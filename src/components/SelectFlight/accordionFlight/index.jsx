@@ -47,7 +47,7 @@ export const AccordionFlight = ({ flight, RD, DF, DD, A, C, I }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
       key={index}
-      className="w-full"
+      className="w-full p-2 sm:p-0"
     >
       <Accordion
         type="single"
